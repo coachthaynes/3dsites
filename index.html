@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aiyana Haynes Hoops</title>
+<meta name="description" content="Interactive 3D scrolling recruiting profile for Aiyana Haynes, guard at Middleburg High School, Class of 2027 Lady Broncos.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏀</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root{
+    --ink:#0b0b0c;
+    --panel:#16151a;
+    --panel-2:#1d1b20;
+    --line:#2b282e;
+    --bone:#f2eee2;
+    --bone-dim:#b7b1a4;
+    --crimson:#d0202c;
+    --crimson-deep:#7c0f1a;
+    --court:#c9812f;
+    --steel:#8a8590;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--bone);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    padding-left:max(20px, env(safe-area-inset-left,0px));
+    padding-right:max(20px, env(safe-area-inset-right,0px));
+  }
+  img{max-width:100%;}
+  [hidden]{display:none!important;}
+  a{color:inherit;text-decoration:none;}
+  .display{
+    font-family:'Anton',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    line-height:0.94;
+    text-wrap:balance;
+  }
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;}
+  .wrap{max-width:1120px;margin:0 auto;}
+  .rule{height:1px;background:var(--line);width:100%;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--crimson);
+    font-weight:600;font-size:12.5px;letter-spacing:0.14em;text-transform:uppercase;
+  }
+  :root{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion:reduce){ :root{scroll-behavior:auto;} }
+
+  /* progress bar */
+  .progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--crimson-deep),var(--crimson),var(--court));z-index:80;transition:width .08s linear;}
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:60;
+    margin:0 -20px;padding:0 20px;
+    background:rgba(11,11,12,0.78);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1120px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    height:60px;
+  }
+  .nav-name{font-family:'Anton',sans-serif;font-size:18px;letter-spacing:0.03em;text-transform:uppercase;white-space:nowrap;}
+  .nav-name .num{color:var(--crimson);}
+  .nav-links{display:flex;gap:22px;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;overflow-x:auto;scrollbar-width:none;}
+  .nav-links::-webkit-scrollbar{display:none;}
+  .nav-links a{color:var(--bone-dim);transition:color .2s;white-space:nowrap;}
+  .nav-links a:hover,.nav-links a:focus-visible{color:var(--bone);}
+  @media (max-width:640px){ .nav-links{gap:14px;} }
+
+  /* HERO */
+  .hero{
+    position:relative;
+    display:grid;grid-template-columns:1.05fr 0.95fr;
+    align-items:center;gap:20px;
+    min-height:min(88vh,760px);
+    border-bottom:1px solid var(--line);
+    padding:56px 0 40px;
+  }
+  .hero-canvas-holder{
+    position:absolute;inset:-40px -20px auto -20px;height:calc(100% + 40px);
+    z-index:0;pointer-events:none;
+  }
+  #hero3d{width:100%;height:100%;display:block;}
+  .hero-veil{
+    position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(90deg, rgba(11,11,12,0.92) 0%, rgba(11,11,12,0.35) 46%, rgba(11,11,12,0) 62%),
+               linear-gradient(180deg, rgba(11,11,12,0) 60%, rgba(11,11,12,0.9) 100%);
+  }
+  .hero-text{position:relative;z-index:2;padding:0 4px;}
+  .hero h1{
+    font-size:clamp(46px,7.4vw,96px);color:var(--bone);margin-top:14px;
+  }
+  .hero h1 .num{color:var(--crimson);}
+  .hero-sub{margin-top:16px;font-size:17px;color:var(--bone-dim);max-width:34ch;line-height:1.55;}
+  .hero-tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px;}
+  .tag{
+    border:1px solid var(--crimson);color:var(--crimson);
+    padding:7px 13px;font-size:11.5px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .hero-cta{margin-top:30px;display:flex;gap:12px;flex-wrap:wrap;}
+  .btn{
+    display:inline-block;padding:13px 22px;font-weight:700;font-size:12.5px;
+    letter-spacing:0.06em;text-transform:uppercase;
+    border:1px solid var(--bone);transition:all .2s;
+  }
+  .btn.primary{background:var(--crimson);border-color:var(--crimson);color:var(--bone);}
+  .btn.primary:hover{background:var(--crimson-deep);border-color:var(--crimson-deep);}
+  .btn.ghost:hover{background:var(--bone);color:var(--ink);}
+  .hero-right{position:relative;z-index:2;}
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr;min-height:auto;padding-top:28px;}
+    .hero-right{display:none;}
+    .hero-veil{background:linear-gradient(180deg, rgba(11,11,12,0.25) 0%, rgba(11,11,12,0.55) 55%, rgba(11,11,12,0.98) 100%);}
+  }
+
+  /* STAT STRIP */
+  .statstrip{background:var(--panel);border-bottom:1px solid var(--line);margin:0 -20px;}
+  .statstrip .grid{
+    max-width:1120px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(5,1fr);text-align:center;
+  }
+  .stat-item{padding:28px 8px;border-left:1px solid var(--line);}
+  .stat-item:first-child{border-left:none;}
+  .stat-num{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:clamp(26px,3.6vw,40px);color:var(--bone);font-variant-numeric:tabular-nums;}
+  .stat-label{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--bone-dim);margin-top:6px;}
+  @media (max-width:640px){
+    .statstrip .grid{grid-template-columns:repeat(3,1fr);}
+    .stat-item:nth-child(4){border-left:none;}
+  }
+
+  /* SECTION SHELL */
+  section{padding:74px 0;position:relative;}
+  .section-head{margin-bottom:40px;max-width:60ch;}
+  .section-head .display{font-size:clamp(28px,4vw,44px);color:var(--bone);}
+  .section-head p{color:var(--bone-dim);margin-top:10px;font-size:15px;line-height:1.6;}
+
+  /* reveal + tilt */
+  [data-reveal]{
+    opacity:1;transform:none;
+    transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1);
+  }
+  [data-reveal].pending{opacity:0;transform:perspective(900px) rotateX(9deg) translateY(34px);}
+  @media (prefers-reduced-motion:reduce){
+    [data-reveal].pending{opacity:1;transform:none;}
+  }
+  [data-tilt]{transform-style:preserve-3d;will-change:transform;transition:transform .35s cubic-bezier(.2,.7,.2,1);}
+
+  /* ABOUT */
+  .about-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:48px;align-items:start;}
+  .about-body p{color:#d2cdc2;font-size:16.5px;line-height:1.78;margin-bottom:15px;max-width:52ch;}
+  .vitals{border:1px solid var(--line);background:var(--panel);}
+  .vitals-row{display:flex;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .vitals-row:last-child{border-bottom:none;}
+  .vitals-row span:first-child{color:var(--bone-dim);}
+  .vitals-row span:last-child{font-weight:700;color:var(--bone);font-family:'IBM Plex Mono',monospace;}
+  .vitals-title{padding:14px 18px;font-family:'Anton',sans-serif;letter-spacing:0.04em;background:var(--crimson);color:var(--bone);font-size:14px;}
+  .card-photo{border:1px solid var(--line);background:var(--panel);overflow:hidden;margin-top:22px;}
+  .card-photo img{width:100%;display:block;}
+  .card-photo figcaption{padding:12px 16px;font-size:12.5px;color:var(--bone-dim);border-top:1px solid var(--line);}
+  @media (max-width:900px){ .about-grid{grid-template-columns:1fr;} }
+
+  /* ON THE COURT */
+  .skill-section{background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .skill-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:36px;align-items:start;}
+  .skill-card{background:var(--ink);border:1px solid var(--line);padding:30px;position:relative;}
+  .skill-card .num{font-family:'IBM Plex Mono',monospace;color:var(--crimson);font-size:13px;letter-spacing:0.1em;margin-bottom:12px;display:block;text-transform:uppercase;}
+  .skill-card h3{font-family:'Anton',sans-serif;font-size:25px;text-transform:uppercase;margin-bottom:10px;}
+  .skill-card p{color:#c8c3b8;font-size:15px;line-height:1.7;}
+  .record-strip{
+    margin-top:36px;display:flex;align-items:center;gap:26px;
+    background:linear-gradient(100deg, var(--crimson-deep), var(--crimson) 70%, var(--court));
+    padding:24px 30px;flex-wrap:wrap;
+  }
+  .record-strip .rnum{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:38px;font-variant-numeric:tabular-nums;}
+  .record-strip .rlabel{font-size:11.5px;letter-spacing:0.06em;text-transform:uppercase;opacity:0.9;}
+  .record-strip .rblock{padding-right:26px;border-right:1px solid rgba(242,238,226,0.35);}
+  .record-strip .rblock:last-of-type{border-right:none;padding-right:0;}
+  @media (max-width:900px){ .skill-grid{grid-template-columns:1fr;} }
+
+  /* SEASON STATS */
+  table.stats{width:100%;border-collapse:collapse;font-size:14px;}
+  table.stats th,table.stats td{padding:15px 12px;text-align:center;border-bottom:1px solid var(--line);}
+  table.stats th{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.06em;color:var(--bone-dim);text-transform:uppercase;font-weight:600;}
+  table.stats td{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;}
+  table.stats td:first-child,table.stats th:first-child{text-align:left;font-family:'Inter',sans-serif;font-weight:700;color:var(--bone);}
+  table.stats tbody tr:hover{background:rgba(208,32,44,0.07);}
+  .table-wrap{border:1px solid var(--line);overflow-x:auto;background:var(--panel);}
+  .bar-cell{position:relative;padding-top:26px!important;}
+  .bar-track{position:absolute;left:12px;right:12px;top:8px;height:3px;background:var(--line);}
+  .bar-fill{height:100%;background:var(--crimson);width:0%;transition:width 1s cubic-bezier(.2,.7,.2,1);}
+  tr.in .bar-fill{width:var(--pct);}
+
+  /* HIGHLIGHTS */
+  .video-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .video-frame{
+    position:relative;display:block;width:100%;padding-top:177.7%;
+    border:1px solid var(--line);overflow:hidden;
+    background:
+      radial-gradient(120% 90% at 30% 18%, rgba(208,32,44,0.25), transparent 60%),
+      repeating-linear-gradient(120deg, transparent 0 34px, rgba(242,238,226,0.035) 34px 36px),
+      linear-gradient(155deg, #201d22, #0e0d0f 70%);
+    transition:border-color .2s;
+  }
+  .video-frame:hover,.video-frame:focus-visible{border-color:var(--crimson);}
+  .video-play{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  }
+  .video-play span{
+    width:64px;height:64px;border-radius:50%;
+    background:rgba(208,32,44,0.92);
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .2s;
+  }
+  .video-frame:hover .video-play span,.video-frame:focus-visible .video-play span{transform:scale(1.08);}
+  .video-play span::after{
+    content:"";
+    border-style:solid;border-width:11px 0 11px 18px;
+    border-color:transparent transparent transparent var(--bone);
+    margin-left:4px;
+  }
+  .video-label{
+    position:absolute;left:14px;right:14px;bottom:14px;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--bone-dim);
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+  }
+  .video-label .arrow{color:var(--crimson);flex-shrink:0;}
+  .video-cap{font-size:12.5px;color:var(--bone-dim);margin-top:9px;}
+  @media (max-width:900px){ .video-grid{grid-template-columns:1fr;max-width:340px;margin:0 auto;} }
+
+  /* RECRUITING */
+  .recruit-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;}
+  .offer-list{list-style:none;margin:0;padding:0;}
+  .offer-list li{padding:15px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:15.5px;}
+  .offer-list li:first-child{padding-top:0;}
+  .offer-list .status{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--crimson);font-weight:700;font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
+  .contact-card{border:1px solid var(--line);background:var(--panel);padding:24px 26px;}
+  .contact-card h4{font-family:'Anton',sans-serif;font-size:15px;letter-spacing:0.04em;margin-bottom:14px;text-transform:uppercase;}
+  .contact-row{font-size:14px;color:#d5d0c5;margin-bottom:8px;}
+  .contact-row span{color:var(--bone-dim);}
+  .contact-row a:hover{color:var(--crimson);}
+  @media (max-width:900px){ .recruit-grid{grid-template-columns:1fr;} }
+
+  /* FOOTER */
+  footer{padding:60px 0 50px;border-top:1px solid var(--line);}
+  .links-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:44px;}
+  .link-pill{border:1px solid var(--line);padding:15px 17px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between;transition:all .2s;}
+  .link-pill:hover,.link-pill:focus-visible{border-color:var(--crimson);color:var(--crimson);}
+  .foot-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;color:var(--bone-dim);font-size:13px;}
+  .foot-bottom .brand{color:var(--bone);font-weight:700;}
+  @media (max-width:900px){ .links-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .links-grid{grid-template-columns:1fr;} }
+
+  :focus-visible{outline:2px solid var(--court);outline-offset:2px;}
+</style>
+</head>
+<body>
+
+
+<div class="progress" id="progress"></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-name">AIYANA HAYNES <span class="num">20</span></div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#game">Game</a>
+      <a href="#stats">Stats</a>
+      <a href="#highlights">Highlights</a>
+      <a href="#recruiting">Recruiting</a>
+      <a href="#links">Links</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-canvas-holder"><canvas id="hero3d"></canvas></div>
+  <div class="hero-veil"></div>
+  <div class="hero-text">
+    <div class="eyebrow">Middleburg Lady Broncos, Class of 2027</div>
+    <h1 class="display">AIYANA<br>HAYNES <span class="num">20</span></h1>
+    <p class="hero-sub">Guard, Middleburg High School. Locks in on defense, then makes teams pay from deep.</p>
+    <div class="hero-tags">
+      <span class="tag">Three And D</span>
+      <span class="tag">Long Range Shooter</span>
+      <span class="tag">5 Foot 8 Guard</span>
+    </div>
+    <div class="hero-cta">
+      <a class="btn primary" href="#highlights">Watch Highlights</a>
+      <a class="btn ghost" href="#links">All Links</a>
+    </div>
+  </div>
+  <div class="hero-right"></div>
+</div>
+
+<div class="statstrip">
+  <div class="grid">
+    <div class="stat-item"><div class="stat-num mono" data-count="12.5">0</div><div class="stat-label">PPG Junior</div></div>
+    <div class="stat-item"><div class="stat-num mono" data-count="7.6">0</div><div class="stat-label">Rebounds</div></div>
+    <div class="stat-item"><div class="stat-num mono" data-count="4.3">0</div><div class="stat-label">Steals</div></div>
+    <div class="stat-item"><div class="stat-num mono" data-count="2.6">0</div><div class="stat-label">Assists</div></div>
+    <div class="stat-item"><div class="stat-num mono" data-count="3.2">0</div><div class="stat-label">GPA</div></div>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-body" data-reveal>
+        <div class="eyebrow">About Aiyana</div>
+        <div class="display" style="font-size:clamp(26px,4vw,40px);margin-top:8px;margin-bottom:18px;">Guard With A Motor</div>
+        <p>5 foot 8 guard at Middleburg High School, Class of 2027, Lady Broncos.</p>
+        <p>A true three and D player. Locks in on defense, then makes teams pay from deep.</p>
+        <p>Carries a 3.2 GPA on top of it.</p>
+      </div>
+      <div>
+        <div class="vitals" data-reveal data-tilt>
+          <div class="vitals-title">Vitals</div>
+          <div class="vitals-row"><span>Height</span><span>5' 8"</span></div>
+          <div class="vitals-row"><span>Weight</span><span>154 lbs</span></div>
+          <div class="vitals-row"><span>Wingspan</span><span>5' 8"</span></div>
+          <div class="vitals-row"><span>Shoe Size</span><span>11</span></div>
+          <div class="vitals-row"><span>Standing Vertical</span><span>18.5"</span></div>
+          <div class="vitals-row"><span>Strength</span><span>115 Bench</span></div>
+          <div class="vitals-row"><span>GPA</span><span>3.2</span></div>
+          <div class="vitals-row"><span>Graduation Year</span><span>2027</span></div>
+        </div>
+        <figure class="card-photo" data-reveal data-tilt>
+          <img src="images/spotlight.jpg" alt="Player spotlight graphic: Aiyana Haynes, 21 points, 10 rebounds, 4 steals versus Orange Park, double double">
+          <figcaption>Player spotlight, Orange Park box score</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="game" class="skill-section">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="eyebrow">Three And D, In Three Dimensions</div>
+      <div class="display" style="margin-top:8px;">On The Court</div>
+      <p>What defines her game.</p>
+    </div>
+    <div class="skill-grid">
+      <div>
+        <div class="skill-card" style="margin-bottom:24px;" data-reveal data-tilt>
+          <span class="num">Identity</span>
+          <h3>Three And D</h3>
+          <p>Locks up the opponent's top scorer, then spaces the floor and knocks down catch and shoot threes.</p>
+        </div>
+        <div class="skill-card" data-reveal data-tilt>
+          <span class="num">Signature</span>
+          <h3>Long Range Shooting</h3>
+          <p>Range well past the arc. Defenses that help off her pay for it.</p>
+        </div>
+      </div>
+      <figure class="card-photo" style="margin-top:0;" data-reveal data-tilt>
+        <img src="images/record.jpg" alt="Aiyana Haynes graphic: 32 points, 7 three pointers, personal record">
+        <figcaption>Personal record night</figcaption>
+      </figure>
+    </div>
+    <div class="record-strip" data-reveal>
+      <div class="rblock"><div class="rnum mono">32</div><div class="rlabel">Points, Personal Record</div></div>
+      <div class="rblock"><div class="rnum mono">7</div><div class="rlabel">Three Pointers Made</div></div>
+      <div class="rblock"><div class="rnum mono">13</div><div class="rlabel">Double Doubles, Junior Season</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="eyebrow">Box Score History</div>
+      <div class="display" style="margin-top:8px;">Season Stats</div>
+      <p>Per game averages by season.</p>
+    </div>
+    <div class="table-wrap" data-reveal>
+      <table class="stats" id="statsTable">
+        <thead>
+          <tr>
+            <th>Season</th><th>PPG</th><th>Rebounds</th><th>Steals</th><th>Blocks</th><th>Assists</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-row><td>Freshman</td><td class="bar-cell" style="--pct:64%"><span class="mono">10.5</span><div class="bar-track"><div class="bar-fill"></div></div></td><td>5.1</td><td>3.2</td><td>0.5</td><td>1.8</td></tr>
+          <tr data-row><td>Sophomore</td><td class="bar-cell" style="--pct:100%"><span class="mono">16.5</span><div class="bar-track"><div class="bar-fill"></div></div></td><td>2.6</td><td>1.6</td><td>0.3</td><td>0.5</td></tr>
+          <tr data-row><td>Junior</td><td class="bar-cell" style="--pct:76%"><span class="mono">12.5</span><div class="bar-track"><div class="bar-fill"></div></div></td><td>7.6</td><td>4.3</td><td>0.9</td><td>2.6</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="highlights" class="skill-section">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="eyebrow">Game Tape</div>
+      <div class="display" style="margin-top:8px;">Highlight Film</div>
+      <p>Playable right here, no need to leave the page.</p>
+    </div>
+    <div class="video-grid">
+      <div data-reveal data-tilt>
+        <div class="video-frame" style="background:#000;">
+          <iframe src="https://www.youtube.com/embed/mf_Y6s29nHE" title="Aiyana Haynes highlight video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
+        </div>
+        <div class="video-cap">Game highlights</div>
+      </div>
+      <div data-reveal data-tilt>
+        <div class="video-frame" style="background:#000;">
+          <iframe src="https://www.youtube.com/embed/Egr9RVCU1mA" title="Aiyana Haynes highlight video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
+        </div>
+        <div class="video-cap">Game highlights</div>
+      </div>
+      <div data-reveal data-tilt>
+        <div class="video-frame" style="background:#000;">
+          <iframe src="https://www.youtube.com/embed/URKKODGGWaI" title="Aiyana Haynes highlight short" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;"></iframe>
+        </div>
+        <div class="video-cap">Quick highlight clip</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="recruiting">
+  <div class="wrap">
+    <div class="recruit-grid">
+      <div>
+        <div class="section-head" data-reveal style="margin-bottom:24px;">
+          <div class="eyebrow">Offers And Rankings</div>
+          <div class="display" style="font-size:clamp(26px,4vw,40px);margin-top:8px;">Recruiting</div>
+        </div>
+        <ul class="offer-list" data-reveal>
+          <li>Southwest Arkansas <span class="status">Offer</span></li>
+          <li>Taft College, California <span class="status">Offer</span></li>
+          <li>Reps On Reps Hoops, Class of 2027 Rising 20 <span class="status">Ranked No 14</span></li>
+        </ul>
+        <div class="contact-row" style="margin-top:18px;"><span>NCAA ID </span><span class="mono">2602827185</span></div>
+        <figure class="card-photo" data-reveal data-tilt>
+          <img src="images/ranked.jpg" alt="Aiyana Haynes ranked number 14 in the Class of 2027 Rising 20 by Reps On Reps Hoops">
+          <figcaption>Ranked by Reps On Reps Hoops</figcaption>
+        </figure>
+      </div>
+      <div class="contact-card" data-reveal data-tilt>
+        <h4>Contact</h4>
+        <div class="contact-row"><span>Player Phone </span>904 947 5780</div>
+        <div class="contact-row"><span>Player Email </span><a href="mailto:aiyanahaynes.bball@gmail.com">aiyanahaynes.bball@gmail.com</a></div>
+        <div class="rule" style="margin:16px 0;"></div>
+        <h4>Coach And Parent, Tenise Haynes</h4>
+        <div class="contact-row"><span>Phone </span>904 290 0261</div>
+        <div class="contact-row"><span>Email </span><a href="mailto:coachthaynes@gmail.com">coachthaynes@gmail.com</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="links">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="display" style="font-size:clamp(22px,3.2vw,32px);">Follow Along And Watch More Film</div>
+    </div>
+    <div class="links-grid" data-reveal>
+      <a class="link-pill" href="https://www.instagram.com/aiyana_hc" target="_blank" rel="noopener">Instagram &#8599;</a>
+      <a class="link-pill" href="https://x.com/aiyana_h_20" target="_blank" rel="noopener">X, Twitter &#8599;</a>
+      <a class="link-pill" href="https://www.youtube.com/@AiyanaH.baller27" target="_blank" rel="noopener">YouTube &#8599;</a>
+      <a class="link-pill" href="https://www.hudl.com/profile/20899818/Aiyana-Haynes" target="_blank" rel="noopener">Hudl &#8599;</a>
+      <a class="link-pill" href="https://www.fieldlevel.com/app/profile/aiyana/basketballwomen" target="_blank" rel="noopener">Field Level &#8599;</a>
+      <a class="link-pill" href="https://www.maxpreps.com/fl/middleburg/middleburg-broncos/athletes/aiyana-haynes/?careerid=5d7kddlh57g11" target="_blank" rel="noopener">MaxPreps &#8599;</a>
+      <a class="link-pill" href="https://prepgirlshoops.com/player/aiyana-haynes/" target="_blank" rel="noopener">Prep Girls Hoops &#8599;</a>
+      <a class="link-pill" href="mailto:aiyanahaynes.bball@gmail.com">Email Aiyana &#8599;</a>
+    </div>
+    <div class="rule" style="margin-bottom:22px;"></div>
+    <div class="foot-bottom">
+      <div><span class="brand">Aiyana Haynes</span> &middot; Middleburg Lady Broncos &middot; Class of 2027</div>
+      <div class="mono">HORSEPOWER 20</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* scroll progress */
+  var progress = document.getElementById('progress');
+  function onScroll(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+    if(progress) progress.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  /* reveal on scroll */
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+  if(!reduceMotion && 'IntersectionObserver' in window){
+    revealEls.forEach(function(el){ el.classList.add('pending'); });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.remove('pending');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.15, rootMargin:'0px 0px -8% 0px'});
+    revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+  /* season stat rows animate their bar when visible */
+  var rows = Array.prototype.slice.call(document.querySelectorAll('#statsTable tr[data-row]'));
+  if('IntersectionObserver' in window){
+    var rowIo = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          rowIo.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.4});
+    rows.forEach(function(r){ rowIo.observe(r); });
+  } else {
+    rows.forEach(function(r){ r.classList.add('in'); });
+  }
+
+  /* count up stat strip numbers */
+  var counters = Array.prototype.slice.call(document.querySelectorAll('[data-count]'));
+  function animateCount(el){
+    var target = parseFloat(el.getAttribute('data-count'));
+    if(reduceMotion){ el.textContent = target.toFixed(1); return; }
+    var start = null, dur = 1100;
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = (target * eased).toFixed(1);
+      if(p < 1) requestAnimationFrame(step);
+      else el.textContent = target.toFixed(1);
+    }
+    requestAnimationFrame(step);
+  }
+  if('IntersectionObserver' in window){
+    var countIo = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          animateCount(entry.target);
+          countIo.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.6});
+    counters.forEach(function(c){ countIo.observe(c); });
+  } else {
+    counters.forEach(function(c){ c.textContent = parseFloat(c.getAttribute('data-count')).toFixed(1); });
+  }
+
+  /* pointer tilt on cards */
+  if(!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches){
+    var tiltEls = Array.prototype.slice.call(document.querySelectorAll('[data-tilt]'));
+    tiltEls.forEach(function(el){
+      var raf = null, rect = null;
+      function move(e){
+        if(!rect) rect = el.getBoundingClientRect();
+        var px = (e.clientX - rect.left) / rect.width;
+        var py = (e.clientY - rect.top) / rect.height;
+        var rx = (0.5 - py) * 9;
+        var ry = (px - 0.5) * 11;
+        if(raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(function(){
+          el.style.transform = 'perspective(900px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) translateZ(0)';
+        });
+      }
+      function reset(){ rect = null; el.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)'; }
+      el.addEventListener('pointerenter', function(){ rect = el.getBoundingClientRect(); });
+      el.addEventListener('pointermove', move);
+      el.addEventListener('pointerleave', reset);
+    });
+  }
+
+  /* three.js hero scene: rotating basketball over a hardwood floor */
+  var canvas = document.getElementById('hero3d');
+  if(canvas && window.THREE){
+    try {
+      var holder = canvas.parentElement;
+      var renderer = new THREE.WebGLRenderer({canvas:canvas, alpha:true, antialias:true});
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+      var scene = new THREE.Scene();
+      scene.fog = new THREE.Fog(0x0b0b0c, 6, 13);
+
+      var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50);
+      camera.position.set(0.4, 1.15, 6.2);
+      var lookTarget = new THREE.Vector3(0.2, 0.3, 0);
+      camera.lookAt(lookTarget);
+
+      var hemi = new THREE.HemisphereLight(0x6b6b74, 0x0b0b0c, 0.9);
+      scene.add(hemi);
+      var key = new THREE.DirectionalLight(0xf2eee2, 1.1);
+      key.position.set(3, 4, 4);
+      scene.add(key);
+      var rim = new THREE.PointLight(0xd0202c, 6, 12);
+      rim.position.set(-2.6, 1.2, 1.6);
+      scene.add(rim);
+      var amberLight = new THREE.PointLight(0xc9812f, 3, 10);
+      amberLight.position.set(2.2, -0.4, 2.4);
+      scene.add(amberLight);
+
+      /* procedural basketball texture */
+      function makeBallTexture(){
+        var c = document.createElement('canvas');
+        c.width = 1024; c.height = 512;
+        var ctx = c.getContext('2d');
+        ctx.fillStyle = '#c9691f';
+        ctx.fillRect(0,0,c.width,c.height);
+        ctx.strokeStyle = '#221008';
+        ctx.lineWidth = 7;
+        ctx.beginPath(); ctx.moveTo(0,c.height/2); ctx.lineTo(c.width,c.height/2); ctx.stroke();
+        for(var i=1;i<8;i++){
+          var x = (c.width/8)*i;
+          ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,c.height); ctx.stroke();
+        }
+        ctx.beginPath();
+        ctx.ellipse(c.width*0.5, c.height*0.5, c.width*0.18, c.height*0.95, 0, 0, Math.PI*2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(c.width*0.5, c.height*0.5, c.width*0.34, c.height*0.95, 0, 0, Math.PI*2);
+        ctx.stroke();
+        var tex = new THREE.CanvasTexture(c);
+        tex.wrapS = THREE.RepeatWrapping;
+        return tex;
+      }
+      function makeFloorTexture(){
+        var c = document.createElement('canvas');
+        c.width = 512; c.height = 512;
+        var ctx = c.getContext('2d');
+        ctx.fillStyle = '#1c140c';
+        ctx.fillRect(0,0,c.width,c.height);
+        for(var i=0;i<26;i++){
+          ctx.fillStyle = i % 2 === 0 ? 'rgba(120,72,32,0.10)' : 'rgba(30,18,10,0.10)';
+          ctx.fillRect(0, i*(c.height/26), c.width, c.height/26);
+        }
+        ctx.strokeStyle = 'rgba(208,32,44,0.55)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(c.width*0.5, c.height*1.15, c.width*0.42, Math.PI*1.1, Math.PI*1.9);
+        ctx.stroke();
+        var tex = new THREE.CanvasTexture(c);
+        return tex;
+      }
+
+      var ballTex = makeBallTexture();
+      var ballGeo = new THREE.SphereGeometry(1, 48, 48);
+      var ballMat = new THREE.MeshStandardMaterial({map:ballTex, roughness:0.55, metalness:0.05});
+      var ball = new THREE.Mesh(ballGeo, ballMat);
+      ball.position.set(0.2, 0.35, 0);
+      scene.add(ball);
+
+      var floorTex = makeFloorTexture();
+      floorTex.repeat.set(3,3);
+      floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping;
+      var floorGeo = new THREE.PlaneGeometry(20, 20);
+      var floorMat = new THREE.MeshStandardMaterial({map:floorTex, roughness:0.9});
+      var floor = new THREE.Mesh(floorGeo, floorMat);
+      floor.rotation.x = -Math.PI/2;
+      floor.position.y = -1.05;
+      scene.add(floor);
+
+      var rimGeo = new THREE.TorusGeometry(1.55, 0.04, 12, 48);
+      var rimMat = new THREE.MeshStandardMaterial({color:0xd0202c, roughness:0.4, metalness:0.3, transparent:true, opacity:0.5});
+      var rimRing = new THREE.Mesh(rimGeo, rimMat);
+      rimRing.rotation.x = Math.PI/2.1;
+      rimRing.position.set(0.2, 0.3, 0);
+      scene.add(rimRing);
+
+      function size(){
+        var w = holder.clientWidth || window.innerWidth;
+        var h = holder.clientHeight || window.innerHeight;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / Math.max(h,1);
+        camera.updateProjectionMatrix();
+      }
+      size();
+      window.addEventListener('resize', size);
+
+      var mouseX = 0, mouseY = 0;
+      window.addEventListener('pointermove', function(e){
+        mouseX = (e.clientX / window.innerWidth) - 0.5;
+        mouseY = (e.clientY / window.innerHeight) - 0.5;
+      }, {passive:true});
+
+      var heroEl = document.querySelector('.hero');
+      var heroVisible = true;
+      if('IntersectionObserver' in window){
+        var heroIo = new IntersectionObserver(function(entries){
+          heroVisible = entries[0].isIntersecting;
+          if(heroVisible && !raf){ raf = requestAnimationFrame(tick); }
+        });
+        heroIo.observe(heroEl);
+      }
+
+      var raf = null, clock = new THREE.Clock();
+      function tick(){
+        if(!heroVisible){ raf = null; return; }
+        var t = clock.getElapsedTime();
+        var spin = reduceMotion ? 0.06 : 0.27;
+        ball.rotation.y += spin * 0.016;
+        ball.rotation.x = Math.sin(t*0.4) * 0.05;
+        ball.position.y = 0.35 + Math.sin(t*0.8) * 0.05;
+        rimRing.rotation.z += 0.0025;
+
+        var tx = 0.4 - mouseX * 0.9;
+        var ty = 1.15 + mouseY * 0.35;
+        camera.position.x += (tx - camera.position.x) * 0.04;
+        camera.position.y += (ty - camera.position.y) * 0.04;
+        camera.lookAt(lookTarget);
+
+        renderer.render(scene, camera);
+        raf = requestAnimationFrame(tick);
+      }
+      raf = requestAnimationFrame(tick);
+    } catch(err){
+      canvas.style.display = 'none';
+    }
+  }
+})();
+</script>
+
+</body>
+</html>
