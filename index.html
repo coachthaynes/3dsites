@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Elevate Her Hoops Report</title>
-<meta name="description" content="Elevate Her is a subscription platform that gets girls basketball recruits real exposure to college coaches through written reports, a recruiting site link, and a full media presence.">
+<meta name="description" content="Elevate Her is a one time package platform that gets girls basketball recruits real exposure to college coaches through a recruiting website, media, and NIL branding.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏀</text></svg>">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -211,23 +211,71 @@
   @media (max-width:560px){ .benefits-grid{grid-template-columns:1fr;} }
 
   /* PRICING */
-  .pricing-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px;max-width:820px;margin:44px auto 0;}
-  .price-card{position:relative;padding:36px 32px;text-align:left;}
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1080px;margin:44px auto 0;}
+  .price-card{position:relative;padding:32px 28px;text-align:left;display:flex;flex-direction:column;}
   .price-card.premium{border-color:var(--magenta);background:linear-gradient(165deg, var(--panel-2), var(--panel));box-shadow:0 20px 50px rgba(255,46,147,0.18);}
+  .price-card.elite{border-color:var(--teal);background:linear-gradient(165deg, var(--panel-2), var(--panel));box-shadow:0 20px 50px rgba(0,245,212,0.16);}
   .price-badge{
-    position:absolute;top:-14px;left:32px;background:var(--teal);color:var(--violet-deep);
+    position:absolute;top:-14px;left:28px;background:var(--teal);color:var(--violet-deep);
     font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
     font-weight:700;padding:6px 14px;border-radius:999px;
   }
-  .price-tier{font-family:'Fredoka',sans-serif;font-size:22px;font-weight:600;color:var(--white);}
-  .price-amount{font-family:'IBM Plex Mono',monospace;font-size:44px;font-weight:700;color:var(--white);margin-top:14px;display:flex;align-items:baseline;gap:6px;}
-  .price-amount .period{font-size:13px;color:var(--dim);font-family:'Poppins',sans-serif;font-weight:500;}
-  .price-list{list-style:none;margin:26px 0 30px;padding:0;}
-  .price-list li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;font-size:14.5px;color:var(--dim);}
-  .price-list li .check{width:18px;height:18px;flex-shrink:0;margin-top:2px;}
+  .price-card.elite .price-badge{background:var(--magenta);color:var(--white);}
+  .price-tier{font-family:'Fredoka',sans-serif;font-size:21px;font-weight:600;color:var(--white);}
+  .price-tier-sub{font-size:12.5px;color:var(--dim);margin-top:2px;}
+  .price-amount{font-family:'IBM Plex Mono',monospace;font-size:38px;font-weight:700;color:var(--white);margin-top:14px;display:flex;align-items:baseline;gap:6px;}
+  .price-amount .period{font-size:12.5px;color:var(--dim);font-family:'Poppins',sans-serif;font-weight:500;}
+  .price-list{list-style:none;margin:22px 0 26px;padding:0;flex:1;}
+  .price-list li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:14px;color:var(--dim);}
+  .price-list li .check{width:17px;height:17px;flex-shrink:0;margin-top:2px;}
   .price-list li strong{color:var(--white);font-weight:600;}
   .pricing-note{max-width:720px;margin:30px auto 0;text-align:center;color:var(--dim);font-size:13px;}
-  @media (max-width:760px){ .pricing-grid{grid-template-columns:1fr;} }
+  @media (max-width:980px){ .pricing-grid{grid-template-columns:1fr;max-width:460px;} }
+
+  /* INQUIRY MODAL */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;
+    background:rgba(10,5,20,0.72);backdrop-filter:blur(4px);padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal-card{
+    width:100%;max-width:520px;max-height:88vh;overflow-y:auto;
+    background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:32px;position:relative;
+  }
+  .modal-close{
+    position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;
+    border:1px solid var(--line);background:transparent;color:var(--white);font-size:16px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s;
+  }
+  .modal-close:hover{border-color:var(--magenta);color:var(--magenta);}
+  .modal-eyebrow{font-family:'IBM Plex Mono',monospace;color:var(--teal);font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;}
+  .modal-title{font-family:'Fredoka',sans-serif;font-size:24px;font-weight:600;color:var(--white);margin-top:8px;}
+  .modal-sub{color:var(--dim);font-size:13.5px;margin-top:8px;line-height:1.5;}
+  .form-row{margin-top:16px;display:flex;flex-direction:column;gap:6px;}
+  .form-row label{font-size:12.5px;font-weight:600;color:var(--dim);}
+  .form-row input,.form-row select,.form-row textarea{
+    background:var(--violet-deep);border:1px solid var(--line);border-radius:12px;
+    padding:11px 14px;color:var(--white);font-family:'Poppins',sans-serif;font-size:14px;
+  }
+  .form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+  .form-row textarea{resize:vertical;min-height:80px;}
+  .form-two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:480px){ .form-two{grid-template-columns:1fr;} }
+  .form-submit{margin-top:22px;width:100%;border:none;cursor:pointer;}
+  .form-status{margin-top:14px;font-size:13.5px;}
+  .form-status.success{color:var(--teal);}
+  .form-status.error{color:var(--magenta);}
+  [data-hp-field]{position:absolute;left:-9999px;top:-9999px;}
+
+  /* decorative watermark mark */
+  .section-watermark{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:620px;height:620px;max-width:90vw;opacity:0.05;pointer-events:none;z-index:0;
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .section-watermark{animation:watermarkSpin 90s linear infinite;}
+  }
+  @keyframes watermarkSpin{ from{transform:translate(-50%,-50%) rotate(0deg);} to{transform:translate(-50%,-50%) rotate(360deg);} }
 
   /* HOW IT WORKS */
   .steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:44px;}
@@ -243,7 +291,8 @@
   @media (max-width:560px){ .steps-grid{grid-template-columns:1fr;} }
 
   /* PLAYERS */
-  .players-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:40px;}
+  .players-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:40px;}
+  @media (max-width:1080px) and (min-width:861px){ .players-grid{grid-template-columns:repeat(2,1fr);} }
   .player-card{text-align:center;}
   .player-avatar{
     width:84px;height:84px;border-radius:50%;margin:0 auto 18px;
@@ -287,13 +336,15 @@
     <circle cx="100" cy="100" r="88" fill="none" stroke="#00F5D4" stroke-width="9"/>
     <path d="M16 66 Q100 18 184 66" fill="none" stroke="#00F5D4" stroke-width="9" stroke-linecap="round"/>
     <path d="M20 138 Q100 188 180 132" fill="none" stroke="#00F5D4" stroke-width="9" stroke-linecap="round"/>
-    <path d="M64 44 Q40 100 64 156 Q124 132 124 100 Q124 68 64 44 Z" fill="none" stroke="#FF2E93" stroke-width="9" stroke-linejoin="round"/>
-    <line x1="56" y1="86" x2="120" y2="86" stroke="#FF2E93" stroke-width="7" stroke-linecap="round"/>
-    <line x1="56" y1="100" x2="120" y2="100" stroke="#FF2E93" stroke-width="7" stroke-linecap="round"/>
-    <line x1="56" y1="114" x2="120" y2="114" stroke="#FF2E93" stroke-width="7" stroke-linecap="round"/>
-    <line x1="130" y1="30" x2="130" y2="170" stroke="#FF2E93" stroke-width="9" stroke-linecap="round"/>
-    <line x1="156" y1="44" x2="156" y2="156" stroke="#FF2E93" stroke-width="9" stroke-linecap="round"/>
-    <line x1="130" y1="100" x2="184" y2="100" stroke="#FF2E93" stroke-width="7" stroke-linecap="round"/>
+    <g fill="none" stroke="#FF2E93" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M64 58 L64 142"/>
+      <path d="M64 58 L98 58"/>
+      <path d="M64 100 L92 100"/>
+      <path d="M64 142 L98 142"/>
+      <path d="M120 58 L120 142"/>
+      <path d="M148 58 L148 142"/>
+      <path d="M120 100 L148 100"/>
+    </g>
   </symbol>
   <symbol id="checkIcon" viewBox="0 0 24 24">
     <circle cx="12" cy="12" r="11" fill="none" stroke="#00F5D4" stroke-width="2"/>
@@ -356,7 +407,7 @@
     <div class="section-head" data-reveal>
       <div class="eyebrow">About Elevate Her</div>
       <div class="display" style="font-size:clamp(26px,4vw,40px);">Everything Her Recruiting Profile Needs</div>
-      <p class="about-intro">Elevate Her is a subscription platform built for girls basketball families who want real exposure instead of guesswork. Every plan is built around getting your daughter in front of college coaches with a profile that looks and reads like she belongs there.</p>
+      <p class="about-intro">Elevate Her is a one time package platform built for girls basketball families who want real exposure instead of guesswork. Every package is built around getting your daughter in front of college coaches with a profile that looks and reads like she belongs there.</p>
     </div>
     <div class="benefits-grid">
       <div class="card benefit-card" data-reveal data-tilt>
@@ -365,9 +416,9 @@
         <p>Our team writes a scouting report on your player and sends it directly to college coaches, so her game gets read the way a coach reads a game, not skimmed like a highlight reel.</p>
       </div>
       <div class="card benefit-card" data-reveal data-tilt>
-        <span class="num">Included With Every Plan</span>
+        <span class="num">Included With Every Package</span>
         <h3>Recruiting Site Link</h3>
-        <p>Every subscription includes a personal recruiting site link, one place coaches can find her film, stats, and story without digging through social media.</p>
+        <p>Every package includes a personal recruiting site link, one place coaches can find her film, stats, and story without digging through social media.</p>
       </div>
       <div class="card benefit-card" data-reveal data-tilt>
         <span class="num">Full Media Presence</span>
@@ -376,9 +427,9 @@
         <span class="badge-premium">Premium</span>
       </div>
       <div class="card benefit-card" data-reveal data-tilt>
-        <span class="num">All Season Long</span>
-        <h3>Season Long Updates</h3>
-        <p>Her profile does not freeze after signup. Stats, film, and reports get refreshed all season long, so coaches always see her most current game.</p>
+        <span class="num">No Subscription Required</span>
+        <h3>Updates Any Time</h3>
+        <p>Her profile does not have to freeze after signup. Add a new update whenever her season calls for it, a flat twenty five dollars each time, or start with a package that already includes more.</p>
       </div>
     </div>
   </div>
@@ -393,40 +444,113 @@
 </div>
 
 <section id="pricing">
-  <div class="wrap">
+  <span class="section-watermark"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ehLogo"></use></svg></span>
+  <div class="wrap" style="position:relative;z-index:1;">
     <div class="section-head center" data-reveal>
-      <div class="eyebrow">Membership Plans</div>
-      <div class="display">Pick The Plan That Fits Her Season</div>
-      <p>Two straightforward tiers. No hidden fees, no long contracts.</p>
+      <div class="eyebrow">One Time Packages</div>
+      <div class="display">Choose Her Package</div>
+      <p>One time investment, no recurring subscription. Pick the package that matches how much exposure she needs.</p>
     </div>
     <div class="pricing-grid">
       <div class="card price-card" data-reveal data-tilt>
-        <div class="price-tier">Basic</div>
-        <div class="price-amount">$149<span class="period">per season</span></div>
+        <div class="price-tier">Essential Scout Package</div>
+        <div class="price-tier-sub">A clean starting profile</div>
+        <div class="price-amount">$25<span class="period">one time</span></div>
         <ul class="price-list">
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Written scouting report</strong> sent to coaches</span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>One recruiting site link</strong> included</span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Basic website player profile</strong></span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span>Includes <strong>one profile update</strong></span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span>Additional updates are <strong>$25 each</strong>, any time</span></li>
         </ul>
-        <a class="btn outline" href="#top" style="width:100%;text-align:center;">Choose Basic</a>
+        <button type="button" class="btn outline form-submit" data-open-modal="Essential Scout Package ($25)">Request Essential Scout</button>
       </div>
       <div class="card price-card premium" data-reveal data-tilt>
         <div class="price-badge">Most Popular</div>
-        <div class="price-tier">Premium</div>
-        <div class="price-amount">$499<span class="period">per season</span></div>
+        <div class="price-tier">Premium Profile Showcase</div>
+        <div class="price-tier-sub">Media that does the talking</div>
+        <div class="price-amount">$350<span class="period">one time</span></div>
         <ul class="price-list">
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Everything in Basic</strong></span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Player profile website</strong></span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Professional photo set</strong></span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>One highlight video</strong></span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Monthly season updates</strong></span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Everything in Essential Scout</strong></span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Premium player website</strong></span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span>Built with <strong>her own videos and photos</strong></span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Clickable links and embedded video</strong> so coaches see everything in one place</span></li>
         </ul>
-        <a class="btn primary" href="#top" style="width:100%;text-align:center;">Choose Premium</a>
+        <button type="button" class="btn primary form-submit" data-open-modal="Premium Profile Showcase ($350)">Request Premium Showcase</button>
+      </div>
+      <div class="card price-card elite" data-reveal data-tilt>
+        <div class="price-badge">Full Package</div>
+        <div class="price-tier">Elite Illumination Experience</div>
+        <div class="price-tier-sub">The complete recruiting presence</div>
+        <div class="price-amount">$850<span class="period">one time</span></div>
+        <ul class="price-list">
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Everything in Premium Showcase</strong></span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Full game and highlight video footage</strong></span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Player photo shoot</strong> for premium web graphics</span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span>Easy <strong>NIL market branding</strong></span></li>
+        </ul>
+        <button type="button" class="btn outline form-submit" style="border-color:var(--teal);color:var(--teal);" data-open-modal="Elite Illumination Experience ($850)">Request Elite Illumination</button>
       </div>
     </div>
-    <!-- PLACEHOLDER PRICING: swap $149 and $499 for the confirmed figures from the Elevate Her Marketing Package once available -->
-    <p class="pricing-note">Pricing reflects current Elevate Her plans. Reach out with questions about what is included in each tier.</p>
+    <p class="pricing-note">Every request starts with a conversation. We talk with you about your daughter's goals before any payment is ever requested.</p>
   </div>
 </section>
+
+<div class="modal-overlay" id="inquiryModal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button type="button" class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <div class="modal-eyebrow">Package Inquiry</div>
+    <div class="modal-title" id="modalTitle">Tell Us About Her</div>
+    <p class="modal-sub">Send her info and we will reach out to talk through the package before anything is booked or paid for.</p>
+    <form name="package-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="inquiryForm">
+      <input type="hidden" name="form-name" value="package-inquiry">
+      <p data-hp-field><label>Do not fill this out: <input name="bot-field"></label></p>
+      <div class="form-row">
+        <label for="pkgSelect">Package</label>
+        <select name="package" id="pkgSelect">
+          <option>Essential Scout Package ($25)</option>
+          <option>Premium Profile Showcase ($350)</option>
+          <option>Elite Illumination Experience ($850)</option>
+          <option>Not sure yet</option>
+        </select>
+      </div>
+      <div class="form-two">
+        <div class="form-row">
+          <label for="playerName">Player Name</label>
+          <input type="text" name="playerName" id="playerName" required>
+        </div>
+        <div class="form-row">
+          <label for="guardianName">Parent Or Guardian Name</label>
+          <input type="text" name="guardianName" id="guardianName" required>
+        </div>
+      </div>
+      <div class="form-two">
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" required>
+        </div>
+        <div class="form-row">
+          <label for="phone">Phone</label>
+          <input type="tel" name="phone" id="phone" required>
+        </div>
+      </div>
+      <div class="form-two">
+        <div class="form-row">
+          <label for="school">High School</label>
+          <input type="text" name="school" id="school">
+        </div>
+        <div class="form-row">
+          <label for="gradYear">Graduation Year</label>
+          <input type="text" name="gradYear" id="gradYear">
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="message">Anything Else We Should Know</label>
+        <textarea name="message" id="message"></textarea>
+      </div>
+      <button type="submit" class="btn primary form-submit">Send Inquiry</button>
+      <p class="form-status" id="formStatus" hidden></p>
+    </form>
+  </div>
+</div>
 
 <div class="divider-wrap">
   <div class="divider">
@@ -477,13 +601,21 @@
 </div>
 
 <section id="players">
-  <div class="wrap">
+  <span class="section-watermark"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ehLogo"></use></svg></span>
+  <div class="wrap" style="position:relative;z-index:1;">
     <div class="section-head center" data-reveal>
       <div class="eyebrow">Featured Players</div>
       <div class="display">A Look At Players On Elevate Her</div>
-      <p>Sample profiles shown for illustration. Her real profile will follow the same layout once her subscription goes live.</p>
+      <p>Aiyana Haynes is a real, live Tier 2 example. The other cards are sample profiles shown for illustration, in the same layout her real profile gets once her package is booked.</p>
     </div>
     <div class="players-grid">
+      <div class="card player-card" data-reveal data-tilt style="border-color:var(--teal);">
+        <span class="price-badge" style="position:static;display:inline-block;margin-bottom:14px;">Live Example, Tier 2</span>
+        <div class="player-avatar" style="background:linear-gradient(135deg, var(--teal), var(--magenta));">AH</div>
+        <div class="player-name">Aiyana Haynes</div>
+        <div class="player-position">Guard, Middleburg High School, Class of 2027</div>
+        <a class="player-link" href="https://aiyanahaynes27.netlify.app" target="_blank" rel="noopener">View Live Profile &#8599;</a>
+      </div>
       <div class="card player-card" data-reveal data-tilt>
         <div class="player-avatar" style="background:linear-gradient(135deg, var(--teal), var(--magenta));">MC</div>
         <div class="player-name">Maya Carter</div>
@@ -503,7 +635,7 @@
         <a class="player-link" href="#">View Profile &#8599;</a>
       </div>
     </div>
-    <p class="players-note">Want to see her profile here next season? <a href="#pricing" style="color:var(--teal);font-weight:600;">Start her subscription</a>.</p>
+    <p class="players-note">Want to see her profile here next season? <a href="#pricing" style="color:var(--teal);font-weight:600;">Choose her package</a>.</p>
   </div>
 </section>
 
@@ -586,6 +718,69 @@
       });
     }, {threshold:0.15, rootMargin:'0px 0px -8% 0px'});
     revealEls.forEach(function(el){ io.observe(el); });
+  }
+
+  /* package inquiry modal */
+  var modal = document.getElementById('inquiryModal');
+  var modalTitle = document.getElementById('modalTitle');
+  var modalClose = document.getElementById('modalClose');
+  var pkgSelect = document.getElementById('pkgSelect');
+  var inquiryForm = document.getElementById('inquiryForm');
+  var formStatus = document.getElementById('formStatus');
+  var lastFocused = null;
+
+  function openModal(packageLabel){
+    lastFocused = document.activeElement;
+    if(packageLabel){
+      modalTitle.textContent = packageLabel.replace(/\s*\(\$[0-9,]+\)$/, '');
+      Array.prototype.forEach.call(pkgSelect.options, function(opt){
+        if(opt.value === packageLabel) opt.selected = true;
+      });
+    }
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    var firstField = inquiryForm.querySelector('#playerName');
+    if(firstField) firstField.focus();
+  }
+  function closeModal(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if(lastFocused) lastFocused.focus();
+  }
+  Array.prototype.slice.call(document.querySelectorAll('[data-open-modal]')).forEach(function(btn){
+    btn.addEventListener('click', function(){ openModal(btn.getAttribute('data-open-modal')); });
+  });
+  if(modalClose) modalClose.addEventListener('click', closeModal);
+  if(modal) modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+
+  if(inquiryForm){
+    inquiryForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var data = new FormData(inquiryForm);
+      var encoded = new URLSearchParams(data).toString();
+      formStatus.hidden = false;
+      formStatus.className = 'form-status';
+      formStatus.textContent = 'Sending...';
+      fetch('/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: encoded
+      }).then(function(resp){
+        if(resp.ok){
+          formStatus.className = 'form-status success';
+          formStatus.textContent = 'Thanks! We received her info and will reach out to talk through the package.';
+          inquiryForm.reset();
+        } else {
+          throw new Error('Submit failed');
+        }
+      }).catch(function(){
+        formStatus.className = 'form-status error';
+        formStatus.textContent = 'Something went wrong sending that. Please try again, or email us directly.';
+      });
+    });
   }
 
   /* divider logo coins spin in once when scrolled into view */
