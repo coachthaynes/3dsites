@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tenise Haynes | Real Estate, Northeast Florida</title>
+<meta name="description" content="Tenise Haynes, licensed real estate agent serving Clay, Duval, and St. Johns Counties. Scroll through the house, room by room, to meet the agent, see services, marketing, results, and get in touch.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.8em%22 font-size=%2280%22>🏠</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380;9..144,470;9..144,560;9..144,650&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --ink:#241C16;
+    --ink-soft:#4B3F34;
+    --paper:#F6F1E7;
+    --paper-soft:#EEE6D4;
+    --paper-strong:#E3D9C2;
+    --brass:#9C7A3C;
+    --brass-soft:#C9A661;
+    --pine:#2B4736;
+    --wine:#5C2A2E;
+    --line: rgba(36,28,22,0.20);
+    --line-soft: rgba(36,28,22,0.10);
+    --shadow: rgba(36,28,22,0.18);
+    --panel-bg: rgba(246,241,231,0.94);
+    --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+    --font-body: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#F3EBDD;
+      --ink-soft:#D9CBB6;
+      --paper:#1B1611;
+      --paper-soft:#241D17;
+      --paper-strong:#2C231B;
+      --brass:#C9A661;
+      --brass-soft:#E0C68A;
+      --pine:#5C8770;
+      --wine:#9C5A5E;
+      --line: rgba(243,235,221,0.20);
+      --line-soft: rgba(243,235,221,0.10);
+      --shadow: rgba(0,0,0,0.45);
+      --panel-bg: rgba(27,22,17,0.9);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#F3EBDD;
+    --ink-soft:#D9CBB6;
+    --paper:#1B1611;
+    --paper-soft:#241D17;
+    --paper-strong:#2C231B;
+    --brass:#C9A661;
+    --brass-soft:#E0C68A;
+    --pine:#5C8770;
+    --wine:#9C5A5E;
+    --line: rgba(243,235,221,0.20);
+    --line-soft: rgba(243,235,221,0.10);
+    --shadow: rgba(0,0,0,0.45);
+    --panel-bg: rgba(27,22,17,0.9);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    background:var(--ink);
+    color:var(--ink);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:var(--font-display);
+    font-weight:560;
+    line-height:1.08;
+    margin:0 0 0.5em 0;
+    letter-spacing:-0.01em;
+    color:var(--ink);
+  }
+  p{margin:0 0 1em 0;color:var(--ink-soft);}
+  a{color:inherit;}
+  button{font-family:var(--font-body);}
+  ::selection{background:var(--brass-soft);color:var(--ink);}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:80;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:1rem 1.4rem;
+    background:linear-gradient(to bottom, rgba(20,15,10,0.55), rgba(20,15,10,0));
+    pointer-events:none;
+  }
+  .topbar *{pointer-events:auto;}
+  .brand{display:flex;align-items:center;gap:0.6rem;}
+  .monogram{
+    width:34px;height:34px;
+    border:1px solid #E0C68A;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-display);
+    font-size:0.85rem;
+    color:#F3EBDD;
+    flex-shrink:0;
+  }
+  .wordmark{font-family:var(--font-display);font-size:1rem;letter-spacing:0.06em;color:#F3EBDD;}
+  .topbar-contact{display:flex;gap:1.2rem;font-size:0.82rem;color:#EFE6D6;}
+  .topbar-contact a{text-decoration:none;border-bottom:1px solid rgba(243,235,221,0.4);}
+  .topbar-contact a:hover{border-color:#E0C68A;color:#E0C68A;}
+  @media (max-width:640px){.topbar-contact{display:none;}}
+
+  /* ---------- Hallway ---------- */
+  .room{
+    position:relative;
+    min-height:100dvh;
+    display:flex;
+    align-items:flex-end;
+    overflow:hidden;
+  }
+  .room-photo{
+    position:absolute;
+    inset:0;
+    background-size:cover;
+    background-position:center;
+    background-color:var(--paper-strong);
+    transform:scale(1.12);
+    transition:transform 1.6s cubic-bezier(0.16,1,0.3,1);
+    will-change:transform;
+  }
+  .room-photo--placeholder{
+    background:linear-gradient(160deg, var(--paper-strong) 0%, var(--paper-soft) 100%);
+  }
+  .placeholder-badge{
+    position:absolute;
+    top:5.2rem;
+    right:1.4rem;
+    z-index:2;
+    background:rgba(20,15,10,0.55);
+    color:#F3EBDD;
+    font-size:0.72rem;
+    letter-spacing:0.02em;
+    padding:0.4rem 0.8rem;
+    border:1px solid rgba(224,198,138,0.6);
+    border-radius:999px;
+  }
+  @media (max-width:640px){.placeholder-badge{top:4.6rem;right:1rem;font-size:0.66rem;}}
+  .room.in-view .room-photo{transform:scale(1);}
+  .room-scrim{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to top, rgba(20,15,10,0.82) 0%, rgba(20,15,10,0.38) 45%, rgba(20,15,10,0.5) 100%);
+  }
+  #foyer .room-scrim{background:linear-gradient(to top, rgba(20,15,10,0.75) 0%, rgba(20,15,10,0.28) 55%, rgba(20,15,10,0.55) 100%);}
+  .room-scrim--soft{background:linear-gradient(to top, rgba(227,217,194,0.75) 0%, rgba(227,217,194,0.25) 50%, rgba(227,217,194,0.45) 100%) !important;}
+
+  .room-content{
+    position:relative;
+    z-index:2;
+    width:100%;
+    padding:0 6vw 5rem 6vw;
+    display:flex;
+  }
+  #foyer .room-content{align-items:center;min-height:100dvh;padding-top:6rem;}
+
+  .room-panel{
+    background:var(--panel-bg);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-radius:6px;
+    padding:2.2rem 2.4rem;
+    max-width:600px;
+    width:100%;
+    max-height:calc(100dvh - 9rem);
+    overflow-y:auto;
+    box-shadow:0 30px 70px rgba(0,0,0,0.45);
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 0.7s ease 0.15s, transform 0.7s ease 0.15s;
+  }
+  .room.in-view .room-panel{opacity:1;transform:translateY(0);}
+  .room-panel--wide{max-width:720px;}
+
+  .room-label{font-size:0.78rem;letter-spacing:0.04em;color:var(--brass);margin-bottom:0.8rem;font-family:var(--font-body);}
+
+  /* ---------- Dot nav ---------- */
+  .dotnav{
+    position:fixed;
+    right:1.4rem;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:70;
+    display:flex;
+    flex-direction:column;
+    gap:0.85rem;
+  }
+  .dotnav button{
+    width:10px;height:10px;
+    border-radius:50%;
+    border:1px solid rgba(243,235,221,0.75);
+    background:transparent;
+    cursor:pointer;
+    padding:0;
+    transition:background 0.2s ease, transform 0.2s ease;
+  }
+  .dotnav button[aria-current="true"]{background:#E0C68A;border-color:#E0C68A;transform:scale(1.3);}
+  .dotnav button:hover{background:rgba(224,198,138,0.6);}
+  @media (max-width:640px){.dotnav{display:none;}}
+
+  .scroll-hint{
+    position:absolute;
+    bottom:2rem;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.4rem;
+    color:#F3EBDD;
+    font-size:0.78rem;
+    letter-spacing:0.04em;
+    background:none;
+    border:none;
+    cursor:pointer;
+    opacity:0.9;
+  }
+  .scroll-hint svg{animation:bob 1.8s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+  @media (prefers-reduced-motion: reduce){
+    .scroll-hint svg{animation:none;}
+    .room-photo, .room-panel{transition:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ---------- Foyer ---------- */
+  .foyer-grid h1{font-size:clamp(2rem, 4vw, 3.2rem);max-width:16ch;}
+  .foyer-grid p.lede{font-size:1.02rem;max-width:48ch;}
+  .cta-row{display:flex;gap:0.9rem;flex-wrap:wrap;margin-top:1.4rem;}
+  .btn{
+    display:inline-flex;align-items:center;gap:0.5rem;
+    padding:0.85rem 1.4rem;border-radius:2px;font-size:0.88rem;font-weight:600;
+    text-decoration:none;cursor:pointer;border:1px solid transparent;
+    transition:transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+  .btn-primary{background:var(--ink);color:var(--paper);}
+  .btn-primary:hover{transform:translateY(-2px);background:var(--wine);}
+  .btn-ghost{border-color:var(--ink);color:var(--ink);background:transparent;}
+  .btn-ghost:hover{transform:translateY(-2px);border-color:var(--brass);color:var(--brass);}
+
+  .plaque-rail{
+    margin-top:1.8rem;display:grid;grid-template-columns:repeat(3,1fr);
+    gap:0.8rem 1.2rem;border-top:1px solid var(--line);padding-top:1.1rem;
+  }
+  .plaque .num{font-family:var(--font-display);font-size:1.35rem;color:var(--brass);}
+  .plaque .label{font-size:0.7rem;color:var(--ink-soft);letter-spacing:0.02em;}
+
+  /* ---------- Living room ---------- */
+  .agent-thumb{
+    display:flex;align-items:center;gap:1rem;margin-bottom:1.3rem;
+  }
+  .portrait-frame{
+    width:72px;height:72px;flex-shrink:0;
+    border:1px solid var(--brass);padding:4px;border-radius:50%;
+  }
+  .portrait-inner{
+    width:100%;height:100%;border-radius:50%;
+    border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    background:var(--paper-soft);
+    overflow:hidden;
+  }
+  .portrait-inner img{width:100%;height:100%;object-fit:cover;object-position:center 20%;}
+  .agent-thumb-text{font-size:0.76rem;color:var(--ink-soft);max-width:18ch;}
+  .credential-list{
+    list-style:none;margin:1.2rem 0 0 0;padding:0;
+    display:grid;grid-template-columns:1fr 1fr;gap:0.6rem 1.1rem;
+    border-top:1px solid var(--line);padding-top:1.1rem;
+  }
+  .credential-list li{font-size:0.84rem;color:var(--ink-soft);padding-left:1rem;position:relative;}
+  .credential-list li::before{content:"";position:absolute;left:0;top:0.5em;width:6px;height:1px;background:var(--brass);}
+
+  /* ---------- Kitchen (services) ---------- */
+  .service-stack{display:flex;flex-direction:column;gap:1rem;margin-top:1.6rem;}
+  .service-card{border:1px solid var(--line);padding:1.1rem 1.2rem;background:var(--paper-soft);border-radius:4px;}
+  .service-card h3{font-size:1.05rem;margin-bottom:0.35rem;}
+  .service-card p{font-size:0.86rem;margin-bottom:0.6rem;}
+  .service-card a{font-size:0.8rem;font-weight:600;color:var(--brass);text-decoration:none;border-bottom:1px solid var(--brass);cursor:pointer;}
+
+  /* ---------- Office (marketing) ---------- */
+  .marketing-list{list-style:none;margin:1.4rem 0 0 0;padding:0;display:flex;flex-direction:column;gap:1.1rem;}
+  .marketing-list li{border-bottom:1px solid var(--line);padding-bottom:1rem;}
+  .marketing-list h3{font-size:1rem;margin-bottom:0.3rem;}
+  .marketing-list p{font-size:0.85rem;margin:0;}
+  .cert-wall{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-top:1.4rem;}
+  .cert{border:1px solid var(--brass);padding:0.9rem;text-align:center;background:var(--paper);border-radius:4px;}
+  .cert .num{font-family:var(--font-display);font-size:1.4rem;color:var(--brass);}
+  .cert .label{font-size:0.68rem;color:var(--ink-soft);margin-top:0.25rem;}
+
+  /* ---------- Gallery (testimonials) ---------- */
+  .testimonial-stack{display:flex;flex-direction:column;gap:1.1rem;margin-top:1.4rem;}
+  .frame{border:1px solid var(--line);padding:1.2rem 1.3rem;background:var(--paper-soft);border-radius:4px;}
+  .frame blockquote{margin:0 0 0.7rem 0;font-family:var(--font-display);font-size:0.98rem;font-style:normal;line-height:1.4;}
+  .frame cite{font-style:normal;font-size:0.78rem;color:var(--brass);display:block;}
+  .frame cite .role{color:var(--ink-soft);}
+
+  /* ---------- Porch (contact) ---------- */
+  .field{display:flex;flex-direction:column;gap:0.3rem;margin-bottom:0.9rem;}
+  .field label{font-size:0.76rem;color:var(--ink-soft);}
+  .field input, .field select, .field textarea{
+    font-family:var(--font-body);font-size:0.9rem;padding:0.6rem 0.7rem;
+    border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:2px;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{outline:2px solid var(--brass);outline-offset:1px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;}
+  .porch-note{font-size:0.82rem;color:var(--brass);margin-top:0.7rem;}
+  .porch-contact-block{margin-top:1.3rem;padding-top:1.1rem;border-top:1px solid var(--line);}
+  .porch-contact-block a{display:block;font-family:var(--font-display);font-size:1.15rem;text-decoration:none;margin-bottom:0.25rem;}
+  .porch-contact-block a:hover{color:var(--brass);}
+  .porch-footnote{margin-top:0.9rem;font-size:0.76rem;color:var(--ink-soft);}
+
+  @media (max-width:640px){
+    .field-row{grid-template-columns:1fr;}
+    .room-content{padding:0 5vw 4rem 5vw;}
+    .room-panel{padding:1.7rem 1.6rem;max-height:calc(100dvh - 6rem);}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="monogram">TH</div>
+    <div class="wordmark">TENISE HAYNES</div>
+  </div>
+  <div class="topbar-contact">
+    <a href="tel:9042900261">904 290 0261</a>
+    <a href="mailto:realtortenise@gmail.com">realtortenise@gmail.com</a>
+  </div>
+</div>
+
+<nav class="dotnav" id="dotnav" aria-label="Jump to a room"></nav>
+
+<main class="hallway" id="hallway">
+
+  <!-- FOYER -->
+  <section class="room" id="foyer" data-room-name="Foyer">
+    <div class="room-photo room-photo--placeholder" data-photo="images/foyer.jpg">
+      <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMax slice" width="100%" height="100%" aria-hidden="true">
+        <path d="M 900 640 L 900 360 Q 900 280 980 280 Q 1060 280 1060 360 L 1060 640 Z" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+        <circle cx="1030" cy="470" r="4" fill="var(--brass)"/>
+        <path d="M 60 640 L 60 200 L 260 200 L 260 640" fill="none" stroke="var(--line)" stroke-width="1"/>
+        <line x1="160" y1="200" x2="160" y2="640" stroke="var(--line)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="placeholder-badge">Real foyer photo coming soon</div>
+    <div class="room-scrim room-scrim--soft"></div>
+    <div class="room-content">
+      <div class="room-panel foyer-grid">
+        <div class="room-label">Welcome home</div>
+        <h1>An agent who knows what your home is really worth.</h1>
+        <p class="lede">A decade managing more than 400 rental units and multifamily properties means I do not guess at value. I know what makes a home worth more, and what to watch for. That is the edge you get when you are buying or selling with me.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#porch">Get a free home valuation</a>
+          <a class="btn btn-ghost" href="#living">Walk through the home</a>
+        </div>
+        <div class="plaque-rail">
+          <div class="plaque"><div class="num">12</div><div class="label">Years licensed</div></div>
+          <div class="plaque"><div class="num">100+</div><div class="label">Transactions closed</div></div>
+          <div class="plaque"><div class="num">400+</div><div class="label">Units overseen</div></div>
+          <div class="plaque"><div class="num">60</div><div class="label">Unit community managed</div></div>
+          <div class="plaque"><div class="num">3</div><div class="label">Counties served</div></div>
+          <div class="plaque"><div class="num">NE FL</div><div class="label">Clay, Duval, St. Johns</div></div>
+        </div>
+      </div>
+    </div>
+    <button class="scroll-hint" type="button" data-scroll-to="living" aria-label="Scroll to keep walking through the house">
+      Scroll to keep walking
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+  </section>
+
+  <!-- LIVING ROOM -->
+  <section class="room" id="living" data-room-name="Living room">
+    <div class="room-photo room-photo--placeholder" data-photo="images/living-room.jpg">
+      <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMax slice" width="100%" height="100%" aria-hidden="true">
+        <rect x="820" y="500" width="320" height="140" rx="10" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+        <line x1="900" y1="500" x2="900" y2="640" stroke="var(--line)" stroke-width="1"/>
+        <line x1="980" y1="500" x2="980" y2="640" stroke="var(--line)" stroke-width="1"/>
+        <line x1="1060" y1="500" x2="1060" y2="640" stroke="var(--line)" stroke-width="1"/>
+        <line x1="60" y1="320" x2="60" y2="560" stroke="var(--line)" stroke-width="1.5"/>
+        <path d="M 20 320 L 100 320" stroke="var(--line)" stroke-width="1.5"/>
+        <path d="M 20 320 Q 60 260 100 320" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="placeholder-badge">Real living room photo coming soon</div>
+    <div class="room-scrim room-scrim--soft"></div>
+    <div class="room-content">
+      <div class="room-panel">
+        <div class="agent-thumb">
+          <div class="portrait-frame">
+            <div class="portrait-inner">
+              <img src="images/agent-headshot.jpg" alt="Tenise Haynes">
+            </div>
+          </div>
+          <div class="agent-thumb-text">Tenise Haynes, Licensed Real Estate Agent</div>
+        </div>
+        <div class="room-label">Meet your agent</div>
+        <h2>Hi, I'm Tenise.</h2>
+        <p>I have spent 12 years licensed and closed more than 100 transactions helping Northeast Florida homeowners buy and sell with confidence, backed by a decade of hands on property and portfolio experience most agents do not have.</p>
+        <p>Most agents look at the purchase price. I look at how a property performs, because I have spent over a decade running the operations side too: property management, multifamily communities, rehabs, and scaling rental portfolios. Sellers get pricing backed by real market and rehab insight. Buyers get someone who can spot hidden costs before they become a problem. And investors get a partner who has actually managed the assets, not just closed on them.</p>
+        <ul class="credential-list">
+          <li>Property management background</li>
+          <li>Multifamily operations experience</li>
+          <li>60 unit community managed hands on</li>
+          <li>Business Development Manager over 400+ properties</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- KITCHEN -->
+  <section class="room" id="kitchen" data-room-name="Kitchen">
+    <div class="room-photo room-photo--placeholder" data-photo="images/kitchen.jpg">
+      <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" aria-hidden="true">
+        <rect x="380" y="560" width="420" height="100" rx="4" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+        <circle cx="440" cy="520" r="8" fill="none" stroke="var(--brass)" stroke-width="1.5"/>
+        <circle cx="480" cy="520" r="8" fill="none" stroke="var(--brass)" stroke-width="1.5"/>
+        <circle cx="700" cy="520" r="8" fill="none" stroke="var(--brass)" stroke-width="1.5"/>
+        <circle cx="740" cy="520" r="8" fill="none" stroke="var(--brass)" stroke-width="1.5"/>
+        <circle cx="500" cy="300" r="18" fill="none" stroke="var(--line)" stroke-width="1"/>
+        <line x1="500" y1="220" x2="500" y2="282" stroke="var(--line)" stroke-width="1"/>
+        <circle cx="600" cy="260" r="18" fill="none" stroke="var(--line)" stroke-width="1"/>
+        <line x1="600" y1="180" x2="600" y2="242" stroke="var(--line)" stroke-width="1"/>
+        <circle cx="700" cy="300" r="18" fill="none" stroke="var(--line)" stroke-width="1"/>
+        <line x1="700" y1="220" x2="700" y2="282" stroke="var(--line)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="placeholder-badge">Real kitchen photo coming soon</div>
+    <div class="room-scrim room-scrim--soft"></div>
+    <div class="room-content">
+      <div class="room-panel room-panel--wide">
+        <div class="room-label">What I do</div>
+        <h2>Buy, sell, or invest, with someone who has run the operations side too.</h2>
+        <div class="service-stack">
+          <div class="service-card">
+            <h3>Sell your home</h3>
+            <p>Priced using real market data and staging insight, not guesswork. Built to help you maximize your equity and move on your timeline.</p>
+            <a href="#porch">Get your free valuation</a>
+          </div>
+          <div class="service-card">
+            <h3>Buy with an edge</h3>
+            <p>Renovation and property operations experience means I can spot hidden costs and real value before you make an offer.</p>
+            <a href="#porch">Start your search</a>
+          </div>
+          <div class="service-card">
+            <h3>Grow a portfolio</h3>
+            <p>Off market deals, rental performance analysis, and exit strategy from someone who has scaled portfolios firsthand.</p>
+            <a href="#porch">Talk investment strategy</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OFFICE -->
+  <section class="room" id="office" data-room-name="Office">
+    <div class="room-photo room-photo--placeholder" data-photo="images/office.jpg">
+      <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" aria-hidden="true">
+        <rect x="900" y="480" width="260" height="30" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+        <line x1="920" y1="510" x2="920" y2="660" stroke="var(--line)" stroke-width="1.5"/>
+        <line x1="1140" y1="510" x2="1140" y2="660" stroke="var(--line)" stroke-width="1.5"/>
+        <rect x="900" y="220" width="260" height="220" fill="none" stroke="var(--line)" stroke-width="1"/>
+        <line x1="900" y1="270" x2="1160" y2="270" stroke="var(--line-soft)" stroke-width="1"/>
+        <line x1="900" y1="320" x2="1160" y2="320" stroke="var(--line-soft)" stroke-width="1"/>
+        <line x1="900" y1="370" x2="1160" y2="370" stroke="var(--line-soft)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="placeholder-badge">Real office photo coming soon</div>
+    <div class="room-scrim room-scrim--soft"></div>
+    <div class="room-content">
+      <div class="room-panel room-panel--wide">
+        <div class="room-label">Beyond the sale</div>
+        <h2>Marketing that gets your home seen.</h2>
+        <p>A great price only works if the right buyers see it. Here is how I market every listing, and how I can help other agents do the same.</p>
+        <ul class="marketing-list">
+          <li>
+            <h3>Listing marketing</h3>
+            <p>Professional photography coordination, targeted social promotion, and a plan built around what makes your home stand out.</p>
+          </li>
+          <li>
+            <h3>Custom property pages</h3>
+            <p>Serious listings get their own simple, mobile ready page, not just an MLS entry buried in search results.</p>
+          </li>
+          <li>
+            <h3>Web design for agents</h3>
+            <p>I also design lead generation websites for other real estate professionals who want a site that actually converts.</p>
+          </li>
+        </ul>
+        <div class="room-label" style="margin-top:1.4rem;">On the wall</div>
+        <div class="cert-wall">
+          <div class="cert"><div class="num">100+</div><div class="label">Sales closed in 12 years licensed</div></div>
+          <div class="cert"><div class="num">400+</div><div class="label">Properties overseen as BDM</div></div>
+          <div class="cert"><div class="num">60</div><div class="label">Unit community, hands on managed</div></div>
+          <div class="cert"><div class="num">3</div><div class="label">Counties, Clay Duval St Johns</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="room" id="gallery" data-room-name="Gallery">
+    <div class="room-photo room-photo--placeholder" data-photo="images/gallery.jpg">
+      <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" aria-hidden="true">
+        <line x1="0" y1="230" x2="1200" y2="230" stroke="var(--line-soft)" stroke-width="1"/>
+        <rect x="120" y="300" width="180" height="120" fill="none" stroke="var(--line-soft)" stroke-width="1"/>
+        <rect x="500" y="280" width="180" height="140" fill="none" stroke="var(--line-soft)" stroke-width="1"/>
+        <rect x="900" y="300" width="180" height="120" fill="none" stroke="var(--line-soft)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="placeholder-badge">Real gallery photo coming soon</div>
+    <div class="room-scrim room-scrim--soft"></div>
+    <div class="room-content">
+      <div class="room-panel">
+        <div class="room-label">Results</div>
+        <h2>What clients say</h2>
+        <div class="testimonial-stack">
+          <div class="frame">
+            <blockquote>Most agents just look at the purchase price. Tenise spotted operational red flags and hidden expenses before we made an offer.</blockquote>
+            <cite>Gustavo T. <span class="role">Real Estate Investor</span></cite>
+          </div>
+          <div class="frame">
+            <blockquote>Her knowledge of large scale property operations is obvious from day one. She guided us toward opportunities that fit our financial goals.</blockquote>
+            <cite>Pablo R. <span class="role">Real Estate Investor</span></cite>
+          </div>
+          <div class="frame">
+            <blockquote>She treats my buildings like her own, and the communication is always straightforward and proactive.</blockquote>
+            <cite>Sami G. <span class="role">Multi Property Owner</span></cite>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORCH -->
+  <section class="room" id="porch" data-room-name="Porch">
+    <div class="room-photo room-photo--placeholder" data-photo="images/porch.jpg">
+      <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" aria-hidden="true">
+        <line x1="60" y1="700" x2="60" y2="200" stroke="var(--line)" stroke-width="1.5"/>
+        <line x1="60" y1="260" x2="1140" y2="260" stroke="var(--line)" stroke-width="1.5"/>
+        <line x1="1140" y1="700" x2="1140" y2="200" stroke="var(--line)" stroke-width="1.5"/>
+        <line x1="900" y1="260" x2="880" y2="420" stroke="var(--line-soft)" stroke-width="1"/>
+        <line x1="1020" y1="260" x2="1040" y2="420" stroke="var(--line-soft)" stroke-width="1"/>
+        <rect x="820" y="420" width="280" height="30" rx="6" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+        <line x1="100" y1="700" x2="100" y2="560" stroke="var(--line-soft)" stroke-width="1"/>
+        <line x1="140" y1="700" x2="140" y2="560" stroke="var(--line-soft)" stroke-width="1"/>
+        <line x1="180" y1="700" x2="180" y2="560" stroke="var(--line-soft)" stroke-width="1"/>
+        <line x1="220" y1="700" x2="220" y2="560" stroke="var(--line-soft)" stroke-width="1"/>
+        <line x1="60" y1="560" x2="260" y2="560" stroke="var(--line-soft)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="placeholder-badge">Real porch photo coming soon</div>
+    <div class="room-scrim room-scrim--soft"></div>
+    <div class="room-content">
+      <div class="room-panel">
+        <div class="agent-thumb">
+          <div class="portrait-frame">
+            <div class="portrait-inner">
+              <img src="images/agent-headshot.jpg" alt="Tenise Haynes">
+            </div>
+          </div>
+          <div class="agent-thumb-text">Tenise Haynes, Licensed Real Estate Agent</div>
+        </div>
+        <div class="room-label">Get in touch</div>
+        <h2>Let's talk about your next move.</h2>
+        <p>Whether you are selling, buying, or growing a rental portfolio, tell me what you are working with and I will follow up personally.</p>
+        <form id="porch-form">
+          <div class="field-row">
+            <div class="field"><label for="first">First name</label><input id="first" name="first" type="text" required></div>
+            <div class="field"><label for="last">Last name</label><input id="last" name="last" type="text" required></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" required></div>
+            <div class="field"><label for="phone">Phone</label><input id="phone" name="phone" type="tel"></div>
+          </div>
+          <div class="field">
+            <label for="interest">I'm looking to</label>
+            <select id="interest" name="interest">
+              <option>Sell a home</option>
+              <option>Buy a home</option>
+              <option>Invest or grow a portfolio</option>
+              <option>Get a property management quote</option>
+              <option>Just exploring options</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="3"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Send and get my free valuation</button>
+          <div class="porch-note" id="porch-confirm" hidden>Your message is ready in your email app. Send it and I will respond within one business day.</div>
+        </form>
+        <div class="porch-contact-block">
+          <a href="tel:9042900261">904 290 0261</a>
+          <a href="mailto:realtortenise@gmail.com">realtortenise@gmail.com</a>
+        </div>
+        <div class="porch-footnote">
+          Serving Clay, Duval, and St. Johns Counties, Florida.<br>
+          © 2026 Tenise Haynes, Licensed Real Estate Agent
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  document.querySelectorAll('.room-photo[data-photo]').forEach(function(photoEl){
+    var src = photoEl.getAttribute('data-photo');
+    var probe = new Image();
+    probe.onload = function(){
+      photoEl.style.backgroundImage = "url('" + src + "')";
+      photoEl.classList.remove('room-photo--placeholder');
+      var placeholderArt = photoEl.querySelector('svg');
+      if(placeholderArt) placeholderArt.remove();
+      var room = photoEl.closest('.room');
+      var scrim = room.querySelector('.room-scrim');
+      var badge = room.querySelector('.placeholder-badge');
+      if(scrim) scrim.classList.remove('room-scrim--soft');
+      if(badge) badge.remove();
+    };
+    probe.src = src;
+  });
+
+  var rooms = Array.prototype.slice.call(document.querySelectorAll('.room'));
+  var dotnav = document.getElementById('dotnav');
+  var dots = [];
+
+  rooms.forEach(function(room){
+    var dot = document.createElement('button');
+    dot.type = 'button';
+    dot.setAttribute('aria-label', 'Go to ' + room.getAttribute('data-room-name'));
+    dot.addEventListener('click', function(){
+      room.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    dotnav.appendChild(dot);
+    dots.push(dot);
+  });
+
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        var idx = rooms.indexOf(entry.target);
+        dots.forEach(function(d,i){
+          if(i === idx) d.setAttribute('aria-current','true');
+          else d.removeAttribute('aria-current');
+        });
+        history.replaceState(null, '', '#' + entry.target.id);
+      }
+    });
+  }, {threshold:0.55});
+
+  rooms.forEach(function(room){ observer.observe(room); });
+
+  document.querySelectorAll('[data-scroll-to]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.getElementById(btn.getAttribute('data-scroll-to'));
+      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  var startHash = (location.hash || '').replace('#', '');
+  var startRoom = document.getElementById(startHash);
+  if(startRoom){
+    var htmlEl = document.documentElement;
+    var prevBehavior = htmlEl.style.scrollBehavior;
+    htmlEl.style.scrollBehavior = 'auto';
+    window.scrollTo(0, startRoom.getBoundingClientRect().top + window.pageYOffset);
+    htmlEl.style.scrollBehavior = prevBehavior;
+  }
+
+  var form = document.getElementById('porch-form');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = new FormData(form);
+    var name = (data.get('first') || '') + ' ' + (data.get('last') || '');
+    var subject = 'New inquiry from ' + name.trim();
+    var body = 'Name: ' + name.trim() +
+      '\nEmail: ' + (data.get('email') || '') +
+      '\nPhone: ' + (data.get('phone') || '') +
+      '\nLooking to: ' + (data.get('interest') || '') +
+      '\nMessage: ' + (data.get('message') || '');
+    window.location.href = 'mailto:realtortenise@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    document.getElementById('porch-confirm').hidden = false;
+  });
+})();
+</script>
+
+</body>
+</html>
