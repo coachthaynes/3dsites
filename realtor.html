@@ -271,7 +271,9 @@
     border:1px solid var(--line);
     display:flex;align-items:center;justify-content:center;
     background:var(--paper-soft);
+    overflow:hidden;
   }
+  .portrait-inner img{width:100%;height:100%;object-fit:cover;object-position:center 20%;}
   .agent-thumb-text{font-size:0.76rem;color:var(--ink-soft);max-width:18ch;}
   .credential-list{
     list-style:none;margin:1.2rem 0 0 0;padding:0;
@@ -401,13 +403,10 @@
         <div class="agent-thumb">
           <div class="portrait-frame">
             <div class="portrait-inner">
-              <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true">
-                <circle cx="32" cy="22" r="14" fill="none" stroke="var(--brass)" stroke-width="1.5"/>
-                <path d="M 10 58 C 10 40 54 40 54 58" fill="none" stroke="var(--brass)" stroke-width="1.5"/>
-              </svg>
+              <img src="images/agent-headshot.jpg" alt="Tenise Haynes">
             </div>
           </div>
-          <div class="agent-thumb-text">Tenise's photo goes here</div>
+          <div class="agent-thumb-text">Tenise Haynes, Licensed Real Estate Agent</div>
         </div>
         <div class="room-label">Meet your agent</div>
         <h2>Hi, I'm Tenise.</h2>
@@ -567,6 +566,14 @@
     <div class="room-scrim room-scrim--soft"></div>
     <div class="room-content">
       <div class="room-panel">
+        <div class="agent-thumb">
+          <div class="portrait-frame">
+            <div class="portrait-inner">
+              <img src="images/agent-headshot.jpg" alt="Tenise Haynes">
+            </div>
+          </div>
+          <div class="agent-thumb-text">Tenise Haynes, Licensed Real Estate Agent</div>
+        </div>
         <div class="room-label">Get in touch</div>
         <h2>Let's talk about your next move.</h2>
         <p>Whether you are selling, buying, or growing a rental portfolio, tell me what you are working with and I will follow up personally.</p>
