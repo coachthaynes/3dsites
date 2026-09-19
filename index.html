@@ -90,9 +90,19 @@
   .hero{
     position:relative;
     display:grid;grid-template-columns:1.1fr 0.9fr;gap:40px;align-items:center;
-    padding:64px 0 60px;
+    padding:64px 20px 60px;
+    min-height:640px;
+    overflow:hidden;
+    margin:0 -20px;
   }
-  .hero-inner{max-width:640px;}
+  .hero-media{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+  .hero-media img{position:absolute;top:-12%;left:0;width:100%;height:130%;object-fit:cover;object-position:center 62%;will-change:transform,opacity;}
+  .hero-veil{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg, rgba(10,13,12,0.35) 0%, rgba(10,13,12,0.68) 55%, var(--bg) 97%);}
+  .hero-inner{position:relative;z-index:2;max-width:640px;}
+  .hero-ball{position:relative;z-index:2;}
+  @media (max-width:900px){
+    .hero{min-height:auto;}
+  }
   .hero h1{font-size:clamp(32px,4.6vw,52px);color:var(--white);margin-top:16px;}
   .hero-sub{margin:18px 0 0;font-size:16.5px;color:var(--dim);max-width:56ch;line-height:1.7;}
   .hero-tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px;}
@@ -228,6 +238,10 @@
 </nav>
 
 <div class="hero" id="top">
+  <div class="hero-media" aria-hidden="true">
+    <img src="assets/img/hero-bg.webp" id="heroBgImg" alt="">
+  </div>
+  <div class="hero-veil"></div>
   <div class="hero-inner">
     <div class="eyebrow">Elementary &amp; Middle School Basketball, Clay County FL</div>
     <h1 class="display">Not The Most Skilled Player On The Team Yet? Good. That Is Exactly Who CCBA Is Built For.</h1>
@@ -242,7 +256,7 @@
       <a class="btn ghost" href="#about">About CCBA</a>
     </div>
   </div>
-  <div>
+  <div class="hero-ball">
     <div class="bounce-stage" id="bounceStage">
       <div class="bounce-court"></div>
       <div class="bounce-floor"></div>
@@ -433,6 +447,23 @@
   }
   document.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
+
+  var heroEl = document.getElementById('top');
+  var heroImg = document.getElementById('heroBgImg');
+  if(heroEl && heroImg){
+    var parallaxFactor = reduceMotion ? 0 : 0.3;
+    function updateHeroParallax(){
+      var rect = heroEl.getBoundingClientRect();
+      var heroHeight = heroEl.offsetHeight || 1;
+      var scrolled = Math.max(-rect.top, 0);
+      var fadeProgress = Math.min(scrolled / heroHeight, 1);
+      heroImg.style.transform = 'translateY(' + (scrolled * parallaxFactor) + 'px)';
+      heroImg.style.opacity = String(1 - fadeProgress);
+    }
+    document.addEventListener('scroll', updateHeroParallax, {passive:true});
+    window.addEventListener('resize', updateHeroParallax);
+    updateHeroParallax();
+  }
 
   var revealEls = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
   if(!reduceMotion && 'IntersectionObserver' in window){
