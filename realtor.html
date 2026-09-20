@@ -303,6 +303,7 @@
   .contact-links a:hover{color:var(--blue-600);}
   .contact-note{font-size:0.85rem;color:var(--blue-600);margin-top:0.8rem;display:none;}
   .contact-note.active{display:block;}
+  .contact-note--error{color:#B91C1C;}
   @media (max-width:820px){.contact-grid{grid-template-columns:1fr;}.field-row{grid-template-columns:1fr;}}
 
   footer.site-footer{padding:2.4rem 0 3rem 0;text-align:center;font-size:0.8rem;color:var(--ink-soft);}
@@ -617,7 +618,9 @@
         <span class="eyebrow">Get in touch</span>
         <h2>Let's talk about your next move.</h2>
         <p>Whether you are selling, buying, or growing a rental portfolio, tell me what you are working with and I will follow up personally.</p>
-        <form id="porch-form">
+        <form id="porch-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="contact">
+          <p hidden><label>Don't fill this out if you're human: <input name="bot-field"></label></p>
           <div class="field-row">
             <div class="field"><label for="first">First name</label><input id="first" name="first" type="text" required></div>
             <div class="field"><label for="last">Last name</label><input id="last" name="last" type="text" required></div>
@@ -641,7 +644,8 @@
             <input id="message" name="message" type="text" placeholder="Tell me a bit about what you need">
           </div>
           <button type="submit" class="btn btn-primary">Send message</button>
-          <div class="contact-note" id="porch-confirm">Your message is ready in your email app. Send it and I will respond within one business day.</div>
+          <div class="contact-note" id="porch-confirm">Thanks, your message is on its way. I will respond within one business day.</div>
+          <div class="contact-note contact-note--error" id="porch-error">Something went wrong sending that. Please call or email me directly using the info to the right.</div>
         </form>
       </div>
       <div class="contact-side">
@@ -908,20 +912,35 @@
     if(interestField){ interestField.value = 'Sell a home'; }
   });
 
-  /* Contact form mailto */
+  /* Contact form: submit to Netlify Forms so it can trigger Zapier */
   var form = document.getElementById('porch-form');
+  var porchConfirm = document.getElementById('porch-confirm');
+  var porchError = document.getElementById('porch-error');
+
+  function encodeFormData(data){
+    return new URLSearchParams(data).toString();
+  }
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
+    porchConfirm.classList.remove('active');
+    porchError.classList.remove('active');
     var data = new FormData(form);
-    var name = (data.get('first') || '') + ' ' + (data.get('last') || '');
-    var subject = 'New inquiry from ' + name.trim();
-    var body = 'Name: ' + name.trim() +
-      '\nEmail: ' + (data.get('email') || '') +
-      '\nPhone: ' + (data.get('phone') || '') +
-      '\nLooking to: ' + (data.get('interest') || '') +
-      '\nMessage: ' + (data.get('message') || '');
-    window.location.href = 'mailto:realtortenise@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-    document.getElementById('porch-confirm').classList.add('active');
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: encodeFormData(data)
+    }).then(function(response){
+      if(response.ok){
+        porchConfirm.classList.add('active');
+        form.reset();
+      } else {
+        porchError.classList.add('active');
+      }
+    }).catch(function(){
+      porchError.classList.add('active');
+    });
   });
 
 })();
