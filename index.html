@@ -266,6 +266,7 @@
   .modal-eyebrow{font-family:'IBM Plex Mono',monospace;color:var(--teal);font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;}
   .modal-title{font-family:'Fredoka',sans-serif;font-size:24px;font-weight:600;color:var(--white);margin-top:8px;}
   .modal-sub{color:var(--dim);font-size:13.5px;margin-top:8px;line-height:1.5;}
+  .hp-field{position:absolute;left:-9999px;}
   .form-row{margin-top:16px;display:flex;flex-direction:column;gap:6px;}
   .form-row label{font-size:12.5px;font-weight:600;color:var(--dim);}
   .form-row input,.form-row select,.form-row textarea{
@@ -527,7 +528,11 @@
     <div class="modal-eyebrow">Package Inquiry</div>
     <div class="modal-title" id="modalTitle">Tell Us About Her</div>
     <p class="modal-sub">Send her info and we will reach out to talk through the package before anything is booked or paid for.</p>
-    <form name="package-inquiry" id="inquiryForm">
+    <form name="package-inquiry" id="inquiryForm" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="package-inquiry">
+      <p class="hp-field" aria-hidden="true">
+        <label>Leave this field blank <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+      </p>
       <div class="form-row">
         <label for="pkgSelect">Package</label>
         <select name="package" id="pkgSelect">
@@ -784,29 +789,56 @@
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
 
   var INQUIRY_EMAIL = 'coachthaynes@gmail.com';
+  function encodeFormData(data){
+    var pairs = [];
+    data.forEach(function(value, key){
+      pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+    });
+    return pairs.join('&');
+  }
+  function mailtoFallback(data){
+    var pkg = data.get('package') || 'Not sure yet';
+    var lines = [
+      'Package: ' + pkg,
+      'Player Name: ' + (data.get('playerName') || ''),
+      'Parent Or Guardian Name: ' + (data.get('guardianName') || ''),
+      'Email: ' + (data.get('email') || ''),
+      'Phone: ' + (data.get('phone') || ''),
+      'High School: ' + (data.get('school') || ''),
+      'Graduation Year: ' + (data.get('gradYear') || ''),
+      'Message: ' + (data.get('message') || '')
+    ];
+    var subject = 'Elevate Her Inquiry: ' + pkg;
+    return 'mailto:' + INQUIRY_EMAIL
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(lines.join('\n'));
+  }
   if(inquiryForm){
     inquiryForm.addEventListener('submit', function(e){
       e.preventDefault();
       var data = new FormData(inquiryForm);
-      var pkg = data.get('package') || 'Not sure yet';
-      var lines = [
-        'Package: ' + pkg,
-        'Player Name: ' + (data.get('playerName') || ''),
-        'Parent Or Guardian Name: ' + (data.get('guardianName') || ''),
-        'Email: ' + (data.get('email') || ''),
-        'Phone: ' + (data.get('phone') || ''),
-        'High School: ' + (data.get('school') || ''),
-        'Graduation Year: ' + (data.get('gradYear') || ''),
-        'Message: ' + (data.get('message') || '')
-      ];
-      var subject = 'Elevate Her Inquiry: ' + pkg;
-      var mailto = 'mailto:' + INQUIRY_EMAIL
-        + '?subject=' + encodeURIComponent(subject)
-        + '&body=' + encodeURIComponent(lines.join('\n'));
+      var submitBtn = inquiryForm.querySelector('.form-submit');
+      if(submitBtn) submitBtn.disabled = true;
       formStatus.hidden = false;
-      formStatus.className = 'form-status success';
-      formStatus.textContent = 'Opening your email app to send this to ' + INQUIRY_EMAIL + '. If nothing opens, email us directly at ' + INQUIRY_EMAIL + '.';
-      window.location.href = mailto;
+      formStatus.className = 'form-status';
+      formStatus.textContent = 'Sending your inquiry...';
+
+      fetch('/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: encodeFormData(data)
+      }).then(function(response){
+        if(!response.ok) throw new Error('form submission failed');
+        formStatus.className = 'form-status success';
+        formStatus.textContent = 'Thanks! We received your inquiry and will reach out soon.';
+        inquiryForm.reset();
+        if(submitBtn) submitBtn.disabled = false;
+      }).catch(function(){
+        formStatus.className = 'form-status success';
+        formStatus.textContent = 'Opening your email app to send this to ' + INQUIRY_EMAIL + '. If nothing opens, email us directly at ' + INQUIRY_EMAIL + '.';
+        window.location.href = mailtoFallback(data);
+        if(submitBtn) submitBtn.disabled = false;
+      });
     });
   }
 
