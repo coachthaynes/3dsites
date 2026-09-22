@@ -150,6 +150,15 @@
   .vitals-row span:first-child{color:var(--dim);}
   .vitals-row span:last-child{font-weight:700;color:var(--white);}
 
+  /* ACCOLADES */
+  .accolade-list{display:flex;flex-direction:column;gap:12px;}
+  .accolade-item{
+    display:flex;align-items:flex-start;gap:14px;
+    border:1px solid var(--line);border-radius:10px;padding:16px 18px;
+    font-size:15px;font-weight:600;color:var(--white);line-height:1.5;
+  }
+  .accolade-mark{color:var(--red);font-size:17px;line-height:1.4;flex-shrink:0;}
+
   /* ON THE COURT */
   .feature-card{border:1px solid var(--line);border-radius:12px;padding:30px 28px;margin-bottom:20px;}
   .feature-card h3{font-size:clamp(26px,4vw,36px);margin:8px 0 12px;color:var(--white);}
@@ -284,6 +293,7 @@
     <a href="#top" class="brand">AIYANA HAYNES <span class="num">#20</span></a>
     <div class="nav-links">
       <a href="#about">About</a>
+      <a href="#accolades">Accolades</a>
       <a href="#stats">Stats</a>
       <a href="#highlights">Highlights</a>
       <a href="#recruiting">Recruiting</a>
@@ -345,6 +355,20 @@
   </div>
 </section>
 
+<section id="accolades" class="side-pad" style="padding-top:0;">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="display">Accolades</div>
+    </div>
+    <div class="accolade-list" data-reveal>
+      <div class="accolade-item"><span class="accolade-mark">&#9733;</span><span>#1 in District 5, Class 3A in steals</span></div>
+      <div class="accolade-item"><span class="accolade-mark">&#9733;</span><span>Two time All County First Team</span></div>
+      <div class="accolade-item"><span class="accolade-mark">&#9733;</span><span>Team MVP, Sophomore and Junior seasons</span></div>
+      <div class="accolade-item"><span class="accolade-mark">&#9733;</span><span>32 points and 7 three pointers against Stanton as a sophomore, a personal record</span></div>
+    </div>
+  </div>
+</section>
+
 <section class="side-pad" style="padding-top:0;">
   <div class="wrap">
     <div class="section-head" data-reveal>
@@ -380,14 +404,15 @@
     </div>
     <table class="stats-table" data-reveal>
       <thead>
-        <tr><th>Season</th><th>PPG</th><th>Rebounds</th><th>Steals</th><th>Blocks</th><th>Assists</th></tr>
+        <tr><th>Season</th><th>PPG</th><th>Rebounds</th><th>Steals</th><th>Blocks</th><th>Assists</th><th>PPS</th></tr>
       </thead>
       <tbody>
-        <tr><td>Freshman</td><td>10.5</td><td>5.1</td><td>3.2</td><td>0.5</td><td>1.8</td></tr>
-        <tr><td>Sophomore</td><td>16.5</td><td>2.6</td><td>1.6</td><td>0.3</td><td>0.5</td></tr>
-        <tr><td>Junior</td><td>12.5</td><td>7.6</td><td>4.3</td><td>0.9</td><td>2.6</td></tr>
+        <tr><td>Freshman</td><td>10.5</td><td>5.1</td><td>3.2</td><td>0.5</td><td>1.8</td><td>137</td></tr>
+        <tr><td>Sophomore</td><td>16.5</td><td>2.6</td><td>1.6</td><td>0.3</td><td>0.5</td><td>379</td></tr>
+        <tr><td>Junior</td><td>12.5</td><td>7.6</td><td>4.3</td><td>0.9</td><td>2.6</td><td>283</td></tr>
       </tbody>
     </table>
+    <p class="video-caption" style="margin-top:14px;">PPS is total points scored that season.</p>
   </div>
 </section>
 
