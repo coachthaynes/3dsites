@@ -68,6 +68,10 @@
   /* HERO */
   .hero{position:relative;padding:56px 0 0;}
   .hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:40px;align-items:center;}
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr;}
+    .photo-frame{width:100%;max-width:380px;margin:0 auto;}
+  }
   .hero-eyebrow{margin-bottom:10px;}
   .hero h1{font-size:clamp(38px,5.2vw,58px);margin:0;color:var(--white);}
   .hero-sub{color:var(--dim);font-size:15.5px;margin-top:14px;line-height:1.65;max-width:46ch;}
@@ -79,13 +83,6 @@
     position:relative;border-radius:24px;overflow:hidden;aspect-ratio:4/5;
     box-shadow:0 30px 70px rgba(0,0,0,0.45);
   }
-  .photo-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-  .photo-placeholder .mark{position:absolute;width:120%;height:120%;opacity:0.6;}
-  .photo-placeholder .ghost-num{
-    font-family:'Fredoka',sans-serif;font-weight:700;color:rgba(255,255,255,0.16);
-    position:relative;z-index:1;line-height:1;
-  }
-  .photo-frame .ghost-num{font-size:clamp(70px,16vw,150px);}
   .tag-label{
     position:absolute;top:14px;left:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;
     letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.6);
@@ -160,7 +157,7 @@
 
 </svg>
 
-<div class="mockup-banner">SAMPLE OF THE $25 ESSENTIAL SCOUT PACKAGE. Photo shown is an illustrated placeholder, not a real photo.</div>
+<div class="mockup-banner">SAMPLE OF THE $25 ESSENTIAL SCOUT PACKAGE. Photo shown is AI generated, not a real player.</div>
 
 <nav>
   <div class="nav-inner">
@@ -181,7 +178,7 @@
       <div>
         <div class="eyebrow hero-eyebrow">Sample Player Profile</div>
         <h1 class="display">Jordan Mackenzie</h1>
-        <p class="hero-sub">Guard, Sample High School, Class of 2027. A sample recruiting profile on Elevate Her, one photo, her film linked from wherever she already posts it, and the stats and accolades a coach needs at a glance.</p>
+        <p class="hero-sub">Guard, Skyhawks High School, Class of 2027. A sample recruiting profile on Elevate Her, one photo, her film linked from wherever she already posts it, and the stats and accolades a coach needs at a glance.</p>
         <div class="hero-tags">
           <span class="tag">Recruiting Website</span>
           <span class="tag">Film Linked</span>
@@ -192,34 +189,9 @@
         </div>
       </div>
       <div class="photo-frame" style="background:linear-gradient(155deg, var(--panel-2), var(--violet-deep));">
-        <span class="tag-label">Photo Placeholder</span>
-        <div class="photo-placeholder">
-          <svg class="mark" viewBox="0 0 200 250" style="width:100%;height:100%;opacity:1;">
-            <defs>
-              <linearGradient id="placeholderFigGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#00F5D4"/>
-                <stop offset="1" stop-color="#FF2E93"/>
-              </linearGradient>
-            </defs>
-            <circle cx="100" cy="150" r="95" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="2"/>
-            <path d="M10 110 Q100 75 190 110" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="2"/>
-            <path d="M10 190 Q100 225 190 190" fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="2"/>
-            <line x1="20" y1="50" x2="55" y2="30" stroke="rgba(255,255,255,0.14)" stroke-width="3" stroke-linecap="round"/>
-            <line x1="30" y1="66" x2="70" y2="40" stroke="rgba(255,255,255,0.14)" stroke-width="3" stroke-linecap="round"/>
-            <line x1="40" y1="82" x2="80" y2="56" stroke="rgba(255,255,255,0.14)" stroke-width="3" stroke-linecap="round"/>
-            <g transform="translate(10,60) scale(1.7)" fill="none" stroke="url(#placeholderFigGrad)" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="55" cy="18" r="8.5" fill="url(#placeholderFigGrad)" stroke="none"/>
-              <path d="M55 27 L50 55"/>
-              <path d="M50 55 L38 68 L46 90"/>
-              <path d="M50 55 L58 72 L70 86"/>
-              <path d="M53 30 L66 18 L76 4"/>
-              <path d="M53 32 L40 40 L34 46"/>
-              <circle cx="80" cy="2" r="7" fill="url(#placeholderFigGrad)" stroke="none"/>
-              <path d="M74 -3 Q80 2 74 7 M86 -3 Q80 2 86 7" stroke="#150a28" stroke-width="1.2"/>
-            </g>
-          </svg>
-        </div>
-        <div class="placeholder-note">Her real photo goes here</div>
+        <span class="tag-label">AI Generated Sample</span>
+        <img src="assets/sample-profile-photo.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <div class="placeholder-note">AI generated sample photo, not a real player</div>
       </div>
     </div>
   </div>
@@ -279,7 +251,7 @@
         <div class="info-row"><span>Graduation Year</span><span>2027</span></div>
       </div>
       <div class="card">
-        <div class="info-row"><span>School</span><span>Sample High School</span></div>
+        <div class="info-row"><span>School</span><span>Skyhawks High School</span></div>
         <div class="info-row"><span>Club Team</span><span>Sample Elite AAU</span></div>
         <div class="info-row"><span>Contact</span><span>Via Elevate Her</span></div>
       </div>
