@@ -110,13 +110,13 @@
   .hero-media{
     position:relative;
     width:auto;margin:0 -20px;align-self:stretch;
-    height:clamp(200px,30vw,380px);
+    height:clamp(280px,46vw,460px);
     overflow:hidden;pointer-events:none;
     background:var(--violet);
   }
   .hero-video{
     width:100%;height:100%;display:block;
-    object-fit:cover;object-position:center;
+    object-fit:contain;object-position:center;
   }
   /* fades the clip into the page colour so it has no hard bottom edge */
   .hero-veil{
@@ -141,7 +141,7 @@
   .hero-cta{margin-top:32px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
   @media (max-width:900px){
     .hero{padding-bottom:40px;}
-    .hero-media{height:clamp(160px,42vw,240px);}
+    .hero-media{height:clamp(240px,68vw,360px);}
     .hero-inner{margin-top:2px;}
   }
 
@@ -392,8 +392,8 @@
 
 <div class="hero" id="top">
   <div class="hero-media">
-    <video id="heroVideo" class="hero-video" src="assets/hero-loop.mp4"
-           autoplay loop muted playsinline preload="auto"
+    <video id="heroVideo" class="hero-video" src="assets/hero.mp4"
+           autoplay muted playsinline preload="auto"
            disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
     <div class="hero-veil"></div>
   </div>
@@ -889,21 +889,16 @@
     });
   }
 
-  /* hero background video: autoplay + seamless loop, paused when offscreen */
+  /* hero background video: plays once, then holds on its final frame */
   var heroVideo = document.getElementById('heroVideo');
   if(heroVideo){
     var heroMedia = heroVideo.parentElement;
 
     function playHero(){
+      if(heroVideo.ended) return;
       var attempt = heroVideo.play();
       if(attempt && attempt.catch){ attempt.catch(function(){}); }
     }
-
-    /* belt and braces: some browsers only honour loop once the source is ready */
-    heroVideo.addEventListener('ended', function(){
-      heroVideo.currentTime = 0;
-      playHero();
-    });
 
     if(reduceMotion){
       heroVideo.removeAttribute('autoplay');
