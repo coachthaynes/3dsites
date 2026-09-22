@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aiyana Haynes | Guard, Class of 2027</title>
-<meta name="description" content="Official site for Aiyana Haynes, 2027 guard at Middleburg High School. Highlights, stats, photos, and partnership opportunities.">
+<title>Aiyana Haynes #20 | Guard, Class of 2027</title>
+<meta name="description" content="Recruiting profile for Aiyana Haynes, 2027 guard at Middleburg High School. Vitals, season stats, highlight film, and contact information.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏀</text></svg>">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,8 +18,8 @@
   "@type": "Person",
   "name": "Aiyana Haynes",
   "jobTitle": "Basketball Guard",
-  "affiliation": "Middleburg High School Broncos",
-  "description": "2027 guard known for defensive intensity, high basketball IQ, and competitive leadership."
+  "affiliation": "Middleburg High School Lady Broncos",
+  "description": "2027 guard with three varsity seasons of production at Middleburg High School."
 }
 </script>
 
@@ -29,7 +29,7 @@
     --black-deep:#050506;
     --panel:#141417;
     --panel-2:#1b1b1f;
-    --line:rgba(255,255,255,0.10);
+    --line:rgba(255,255,255,0.12);
     --white:#FFFFFF;
     --dim:rgba(255,255,255,0.66);
     --red:#E31E24;
@@ -47,9 +47,8 @@
     font-family:'Inter',sans-serif;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
-    padding-left:max(20px, env(safe-area-inset-left,0px));
-    padding-right:max(20px, env(safe-area-inset-right,0px));
   }
+  .side-pad{padding-left:max(20px, env(safe-area-inset-left,0px));padding-right:max(20px, env(safe-area-inset-right,0px));}
   img{max-width:100%;display:block;}
   [hidden]{display:none!important;}
   a{color:inherit;text-decoration:none;}
@@ -73,14 +72,12 @@
   @media (prefers-reduced-motion:reduce){ :root{scroll-behavior:auto;} }
 
   .logo-icon{display:block;width:100%;height:100%;}
-
   .progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--red),var(--ball));z-index:80;transition:width .08s linear;}
 
   /* NAV */
   nav{
     position:sticky;top:0;z-index:60;
-    margin:0 -20px;padding:0 20px;
-    background:rgba(5,5,6,0.86);
+    background:rgba(5,5,6,0.9);
     backdrop-filter:blur(10px);
     -webkit-backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line);
@@ -88,113 +85,162 @@
   .nav-inner{
     max-width:1160px;margin:0 auto;
     display:flex;align-items:center;justify-content:space-between;
-    height:68px;gap:18px;
+    height:64px;gap:18px;
   }
-  .brand{display:flex;align-items:center;gap:11px;}
-  .brand .logo-icon-wrap{width:38px;height:38px;flex-shrink:0;}
-  .brand-text{display:flex;flex-direction:column;line-height:1.1;}
-  .brand-name{font-family:'Anton',sans-serif;font-weight:400;font-size:18px;letter-spacing:0.02em;color:var(--white);text-transform:uppercase;}
-  .brand-sub{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--red);margin-top:1px;}
-  .nav-links{display:flex;gap:26px;font-size:13.5px;font-weight:600;overflow-x:auto;scrollbar-width:none;}
+  .brand{font-family:'Anton',sans-serif;font-size:19px;letter-spacing:0.01em;text-transform:uppercase;color:var(--white);white-space:nowrap;}
+  .brand .num{color:var(--red);}
+  .nav-links{display:flex;gap:24px;overflow-x:auto;scrollbar-width:none;}
   .nav-links::-webkit-scrollbar{display:none;}
-  .nav-links a{color:var(--dim);transition:color .2s;white-space:nowrap;text-transform:uppercase;font-size:12.5px;letter-spacing:0.04em;}
+  .nav-links a{color:var(--dim);transition:color .2s;white-space:nowrap;text-transform:uppercase;font-size:12px;letter-spacing:0.06em;font-weight:700;}
   .nav-links a:hover,.nav-links a:focus-visible{color:var(--white);}
-  .nav-right{display:flex;align-items:center;gap:20px;}
-  @media (max-width:800px){ .nav-links{display:none;} }
+  @media (max-width:760px){ .nav-links{display:none;} }
 
   /* BUTTONS */
   .btn{
-    display:inline-block;padding:14px 26px;font-weight:700;font-size:13px;
-    border-radius:4px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.04em;text-transform:uppercase;
+    display:inline-block;padding:15px 26px;font-weight:700;font-size:13px;
+    border-radius:4px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;text-transform:uppercase;
     border:2px solid transparent;transition:all .2s;white-space:nowrap;
   }
-  .btn.primary{background:var(--red);color:var(--white);box-shadow:0 8px 22px rgba(227,30,36,0.35);}
+  .btn.primary{background:var(--red);color:var(--white);}
   .btn.primary:hover{background:var(--red-deep);transform:translateY(-1px);}
-  .btn.ghost{border-color:rgba(255,255,255,0.35);color:var(--white);}
-  .btn.ghost:hover{border-color:var(--white);background:rgba(255,255,255,0.08);}
-  .btn.small{padding:11px 18px;font-size:11.5px;}
-  .btn.outline{border-color:var(--red);color:var(--red);background:transparent;}
-  .btn.outline:hover{background:var(--red);color:var(--white);}
-  @media (max-width:800px){ .nav-right .btn{padding:10px 16px;font-size:11px;} }
+  .btn.outline{border-color:rgba(255,255,255,0.35);color:var(--white);background:transparent;}
+  .btn.outline:hover{border-color:var(--white);background:rgba(255,255,255,0.08);}
 
   /* HERO */
-  .hero{
-    position:relative;
-    display:grid;grid-template-columns:1.05fr 0.95fr;align-items:center;gap:40px;
-    min-height:min(86vh,760px);
-    padding:64px 0 60px;
-  }
-  .hero-text{position:relative;z-index:2;}
-  .hero h1{
-    font-size:clamp(46px,7vw,88px);color:var(--white);margin:14px 0 0;
-  }
-  .hero-tagline{
-    font-family:'Bebas Neue',sans-serif;color:var(--red);font-size:clamp(20px,2.6vw,28px);
-    letter-spacing:0.03em;margin-top:14px;text-transform:uppercase;
-  }
-  .hero-sub{margin:16px 0 0;font-size:16px;color:var(--dim);max-width:48ch;line-height:1.7;}
-  .hero-tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px;}
+  .hero-photo{width:100%;aspect-ratio:3/4;overflow:hidden;background:#000;}
+  .hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+  @media (min-width:760px){ .hero-photo{aspect-ratio:16/8;} }
+  .hero-body{padding:36px 0 0;}
+  .hero-body h1{font-size:clamp(42px,8vw,84px);color:var(--white);margin:12px 0 0;}
+  .hero-body h1 .num{color:var(--red);}
+  .hero-sub{margin:12px 0 0;font-size:17px;color:var(--dim);}
+  .hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;}
   .tag{
-    border:1.5px solid var(--red);color:var(--white);border-radius:4px;background:rgba(227,30,36,0.12);
-    padding:7px 14px;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;
+    border:1.5px solid var(--red);color:var(--red);border-radius:4px;
+    padding:9px 16px;font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
     font-family:'IBM Plex Mono',monospace;
   }
-  .hero-cta{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
-  .hero-ball-holder{width:64px;height:64px;flex-shrink:0;}
+  .hero-cta{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+  .hero-ball-holder{width:56px;height:56px;flex-shrink:0;}
   #heroBall{width:100%;height:100%;display:block;}
 
-  .hero-visual{position:relative;z-index:1;}
-  .hero-photo-frame{
-    position:relative;border-radius:14px;overflow:hidden;
-    border:1px solid var(--line);
-    box-shadow:0 30px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(227,30,36,0.25) inset;
-  }
-  .hero-photo-frame img{width:100%;height:100%;object-fit:cover;display:block;aspect-ratio:2/3;}
-  .hero-jersey-badge{
-    position:absolute;bottom:18px;left:18px;background:rgba(5,5,6,0.78);backdrop-filter:blur(6px);
-    border:1px solid var(--line);border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:10px;
-  }
-  .hero-jersey-badge .num{font-family:'Anton',sans-serif;color:var(--red);font-size:26px;line-height:1;}
-  .hero-jersey-badge .meta{display:flex;flex-direction:column;line-height:1.2;}
-  .hero-jersey-badge .meta span:first-child{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);}
-  .hero-jersey-badge .meta span:last-child{font-weight:700;font-size:13px;}
-  .hero-eh-badge{
-    position:absolute;top:18px;right:18px;background:rgba(5,5,6,0.78);backdrop-filter:blur(6px);
-    border:1px solid rgba(0,245,212,0.4);border-radius:999px;padding:8px 14px;
-    display:flex;align-items:center;gap:8px;
-  }
-  .hero-eh-badge .logo-icon-wrap{width:18px;height:18px;flex-shrink:0;}
-  .hero-eh-badge span.label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--eh-teal);white-space:nowrap;}
-  @media (max-width:900px){
-    .hero{grid-template-columns:1fr;min-height:auto;padding-top:36px;text-align:center;}
-    .hero-text{order:2;}
-    .hero-visual{order:1;max-width:340px;margin:0 auto;}
-    .hero-sub{margin-left:auto;margin-right:auto;}
-    .hero-tags,.hero-cta{justify-content:center;}
-  }
+  /* QUICK STAT STRIP */
+  .quick-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:40px;border-top:1px solid var(--line);}
+  .quick-stat{text-align:center;padding:30px 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .quick-stat:nth-child(3n){border-right:none;}
+  .quick-stat .num{font-family:'Anton',sans-serif;font-size:clamp(30px,5vw,44px);color:var(--white);line-height:1;}
+  .quick-stat .label{margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);}
 
-  /* DIVIDERS */
-  .divider-wrap{padding:36px 0;position:relative;z-index:2;}
-  .divider{display:flex;align-items:center;gap:18px;max-width:1160px;margin:0 auto;}
-  .divider-line{flex:1;height:1px;background:var(--line);}
-  .divider-coin{
-    width:46px;height:46px;border-radius:50%;flex-shrink:0;
-    background:var(--panel);
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:0 0 0 2px var(--red) inset, 0 0 24px rgba(227,30,36,0.28);
-    transform:scale(0.55);opacity:0;
-    transition:transform .8s cubic-bezier(.2,.7,.2,1), opacity .8s ease;
+  /* SECTION SHELL */
+  section{padding:70px 0;position:relative;z-index:2;}
+  .section-head{margin-bottom:36px;max-width:64ch;}
+  .section-head .display{font-size:clamp(28px,4.2vw,46px);color:var(--white);}
+  .section-head p{color:var(--dim);margin-top:10px;font-size:15px;line-height:1.6;}
+
+  [data-reveal]{opacity:1;transform:none;transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1);}
+  [data-reveal].pending{opacity:0;transform:translateY(28px);}
+  @media (prefers-reduced-motion:reduce){ [data-reveal].pending{opacity:1;transform:none;} }
+  [data-tilt]{transform-style:preserve-3d;will-change:transform;transition:transform .35s cubic-bezier(.2,.7,.2,1);}
+
+  /* ABOUT */
+  .about-copy p{color:var(--dim);font-size:16px;line-height:1.8;margin:0 0 16px;}
+  .vitals-table{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:34px;}
+  .vitals-head{background:var(--red);color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.03em;padding:12px 18px;text-transform:uppercase;}
+  .vitals-row{display:flex;justify-content:space-between;padding:14px 18px;border-top:1px solid var(--line);font-size:14.5px;}
+  .vitals-row span:first-child{color:var(--dim);}
+  .vitals-row span:last-child{font-weight:700;color:var(--white);}
+
+  /* ON THE COURT */
+  .feature-card{border:1px solid var(--line);border-radius:12px;padding:30px 28px;margin-bottom:20px;}
+  .feature-card h3{font-size:clamp(26px,4vw,36px);margin:8px 0 12px;color:var(--white);}
+  .feature-card p{color:var(--dim);font-size:15.5px;line-height:1.7;margin:0;max-width:60ch;}
+  .full-photo{width:100%;aspect-ratio:16/10;overflow:hidden;border-radius:12px;margin-top:30px;border:1px solid var(--line);}
+  .full-photo img{width:100%;height:100%;object-fit:cover;}
+
+  /* SEASON STATS */
+  .stat-callout{
+    border-radius:14px;padding:36px 30px;
+    background:linear-gradient(165deg,var(--red),var(--red-deep));
   }
-  .divider-coin.spin{transform:scale(1);opacity:1;}
-  .divider-coin .logo-icon-wrap{width:58%;height:58%;}
-  @media (prefers-reduced-motion:reduce){
-    .divider-coin{transition:opacity .3s ease;}
-    .divider-coin.spin{transform:none;opacity:1;}
+  .stat-callout .big-stat{padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.25);}
+  .stat-callout .big-stat:last-child{border-bottom:none;}
+  .stat-callout .big-num{font-family:'Anton',sans-serif;font-size:clamp(34px,6vw,54px);color:var(--white);line-height:1;}
+  .stat-callout .big-label{margin-top:6px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.85);}
+
+  .stats-table{width:100%;border-collapse:collapse;margin-top:40px;font-size:14px;}
+  .stats-table th{text-align:left;font-family:'Anton',sans-serif;font-weight:400;letter-spacing:0.02em;text-transform:uppercase;color:var(--dim);font-size:12px;padding:12px 10px;border-bottom:1px solid var(--line);}
+  .stats-table td{padding:14px 10px;border-bottom:1px solid var(--line);font-weight:600;}
+  .stats-table td:first-child, .stats-table th:first-child{font-weight:700;color:var(--white);}
+  .stats-table{display:block;overflow-x:auto;white-space:nowrap;}
+
+  /* HIGHLIGHTS */
+  .video-frame{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;border:1px solid var(--line);}
+  .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .video-caption{margin-top:12px;color:var(--dim);font-size:14px;}
+  .video-block{margin-bottom:36px;}
+
+  .clips-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:10px;}
+  .clip-card{
+    display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:22px 14px;
+    border:1px solid var(--line);border-radius:10px;background:var(--panel);transition:border-color .2s, transform .2s;
   }
+  .clip-card:hover{border-color:var(--red);transform:translateY(-3px);}
+  .clip-play{width:38px;height:38px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .clip-play svg{width:14px;height:14px;fill:var(--white);}
+  .clip-card span{font-size:12px;font-weight:600;color:var(--white);}
+  @media (max-width:860px){ .clips-grid{grid-template-columns:repeat(2,1fr);} }
+
+  /* MORE PHOTOS */
+  .photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .photo-grid a{border-radius:10px;overflow:hidden;border:1px solid var(--line);display:block;}
+  .photo-grid img{aspect-ratio:3/4;object-fit:cover;transition:transform .5s ease;}
+  .photo-grid a:hover img{transform:scale(1.06);}
+  @media (max-width:860px){ .photo-grid{grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:560px){ .photo-grid{grid-template-columns:repeat(2,1fr);} }
+
+  /* RECRUITING */
+  .recruit-copy p{color:var(--dim);font-size:16px;line-height:1.8;margin:0 0 18px;max-width:70ch;}
+  .offer-list{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 10px;}
+  .offer-tag{border:1px solid var(--red);color:var(--white);background:rgba(227,30,36,0.1);border-radius:999px;padding:9px 16px;font-size:13px;font-weight:700;}
+  .ncaa-id{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--dim);margin-top:14px;}
+  .recruit-photo{max-width:340px;border-radius:12px;overflow:hidden;border:1px solid var(--line);margin-top:34px;}
+  .recruit-photo img{aspect-ratio:4/5;object-fit:cover;}
+  .recruit-caption{margin-top:10px;color:var(--dim);font-size:13px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.04em;text-transform:uppercase;}
+
+  /* CONTACT */
+  .contact-card{border:1px solid var(--line);border-radius:12px;padding:30px 28px;max-width:520px;}
+  .contact-card h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.02em;text-transform:uppercase;margin:0 0 18px;color:var(--white);}
+  .contact-block{padding:14px 0;}
+  .contact-block + .contact-block{border-top:1px solid var(--line);}
+  .contact-block .who{font-weight:700;color:var(--white);font-size:14.5px;margin-bottom:8px;}
+  .contact-block .row{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:var(--dim);padding:4px 0;}
+  .contact-block .row span:last-child{color:var(--white);font-weight:600;}
+
+  /* FOLLOW ALONG */
+  .link-rows{display:flex;flex-direction:column;gap:10px;}
+  .link-row{
+    display:flex;align-items:center;justify-content:space-between;
+    border:1px solid var(--line);border-radius:10px;padding:16px 20px;
+    font-weight:700;font-size:15px;transition:border-color .2s, background .2s;
+  }
+  .link-row:hover{border-color:var(--red);background:rgba(227,30,36,0.06);}
+  .link-row svg{width:16px;height:16px;fill:var(--dim);}
+
+  /* FOOTER */
+  footer{padding:50px 0 40px;border-top:1px solid var(--line);}
+  .footer-eh-credit{
+    display:flex;align-items:center;gap:14px;padding:18px 20px;margin-bottom:24px;
+    border:1px solid rgba(0,245,212,0.25);border-radius:12px;background:rgba(0,245,212,0.05);
+  }
+  .footer-eh-credit .logo-icon-wrap{width:34px;height:34px;flex-shrink:0;}
+  .eh-credit-title{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--eh-teal);font-weight:700;}
+  .eh-credit-sub{color:var(--dim);font-size:13px;margin-top:4px;}
+  @media (max-width:560px){ .footer-eh-credit{flex-direction:column;text-align:center;} }
+  .foot-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:12.5px;}
 
   /* fixed floating scroll badge */
   .scroll-badge{
-    position:fixed;right:22px;bottom:22px;width:64px;height:64px;
+    position:fixed;right:22px;bottom:22px;width:60px;height:60px;
     perspective:700px;z-index:70;opacity:0;pointer-events:none;
     transition:opacity .4s ease;border:none;background:transparent;padding:0;cursor:pointer;
   }
@@ -204,135 +250,10 @@
     position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;
     display:flex;align-items:center;justify-content:center;background:var(--panel);
     box-shadow:0 10px 28px rgba(0,0,0,0.5), 0 0 0 2px var(--red) inset;
-    font-family:'Anton',sans-serif;font-size:22px;color:var(--white);
+    font-family:'Anton',sans-serif;font-size:20px;color:var(--white);
   }
   .coin-face.back{transform:rotateY(180deg);box-shadow:0 10px 28px rgba(0,0,0,0.5), 0 0 0 2px var(--ball) inset;}
-  @media (max-width:640px){ .scroll-badge{width:52px;height:52px;right:14px;bottom:14px;} }
-
-  /* SECTION SHELL */
-  section{padding:84px 0;position:relative;z-index:2;}
-  .section-head{margin-bottom:44px;max-width:64ch;}
-  .section-head.center{margin-left:auto;margin-right:auto;text-align:center;}
-  .section-head .display{font-size:clamp(30px,4.4vw,50px);color:var(--white);margin-top:8px;}
-  .section-head p{color:var(--dim);margin-top:12px;font-size:15.5px;line-height:1.65;}
-
-  [data-reveal]{
-    opacity:1;transform:none;
-    transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1);
-  }
-  [data-reveal].pending{opacity:0;transform:translateY(30px);}
-  @media (prefers-reduced-motion:reduce){
-    [data-reveal].pending{opacity:1;transform:none;}
-  }
-  [data-tilt]{transform-style:preserve-3d;will-change:transform;transition:transform .35s cubic-bezier(.2,.7,.2,1);}
-
-  .card{
-    border:1px solid var(--line);background:var(--panel);
-    border-radius:16px;padding:30px 26px;
-  }
-
-  /* ABOUT */
-  .about-grid{display:grid;grid-template-columns:0.85fr 1.15fr;gap:50px;align-items:center;}
-  .about-photo{border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,0.5);}
-  .about-photo img{aspect-ratio:4/5;object-fit:cover;}
-  .about-copy p{color:var(--dim);font-size:16px;line-height:1.8;margin:0 0 16px;}
-  .about-copy p strong{color:var(--white);}
-  .trait-list{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
-  .trait{
-    border:1px solid var(--line);background:var(--panel-2);color:var(--white);
-    border-radius:999px;padding:8px 16px;font-size:12.5px;font-weight:600;
-  }
-  .quote{
-    margin-top:28px;padding-left:20px;border-left:3px solid var(--red);
-    font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:0.02em;color:var(--white);text-transform:uppercase;
-  }
-  @media (max-width:900px){ .about-grid{grid-template-columns:1fr;} .about-photo{max-width:360px;margin:0 auto;} }
-
-  /* STATS */
-  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
-  .stat-card{text-align:center;position:relative;overflow:hidden;}
-  .stat-num{font-family:'Anton',sans-serif;font-size:clamp(38px,5vw,54px);color:var(--red);line-height:1;}
-  .stat-label{margin-top:10px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);}
-  @media (max-width:900px){ .stats-grid{grid-template-columns:repeat(2,1fr);} }
-
-  /* HIGHLIGHTS / VIDEO */
-  .video-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px;}
-  .video-card{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--panel);}
-  .video-frame{position:relative;width:100%;aspect-ratio:16/9;background:#000;}
-  .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
-  .video-meta{padding:18px 20px;}
-  .video-meta h3{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.02em;margin:0 0 4px;color:var(--white);text-transform:uppercase;}
-  .video-meta p{margin:0;color:var(--dim);font-size:13px;}
-  @media (max-width:860px){ .video-grid{grid-template-columns:1fr;} }
-
-  .clips-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:26px;}
-  .clip-card{
-    display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:24px 14px;
-    border:1px solid var(--line);border-radius:12px;background:var(--panel-2);transition:border-color .2s, transform .2s;
-  }
-  .clip-card:hover{border-color:var(--red);transform:translateY(-3px);}
-  .clip-play{
-    width:42px;height:42px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  }
-  .clip-play svg{width:16px;height:16px;fill:var(--white);}
-  .clip-card span{font-size:12.5px;font-weight:600;color:var(--white);}
-  @media (max-width:860px){ .clips-grid{grid-template-columns:repeat(2,1fr);} }
-
-  /* GALLERY */
-  .gallery-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
-  .gallery-grid a{border-radius:12px;overflow:hidden;border:1px solid var(--line);position:relative;display:block;}
-  .gallery-grid img{aspect-ratio:2/3;object-fit:cover;transition:transform .5s ease;}
-  .gallery-grid a:hover img{transform:scale(1.06);}
-  @media (max-width:980px){ .gallery-grid{grid-template-columns:repeat(3,1fr);} }
-  @media (max-width:560px){ .gallery-grid{grid-template-columns:repeat(2,1fr);} }
-
-  /* PARTNER / NIL */
-  .partner-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:50px;align-items:start;}
-  .partner-copy p{color:var(--dim);font-size:16px;line-height:1.8;margin:0 0 18px;}
-  .opportunity-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .opportunity-list li{
-    display:flex;align-items:center;gap:10px;font-size:14px;color:var(--white);font-weight:600;
-    border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--panel);
-  }
-  .opportunity-list li .dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;}
-  .partner-card{padding:34px 30px;}
-  .partner-card .eyebrow{margin-bottom:10px;}
-  .partner-card h3{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.02em;margin:0 0 12px;text-transform:uppercase;}
-  .partner-card p{color:var(--dim);font-size:14.5px;line-height:1.65;margin:0 0 22px;}
-  @media (max-width:900px){ .partner-grid{grid-template-columns:1fr;} .opportunity-list{grid-template-columns:1fr;} }
-
-  /* CONTACT */
-  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
-  .contact-copy h2{margin:0;}
-  .contact-copy p{color:var(--dim);font-size:16px;line-height:1.7;margin-top:14px;max-width:44ch;}
-  .contact-links{display:flex;flex-direction:column;gap:16px;}
-  .contact-links .card{display:flex;align-items:center;justify-content:space-between;gap:14px;}
-  .contact-links .card span.label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:4px;}
-  .contact-links .card span.value{font-weight:700;font-size:15px;}
-  @media (max-width:860px){ .contact-grid{grid-template-columns:1fr;} }
-
-  /* FOOTER */
-  footer{padding:60px 0 46px;border-top:1px solid var(--line);position:relative;z-index:2;}
-  .footer-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:40px;}
-  .footer-brand{display:flex;align-items:center;gap:12px;}
-  .footer-brand .logo-icon-wrap{width:40px;height:40px;flex-shrink:0;}
-  .footer-tagline{max-width:34ch;color:var(--dim);font-size:14px;line-height:1.6;margin:0;}
-  .footer-eh-credit{
-    display:flex;align-items:center;gap:14px;padding:18px 20px;margin-bottom:36px;
-    border:1px solid rgba(0,245,212,0.25);border-radius:12px;background:rgba(0,245,212,0.05);
-  }
-  .footer-eh-credit .logo-icon-wrap{width:34px;height:34px;flex-shrink:0;}
-  .eh-credit-title{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--eh-teal);font-weight:700;}
-  .eh-credit-sub{color:var(--dim);font-size:13px;margin-top:4px;}
-  @media (max-width:560px){ .footer-eh-credit{flex-direction:column;text-align:center;} }
-  .footer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-bottom:36px;}
-  .footer-col h4{font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;letter-spacing:0.08em;color:var(--white);margin:0 0 14px;text-transform:uppercase;}
-  .footer-col a{display:block;color:var(--dim);font-size:14px;margin-bottom:10px;transition:color .2s;}
-  .footer-col a:hover{color:var(--red);}
-  .footer-col p{color:var(--dim);font-size:13.5px;margin:0;}
-  .foot-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:12.5px;}
-  @media (max-width:760px){ .footer-grid{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:480px){ .footer-grid{grid-template-columns:1fr;} }
+  @media (max-width:640px){ .scroll-badge{width:50px;height:50px;right:14px;bottom:14px;} }
 
   :focus-visible{outline:2px solid var(--red);outline-offset:2px;}
 </style>
@@ -340,16 +261,8 @@
 <body>
 
 <svg style="display:none" aria-hidden="true">
-  <symbol id="ahLogo" viewBox="0 0 200 200">
-    <circle cx="100" cy="100" r="88" fill="none" stroke="#E31E24" stroke-width="9"/>
-    <path d="M12 100 Q100 60 188 100" fill="none" stroke="#E31E24" stroke-width="6" stroke-linecap="round"/>
-    <path d="M12 100 Q100 140 188 100" fill="none" stroke="#E31E24" stroke-width="6" stroke-linecap="round"/>
-    <line x1="100" y1="12" x2="100" y2="188" stroke="#E31E24" stroke-width="6" stroke-linecap="round"/>
-    <text x="100" y="118" font-family="Anton, sans-serif" font-size="70" fill="#FFFFFF" text-anchor="middle">20</text>
-  </symbol>
-  <symbol id="playIcon" viewBox="0 0 24 24">
-    <path d="M8 5v14l11-7z"/>
-  </symbol>
+  <symbol id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
+  <symbol id="extIcon" viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"/></symbol>
   <symbol id="ehLogo" viewBox="0 0 200 200">
     <circle cx="100" cy="100" r="88" fill="none" stroke="#00F5D4" stroke-width="9"/>
     <path d="M16 66 Q100 18 184 66" fill="none" stroke="#00F5D4" stroke-width="9" stroke-linecap="round"/>
@@ -366,163 +279,135 @@
 
 <div class="progress" id="progress"></div>
 
-<nav>
+<nav class="side-pad">
   <div class="nav-inner">
-    <a href="#top" class="brand">
-      <span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ahLogo"></use></svg></span>
-      <span class="brand-text">
-        <span class="brand-name">Aiyana Haynes</span>
-        <span class="brand-sub">Guard, Class Of 2027</span>
-      </span>
-    </a>
+    <a href="#top" class="brand">AIYANA HAYNES <span class="num">#20</span></a>
     <div class="nav-links">
       <a href="#about">About</a>
-      <a href="#highlights">Highlights</a>
       <a href="#stats">Stats</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#partner">Partner</a>
-    </div>
-    <div class="nav-right">
-      <a class="btn primary small" href="#contact">Contact</a>
+      <a href="#highlights">Highlights</a>
+      <a href="#recruiting">Recruiting</a>
+      <a href="#contact">Contact</a>
     </div>
   </div>
 </nav>
 
-<div class="hero" id="top">
-  <div class="hero-text" data-reveal>
-    <div class="eyebrow">Middleburg Broncos &bull; Guard &bull; Class Of 2027</div>
-    <h1 class="display">Aiyana Haynes</h1>
-    <div class="hero-tagline">Calm Off The Court. Relentless On It.</div>
-    <p class="hero-sub">A two way guard built on defensive intensity, high basketball IQ, and quiet, relentless work. Every possession earned, every rep counted.</p>
+<div id="top">
+  <div class="hero-photo">
+    <img src="assets/img/hero-portrait.jpg" alt="Aiyana Haynes holding a basketball in her Broncos jersey" loading="eager">
+  </div>
+  <div class="wrap side-pad hero-body">
+    <div class="eyebrow">Middleburg Lady Broncos &bull; Class Of 2027</div>
+    <h1 class="display">AIYANA<br>HAYNES <span class="num">20</span></h1>
+    <p class="hero-sub">Guard, Middleburg High School.</p>
     <div class="hero-tags">
-      <span class="tag">Two Way Guard</span>
-      <span class="tag">High IQ Defense</span>
-      <span class="tag">Film First Player</span>
+      <span class="tag">5'8 Guard</span>
+      <span class="tag">12.5 PPG Junior</span>
+      <span class="tag">283 Points Season</span>
     </div>
     <div class="hero-cta">
-      <a class="btn primary" href="#highlights">Watch Her Highlights</a>
-      <a class="btn ghost" href="#partner">Partner With Aiyana</a>
+      <a class="btn primary" href="#highlights">Watch Highlights</a>
+      <a class="btn outline" href="#follow">All Links</a>
       <div class="hero-ball-holder"><canvas id="heroBall" aria-hidden="true"></canvas></div>
     </div>
-  </div>
-  <div class="hero-visual" data-reveal>
-    <div class="hero-photo-frame">
-      <img src="assets/img/hero-portrait.jpg" alt="Aiyana Haynes in her Broncos jersey holding a basketball" loading="eager">
-      <div class="hero-eh-badge">
-        <span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ehLogo"></use></svg></span>
-        <span class="label">Elevate Her Tier 3</span>
-      </div>
-      <div class="hero-jersey-badge">
-        <span class="num">20</span>
-        <span class="meta"><span>Middleburg</span><span>Broncos Guard</span></span>
-      </div>
+    <div class="quick-stats">
+      <div class="quick-stat"><div class="num">12.5</div><div class="label">PPG Junior</div></div>
+      <div class="quick-stat"><div class="num">7.6</div><div class="label">Rebounds</div></div>
+      <div class="quick-stat"><div class="num">4.3</div><div class="label">Steals</div></div>
+      <div class="quick-stat"><div class="num">2.6</div><div class="label">Assists</div></div>
+      <div class="quick-stat"><div class="num">0.9</div><div class="label">Blocks</div></div>
     </div>
   </div>
 </div>
 
-<div class="divider-wrap">
-  <div class="divider">
-    <div class="divider-line"></div>
-    <div class="divider-coin"><span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ahLogo"></use></svg></span></div>
-    <div class="divider-line"></div>
-  </div>
-</div>
-
-<section id="about">
+<section id="about" class="side-pad">
   <div class="wrap">
-    <div class="about-grid">
-      <div class="about-photo" data-reveal>
-        <img src="assets/img/smile-portrait.jpg" alt="Aiyana Haynes smiling in her Broncos jersey" loading="lazy">
-      </div>
-      <div class="about-copy" data-reveal>
-        <div class="eyebrow">About Aiyana</div>
-        <div class="display" style="font-size:clamp(28px,4vw,44px);margin-top:8px;">Silent Work. Loud Impact.</div>
-        <p style="margin-top:18px;">Aiyana Haynes is a 2027 guard known for defensive intensity, high basketball IQ, and competitive leadership. She is a <strong>quiet worker</strong> and an <strong>emotional competitor</strong>, someone who does not need to be loud to be felt on the floor.</p>
-        <p>Her game gets louder in the moments that matter most. Late possessions. Tight scores. The stop that flips momentum back in her team's favor. That is where she separates herself.</p>
-        <p>Off the court, the approach does not change. Consistent training, film study, and recovery, all quiet, all intentional. Discipline is the brand.</p>
-        <div class="trait-list">
-          <span class="trait">Quiet Worker</span>
-          <span class="trait">Emotional Competitor</span>
-          <span class="trait">Controlled Intensity</span>
-          <span class="trait">High IQ Guard</span>
-          <span class="trait">Composed Leader</span>
-        </div>
-        <div class="quote">"Pressure does not shake me."</div>
-      </div>
+    <div class="section-head" data-reveal>
+      <div class="display">About Aiyana</div>
+    </div>
+    <div class="about-copy" data-reveal>
+      <p>5'8 guard at Middleburg High School, Class of 2027, Lady Broncos.</p>
+      <p>Posted 12.5 points a game as a junior, after averaging 16.5 as a sophomore, giving her three varsity seasons of proven scoring.</p>
+      <p>Added 7.6 rebounds, 4.3 steals, and 2.6 assists a game as a junior, a two way stat line that shows up on both ends of the floor.</p>
+    </div>
+    <div class="vitals-table" data-reveal>
+      <div class="vitals-head">Vitals</div>
+      <div class="vitals-row"><span>Height</span><span>5'8"</span></div>
+      <div class="vitals-row"><span>Weight</span><span>154 lbs</span></div>
+      <div class="vitals-row"><span>Position</span><span>Guard</span></div>
+      <div class="vitals-row"><span>School</span><span>Middleburg High School</span></div>
+      <div class="vitals-row"><span>Wingspan</span><span>5'8"</span></div>
+      <div class="vitals-row"><span>Standing Vertical</span><span>18.5"</span></div>
+      <div class="vitals-row"><span>Shoe Size</span><span>11</span></div>
+      <div class="vitals-row"><span>GPA</span><span>3.2</span></div>
+      <div class="vitals-row"><span>Graduation Year</span><span>2027</span></div>
     </div>
   </div>
 </section>
 
-<div class="divider-wrap">
-  <div class="divider">
-    <div class="divider-line"></div>
-    <div class="divider-coin"><span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ahLogo"></use></svg></span></div>
-    <div class="divider-line"></div>
-  </div>
-</div>
-
-<section id="stats">
+<section class="side-pad" style="padding-top:0;">
   <div class="wrap">
-    <div class="section-head center" data-reveal>
-      <div class="eyebrow">On The Court</div>
-      <div class="display">By The Numbers</div>
-      <p>A snapshot of her game this season. Simple numbers, real impact.</p>
+    <div class="section-head" data-reveal>
+      <div class="display">On The Court</div>
+      <p>What defined her junior season.</p>
     </div>
-    <div class="stats-grid">
-      <div class="card stat-card" data-reveal data-tilt>
-        <div class="stat-num">20</div>
-        <div class="stat-label">Jersey Number</div>
-      </div>
-      <div class="card stat-card" data-reveal data-tilt>
-        <div class="stat-num">2027</div>
-        <div class="stat-label">Graduating Class</div>
-      </div>
-      <div class="card stat-card" data-reveal data-tilt>
-        <div class="stat-num">3+</div>
-        <div class="stat-label">Steals Per Game</div>
-      </div>
-      <div class="card stat-card" data-reveal data-tilt>
-        <div class="stat-num">10+</div>
-        <div class="stat-label">Points Per Game</div>
-      </div>
+    <div class="feature-card" data-reveal data-tilt>
+      <div class="eyebrow">Junior Season</div>
+      <h3 class="display">Steady Scorer</h3>
+      <p>Poured in 283 points across her junior season, good for 12.5 points a game while anchoring the offense.</p>
+    </div>
+    <div class="feature-card" data-reveal data-tilt>
+      <div class="eyebrow">Two Way Impact</div>
+      <h3 class="display">Disruptive Defender</h3>
+      <p>4.3 steals a game to go with 7.6 rebounds, making her one of the most disruptive two way guards on the floor.</p>
+    </div>
+    <div class="full-photo" data-reveal>
+      <img src="assets/img/game-drive.jpg" alt="Aiyana Haynes driving the ball up the court in a game" loading="lazy">
     </div>
   </div>
 </section>
 
-<div class="divider-wrap">
-  <div class="divider">
-    <div class="divider-line"></div>
-    <div class="divider-coin"><span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ahLogo"></use></svg></span></div>
-    <div class="divider-line"></div>
-  </div>
-</div>
-
-<section id="highlights">
+<section id="stats" class="side-pad">
   <div class="wrap">
-    <div class="section-head center" data-reveal>
-      <div class="eyebrow">Game Film</div>
-      <div class="display">Watch Her Highlights</div>
-      <p>Full season reels plus select clips showing her defensive IQ and two way impact.</p>
+    <div class="section-head" data-reveal>
+      <div class="display">Season Stats</div>
+      <p>Per game averages by season. More seasons will be added as her career continues.</p>
     </div>
-    <div class="video-grid">
-      <div class="video-card" data-reveal>
-        <div class="video-frame">
-          <iframe src="https://drive.google.com/file/d/1RWVPCHy6CsMcp_v_LC3P3dnHqVjJlzp9/preview" title="2025 2026 season highlights" allow="autoplay" loading="lazy"></iframe>
-        </div>
-        <div class="video-meta">
-          <h3>2025 2026 Season Highlights</h3>
-          <p>Current season reel, updated as the year continues.</p>
-        </div>
+    <div class="stat-callout" data-reveal data-tilt>
+      <div class="big-stat"><div class="big-num">283</div><div class="big-label">Total Points, Junior Season</div></div>
+      <div class="big-stat"><div class="big-num">7.6</div><div class="big-label">Rebounds Per Game</div></div>
+      <div class="big-stat"><div class="big-num">4.3</div><div class="big-label">Steals Per Game</div></div>
+    </div>
+    <table class="stats-table" data-reveal>
+      <thead>
+        <tr><th>Season</th><th>PPG</th><th>Rebounds</th><th>Steals</th><th>Blocks</th><th>Assists</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Freshman</td><td>10.5</td><td>5.1</td><td>3.2</td><td>0.5</td><td>1.8</td></tr>
+        <tr><td>Sophomore</td><td>16.5</td><td>2.6</td><td>1.6</td><td>0.3</td><td>0.5</td></tr>
+        <tr><td>Junior</td><td>12.5</td><td>7.6</td><td>4.3</td><td>0.9</td><td>2.6</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="highlights" class="side-pad">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div class="display">Highlight Film</div>
+      <p>Playable right here, no need to leave the page.</p>
+    </div>
+    <div class="video-block" data-reveal>
+      <div class="video-frame">
+        <iframe src="https://drive.google.com/file/d/1RWVPCHy6CsMcp_v_LC3P3dnHqVjJlzp9/preview" title="Junior season highlights" allow="autoplay" loading="lazy"></iframe>
       </div>
-      <div class="video-card" data-reveal>
-        <div class="video-frame">
-          <iframe src="https://drive.google.com/file/d/1sNhnA30emcG5PV5A80W0lCcr96mlLeQP/preview" title="2024 2025 season highlights" allow="autoplay" loading="lazy"></iframe>
-        </div>
-        <div class="video-meta">
-          <h3>2024 2025 Season Highlights</h3>
-          <p>A full look back at last season's growth on both ends of the floor.</p>
-        </div>
+      <div class="video-caption">Junior season highlights</div>
+    </div>
+    <div class="video-block" data-reveal>
+      <div class="video-frame">
+        <iframe src="https://drive.google.com/file/d/1sNhnA30emcG5PV5A80W0lCcr96mlLeQP/preview" title="Sophomore season highlights" allow="autoplay" loading="lazy"></iframe>
       </div>
+      <div class="video-caption">Sophomore season highlights</div>
     </div>
     <div class="clips-grid">
       <a class="clip-card" href="https://drive.google.com/file/d/1Qp5L_AX8TKPIIsFRLu8k55W-861DGDnS/view" target="_blank" rel="noopener" data-reveal data-tilt>
@@ -545,141 +430,97 @@
   </div>
 </section>
 
-<div class="divider-wrap">
-  <div class="divider">
-    <div class="divider-line"></div>
-    <div class="divider-coin"><span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ahLogo"></use></svg></span></div>
-    <div class="divider-line"></div>
-  </div>
-</div>
-
-<section id="gallery">
+<section class="side-pad">
   <div class="wrap">
-    <div class="section-head center" data-reveal>
-      <div class="eyebrow">Media Day</div>
-      <div class="display">Photo Gallery</div>
-      <p>Portraits from her Broncos media day shoot.</p>
+    <div class="section-head" data-reveal>
+      <div class="display">More Photos</div>
+      <p>A few more looks from this season.</p>
     </div>
-    <div class="gallery-grid">
+    <div class="photo-grid">
       <a href="assets/img/hero-portrait.jpg" target="_blank" rel="noopener" data-reveal><img src="assets/img/hero-portrait.jpg" alt="Aiyana Haynes portrait holding a basketball" loading="lazy"></a>
       <a href="assets/img/action-fullbody.jpg" target="_blank" rel="noopener" data-reveal><img src="assets/img/action-fullbody.jpg" alt="Aiyana Haynes full body pose in her Broncos jersey" loading="lazy"></a>
       <a href="assets/img/close-serious.jpg" target="_blank" rel="noopener" data-reveal><img src="assets/img/close-serious.jpg" alt="Close up portrait of Aiyana Haynes" loading="lazy"></a>
-      <a href="assets/img/smile-portrait.jpg" target="_blank" rel="noopener" data-reveal><img src="assets/img/smile-portrait.jpg" alt="Aiyana Haynes smiling in her Broncos jersey" loading="lazy"></a>
       <a href="assets/img/studio-ball.jpg" target="_blank" rel="noopener" data-reveal><img src="assets/img/studio-ball.jpg" alt="Aiyana Haynes studio portrait holding a Wilson basketball" loading="lazy"></a>
+      <a href="assets/img/game-drive.jpg" target="_blank" rel="noopener" data-reveal><img src="assets/img/game-drive.jpg" alt="Aiyana Haynes driving to the basket in a game" loading="lazy"></a>
+      <a href="assets/img/game-handle.jpg" target="_blank" rel="noopener" data-reveal><img src="assets/img/game-handle.jpg" alt="Aiyana Haynes handling the ball in a game" loading="lazy"></a>
+      <a href="assets/img/game-defense.jpg" target="_blank" rel="noopener" data-reveal><img src="assets/img/game-defense.jpg" alt="Aiyana Haynes on the floor during a game" loading="lazy"></a>
+      <a href="assets/img/smile-portrait.jpg" target="_blank" rel="noopener" data-reveal><img src="assets/img/smile-portrait.jpg" alt="Aiyana Haynes smiling in her Broncos jersey" loading="lazy"></a>
     </div>
   </div>
 </section>
 
-<div class="divider-wrap">
-  <div class="divider">
-    <div class="divider-line"></div>
-    <div class="divider-coin"><span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ahLogo"></use></svg></span></div>
-    <div class="divider-line"></div>
-  </div>
-</div>
-
-<section id="partner">
+<section id="recruiting" class="side-pad">
   <div class="wrap">
-    <div class="partner-grid">
-      <div class="partner-copy" data-reveal>
-        <div class="eyebrow">Name, Image, Likeness</div>
-        <div class="display" style="font-size:clamp(28px,4vw,44px);margin-top:8px;">Partner With Aiyana</div>
-        <p style="margin-top:18px;">Aiyana is building her brand around performance, discipline, and youth impact through the game of basketball. She is open to partnerships with local and regional brands that align with athletic performance and community impact.</p>
-        <p>Her audience is built from athletes, parents, and the basketball community, people who value substance over hype.</p>
-        <ul class="opportunity-list">
-          <li><span class="dot"></span>Sponsored Posts</li>
-          <li><span class="dot"></span>Event Appearances</li>
-          <li><span class="dot"></span>Youth Clinics</li>
-          <li><span class="dot"></span>Product Promotion</li>
-          <li><span class="dot"></span>Brand Ambassador Packages</li>
-        </ul>
-      </div>
-      <div class="card partner-card" data-reveal data-tilt>
-        <div class="eyebrow">Let's Work Together</div>
-        <h3>Start A Conversation</h3>
-        <p>Interested in partnering with Aiyana or bringing her out for an appearance or youth clinic? Reach out and her team will follow up with a full media sheet.</p>
-        <a class="btn primary" href="mailto:aiyanahaynes.bball@gmail.com" style="width:100%;text-align:center;">Email Her Team</a>
-      </div>
+    <div class="section-head" data-reveal>
+      <div class="display">Recruiting</div>
     </div>
+    <div class="recruit-copy" data-reveal>
+      <p>Aiyana Haynes is a 2027 guard with three varsity seasons of production at Middleburg High School. She is registered with the NCAA Eligibility Center and is currently hearing from college programs.</p>
+      <div class="eyebrow">Current Offers</div>
+      <div class="offer-list">
+        <span class="offer-tag">Southwest Arkansas</span>
+        <span class="offer-tag">Taft College, California</span>
+      </div>
+      <div class="ncaa-id">NCAA ID# 2602827185</div>
+    </div>
+    <div class="recruit-photo" data-reveal>
+      <img src="assets/img/smile-portrait.jpg" alt="Aiyana Haynes portrait in her Broncos jersey" loading="lazy">
+    </div>
+    <div class="recruit-caption">Middleburg Lady Broncos</div>
   </div>
 </section>
 
-<div class="divider-wrap">
-  <div class="divider">
-    <div class="divider-line"></div>
-    <div class="divider-coin"><span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ahLogo"></use></svg></span></div>
-    <div class="divider-line"></div>
-  </div>
-</div>
-
-<section id="contact">
+<section id="contact" class="side-pad">
   <div class="wrap">
-    <div class="contact-grid">
-      <div class="contact-copy" data-reveal>
-        <div class="eyebrow">Get In Touch</div>
-        <h2 class="display" style="font-size:clamp(28px,4vw,44px);margin-top:8px;">Follow Her Season</h2>
-        <p>Recruiting questions, media requests, or partnership inquiries all go through her team. Reach out any time.</p>
+    <div class="section-head" data-reveal>
+      <div class="display">Contact</div>
+    </div>
+    <div class="contact-card" data-reveal data-tilt>
+      <div class="contact-block">
+        <div class="row"><span>Player Phone</span><span>(904) 947 5780</span></div>
+        <div class="row"><span>Player Email</span><span>aiyanahaynes.bball@gmail.com</span></div>
       </div>
-      <div class="contact-links" data-reveal>
-        <div class="card">
-          <div><span class="label">Email</span><span class="value">aiyanahaynes.bball@gmail.com</span></div>
-        </div>
-        <div class="card">
-          <div><span class="label">Team</span><span class="value">Middleburg High School Broncos</span></div>
-        </div>
-        <div class="card">
-          <div><span class="label">Class</span><span class="value">2027 Guard, No 20</span></div>
-        </div>
+      <div class="contact-block">
+        <div class="who">Parent Contact, Tenise Haynes</div>
+        <div class="row"><span>Phone</span><span>(904) 290 0261</span></div>
+      </div>
+      <div class="contact-block">
+        <div class="who">Coach Contact, Tenise Haynes</div>
+        <div class="row"><span>Phone</span><span>(904) 290 0261</span></div>
+        <div class="row"><span>Email</span><span>coachthaynes@gmail.com</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<footer id="footer">
+<section id="follow" class="side-pad" style="padding-top:0;">
   <div class="wrap">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ahLogo"></use></svg></span>
-        <span class="brand-text">
-          <span class="brand-name" style="font-size:20px;">Aiyana Haynes</span>
-          <span class="brand-sub">Guard, Class Of 2027</span>
-        </span>
-      </div>
-      <p class="footer-tagline">Calm off the court. Relentless on it. Middleburg Broncos Guard, No 20.</p>
+    <div class="section-head" data-reveal>
+      <div class="display">Follow Along And Watch More Film</div>
     </div>
+    <div class="link-rows" data-reveal>
+      <a class="link-row" href="https://www.instagram.com/aiyana_hc" target="_blank" rel="noopener">Instagram <svg viewBox="0 0 24 24"><use href="#extIcon"></use></svg></a>
+      <a class="link-row" href="https://x.com/aiyana_h_20" target="_blank" rel="noopener">X, Twitter <svg viewBox="0 0 24 24"><use href="#extIcon"></use></svg></a>
+      <a class="link-row" href="https://www.youtube.com/@AiyanaH.baller27" target="_blank" rel="noopener">YouTube <svg viewBox="0 0 24 24"><use href="#extIcon"></use></svg></a>
+      <a class="link-row" href="https://www.fieldlevel.com/app/profile/aiyana/basketballwomen" target="_blank" rel="noopener">Field Level <svg viewBox="0 0 24 24"><use href="#extIcon"></use></svg></a>
+      <a class="link-row" href="https://www.hudl.com/profile/20899818/Aiyana-Haynes" target="_blank" rel="noopener">Hudl <svg viewBox="0 0 24 24"><use href="#extIcon"></use></svg></a>
+      <a class="link-row" href="https://www.maxpreps.com/fl/middleburg/middleburg-broncos/athletes/aiyana-haynes/?careerid=5d7kddlh57g11" target="_blank" rel="noopener">Max Preps <svg viewBox="0 0 24 24"><use href="#extIcon"></use></svg></a>
+      <a class="link-row" href="https://prepgirlshoops.com/player/aiyana-haynes/" target="_blank" rel="noopener">Prep Girl Hoops <svg viewBox="0 0 24 24"><use href="#extIcon"></use></svg></a>
+    </div>
+  </div>
+</section>
+
+<footer class="side-pad">
+  <div class="wrap">
     <div class="footer-eh-credit">
       <span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ehLogo"></use></svg></span>
       <div>
         <div class="eh-credit-title">Elevate Her Tier 3 Profile</div>
-        <div class="eh-credit-sub">A written scouting report, a personal recruiting site, professional photos, and season film, built by Elevate Her.</div>
-      </div>
-    </div>
-    <div class="footer-grid">
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <a href="mailto:aiyanahaynes.bball@gmail.com">aiyanahaynes.bball@gmail.com</a>
-        <p>Middleburg High School Broncos</p>
-      </div>
-      <div class="footer-col">
-        <h4>Follow Along</h4>
-        <div class="social-links">
-          <a href="#" target="_blank" rel="noopener">Instagram</a>
-          <a href="#" target="_blank" rel="noopener">X, Twitter</a>
-          <a href="#" target="_blank" rel="noopener">YouTube</a>
-          <a href="#" target="_blank" rel="noopener">TikTok</a>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h4>Explore</h4>
-        <a href="#about">About</a>
-        <a href="#highlights">Highlights</a>
-        <a href="#stats">Stats</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#partner">Partner</a>
+        <div class="eh-credit-sub">A player website, professional photos, and season film, built by Elevate Her.</div>
       </div>
     </div>
     <div class="rule"></div>
-    <div class="foot-bottom">
+    <div class="foot-bottom" style="margin-top:20px;">
       <div>&copy; 2026 Aiyana Haynes. All rights reserved.</div>
       <div class="mono">Guard No 20</div>
     </div>
@@ -698,7 +539,6 @@
   "use strict";
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* scroll progress */
   var progress = document.getElementById('progress');
   function onScroll(){
     var h = document.documentElement;
@@ -709,7 +549,6 @@
   document.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
 
-  /* reveal on scroll */
   var revealEls = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
   if(!reduceMotion && 'IntersectionObserver' in window){
     revealEls.forEach(function(el){ el.classList.add('pending'); });
@@ -724,23 +563,6 @@
     revealEls.forEach(function(el){ io.observe(el); });
   }
 
-  /* divider coins spin in once when scrolled into view */
-  var coins = Array.prototype.slice.call(document.querySelectorAll('.divider-coin'));
-  if('IntersectionObserver' in window){
-    var coinIo = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(entry.isIntersecting){
-          entry.target.classList.add('spin');
-          coinIo.unobserve(entry.target);
-        }
-      });
-    }, {threshold:0.5});
-    coins.forEach(function(c){ coinIo.observe(c); });
-  } else {
-    coins.forEach(function(c){ c.classList.add('spin'); });
-  }
-
-  /* pointer tilt on cards */
   if(!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches){
     var tiltEls = Array.prototype.slice.call(document.querySelectorAll('[data-tilt]'));
     tiltEls.forEach(function(el){
@@ -749,8 +571,8 @@
         if(!rect) rect = el.getBoundingClientRect();
         var px = (e.clientX - rect.left) / rect.width;
         var py = (e.clientY - rect.top) / rect.height;
-        var rx = (0.5 - py) * 7;
-        var ry = (px - 0.5) * 9;
+        var rx = (0.5 - py) * 6;
+        var ry = (px - 0.5) * 7;
         if(raf) cancelAnimationFrame(raf);
         raf = requestAnimationFrame(function(){
           el.style.transform = 'perspective(900px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) translateZ(0)';
@@ -763,7 +585,6 @@
     });
   }
 
-  /* fixed floating scroll badge: flips as the page scrolls */
   var badge = document.getElementById('scrollBadge');
   var badgeCoin = document.getElementById('badgeCoin');
   var heroEl = document.getElementById('top');
@@ -774,7 +595,7 @@
       var badgeIo = new IntersectionObserver(function(entries){
         var heroShown = entries[0].isIntersecting;
         badge.classList.toggle('visible', !heroShown);
-      }, {threshold:0.15});
+      }, {threshold:0.1});
       badgeIo.observe(heroEl);
     } else {
       badge.classList.add('visible');
@@ -797,7 +618,7 @@
       })();
     }
 
-    var jumpTargets = Array.prototype.slice.call(document.querySelectorAll('section[id], footer[id]'));
+    var jumpTargets = Array.prototype.slice.call(document.querySelectorAll('section[id], footer'));
     badge.addEventListener('click', function(){
       var y = window.scrollY + 80;
       var next = jumpTargets.find(function(el){ return el.offsetTop > y; });
@@ -809,7 +630,6 @@
     });
   }
 
-  /* small interactive 3D basketball spinning beside the hero CTA */
   var ballCanvas = document.getElementById('heroBall');
   if(ballCanvas && window.THREE && !reduceMotion){
     try {
@@ -838,7 +658,6 @@
       ctx.beginPath(); ctx.arc(0,128,110,-1,1); ctx.stroke();
       ctx.beginPath(); ctx.arc(256,128,110,Math.PI-1,Math.PI+1); ctx.stroke();
       var texture = new THREE.CanvasTexture(texCanvas);
-      texture.wrapS = THREE.RepeatWrapping;
 
       var ballGeo = new THREE.SphereGeometry(1, 32, 32);
       var ballMat = new THREE.MeshStandardMaterial({map:texture, roughness:0.55, metalness:0.05});
@@ -846,7 +665,7 @@
       scene.add(ball);
 
       function size(){
-        var s = ballCanvas.clientWidth || 64;
+        var s = ballCanvas.clientWidth || 56;
         renderer.setSize(s, s, false);
         camera.aspect = 1;
         camera.updateProjectionMatrix();
