@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Questionnaire, Elevate Her Hoops Report</title>
+<meta name="description" content="Fill out this questionnaire so we can build your player's free Essential Scout profile on Elevate Her Hoops Report.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏀</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#1E1035;
+    --violet-deep:#150a28;
+    --panel:#241640;
+    --panel-2:#2c1a4d;
+    --line:rgba(255,255,255,0.12);
+    --white:#FFFFFF;
+    --dim:rgba(255,255,255,0.68);
+    --magenta:#FF2E93;
+    --magenta-deep:#c81f70;
+    --teal:#00F5D4;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--violet);color:var(--white);font-family:'Poppins',sans-serif;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+    padding-left:max(20px, env(safe-area-inset-left,0px));
+    padding-right:max(20px, env(safe-area-inset-right,0px));
+  }
+  a{color:var(--teal);text-decoration:none;}
+  a:hover{color:var(--white);}
+  .display{font-family:'Fredoka',sans-serif;font-weight:600;line-height:1.06;text-wrap:balance;}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;}
+  .wrap{max-width:820px;margin:0 auto;}
+  .rule{height:1px;background:var(--line);width:100%;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;color:var(--teal);font-weight:600;font-size:12.5px;letter-spacing:0.14em;text-transform:uppercase;}
+  .logo-icon{display:block;width:100%;height:100%;}
+
+  nav{
+    position:sticky;top:0;z-index:60;margin:0 -20px;padding:0 20px;
+    background:rgba(21,10,40,0.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:66px;gap:18px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .logo-icon-wrap{width:34px;height:34px;flex-shrink:0;}
+  .brand-text{display:flex;flex-direction:column;line-height:1.1;}
+  .brand-name{font-family:'Fredoka',sans-serif;font-weight:700;font-size:17px;letter-spacing:0.01em;color:var(--white);}
+  .brand-sub{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.16em;text-transform:uppercase;color:var(--teal);margin-top:1px;}
+  .btn{display:inline-block;padding:11px 20px;font-weight:700;font-size:13px;border-radius:999px;font-family:'Poppins',sans-serif;border:2px solid transparent;transition:all .2s;white-space:nowrap;cursor:pointer;}
+  .btn.primary{background:var(--magenta);color:var(--white);box-shadow:0 8px 22px rgba(255,46,147,0.35);}
+  .btn.primary:hover{background:var(--magenta-deep);color:var(--white);}
+
+  .page-head{padding:48px 0 8px;}
+  .page-head .display{font-size:clamp(28px,4.4vw,44px);color:var(--white);}
+  .page-head p{color:var(--dim);margin-top:12px;font-size:14.5px;max-width:64ch;}
+  .free-note{
+    margin-top:20px;border:1px solid var(--teal);background:rgba(0,245,212,0.08);
+    border-radius:16px;padding:14px 18px;font-size:13.5px;color:var(--white);
+  }
+
+  form{padding:16px 0 70px;}
+  .form-section{margin-top:40px;}
+  .form-section:first-of-type{margin-top:32px;}
+  .section-title{font-family:'Fredoka',sans-serif;font-weight:600;font-size:19px;color:var(--white);}
+  .section-sub{color:var(--dim);font-size:13px;margin-top:4px;}
+  .hp-field{position:absolute;left:-9999px;}
+  .form-row{margin-top:16px;display:flex;flex-direction:column;gap:6px;}
+  .form-row label{font-size:12.5px;font-weight:600;color:var(--dim);}
+  .form-row .hint{font-size:11.5px;color:var(--dim);opacity:0.75;font-weight:400;}
+  .form-row input,.form-row select,.form-row textarea{
+    background:var(--violet-deep);border:1px solid var(--line);border-radius:12px;
+    padding:11px 14px;color:var(--white);font-family:'Poppins',sans-serif;font-size:14px;width:100%;
+  }
+  .form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+  .form-row textarea{resize:vertical;min-height:70px;}
+  .form-row input[type="file"]{padding:9px 10px;}
+  .form-two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .form-three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  @media (max-width:600px){ .form-two,.form-three{grid-template-columns:1fr;} }
+
+  .stat-table-wrap{margin-top:18px;overflow-x:auto;border:1px solid var(--line);border-radius:14px;}
+  table.stat-table{border-collapse:collapse;width:100%;min-width:640px;}
+  table.stat-table th,table.stat-table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;}
+  table.stat-table th{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.05em;text-transform:uppercase;
+    color:var(--teal);font-weight:600;background:var(--panel);
+  }
+  table.stat-table th:first-child,table.stat-table td:first-child{
+    position:sticky;left:0;background:var(--panel-2);font-weight:600;font-size:13px;min-width:110px;
+  }
+  table.stat-table td input{
+    width:100%;background:var(--violet-deep);border:1px solid var(--line);border-radius:8px;
+    padding:7px 8px;color:var(--white);font-size:13px;font-family:'IBM Plex Mono',monospace;
+  }
+  table.stat-table tr:last-child td{border-bottom:none;}
+
+  .form-submit{margin-top:30px;width:100%;border:none;}
+  .form-status{margin-top:14px;font-size:13.5px;}
+  .form-status.success{color:var(--teal);}
+  .form-status.error{color:var(--magenta);}
+
+  footer{padding:56px 0 46px;border-top:1px solid var(--line);}
+  .foot-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:12.5px;max-width:1120px;margin:0 auto;}
+  :focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ehLogo" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="88" fill="none" stroke="#00F5D4" stroke-width="9"/>
+    <path d="M16 66 Q100 18 184 66" fill="none" stroke="#00F5D4" stroke-width="9" stroke-linecap="round"/>
+    <path d="M20 138 Q100 188 180 132" fill="none" stroke="#00F5D4" stroke-width="9" stroke-linecap="round"/>
+    <g fill="none" stroke="#FF2E93" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M64 58 L64 142"/><path d="M64 58 L98 58"/><path d="M64 100 L92 100"/><path d="M64 142 L98 142"/>
+      <path d="M120 58 L120 142"/><path d="M148 58 L148 142"/><path d="M120 100 L148 100"/>
+    </g>
+  </symbol>
+</svg>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ehLogo"></use></svg></span>
+      <span class="brand-text">
+        <span class="brand-name">Elevate Her</span>
+        <span class="brand-sub">Hoops Report</span>
+      </span>
+    </a>
+    <a class="btn primary" href="index.html#pricing">Pricing</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="eyebrow">Free Essential Scout</div>
+    <div class="display">Player Questionnaire</div>
+    <p>Fill this out with as much detail as you have. Leave anything blank you don't have yet, you can always send it to us later and we will add it to her profile.</p>
+    <div class="free-note">This questionnaire is free to fill out. Once we have her info we will build her Essential Scout profile and reach out before anything is ever posted or any payment is discussed.</div>
+  </div>
+
+  <form name="player-questionnaire" id="questionnaireForm" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data">
+    <input type="hidden" name="form-name" value="player-questionnaire">
+    <p class="hp-field" aria-hidden="true">
+      <label>Leave this field blank <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+    </p>
+
+    <div class="form-section">
+      <div class="section-title">Player Info</div>
+      <div class="section-sub">The basics we need to set up her page.</div>
+      <div class="form-two">
+        <div class="form-row"><label for="playerName">Player Full Name</label><input type="text" name="playerName" id="playerName" required></div>
+        <div class="form-row"><label for="jerseyNumber">Jersey Number</label><input type="text" name="jerseyNumber" id="jerseyNumber"></div>
+      </div>
+      <div class="form-three">
+        <div class="form-row"><label for="highSchool">High School</label><input type="text" name="highSchool" id="highSchool" required></div>
+        <div class="form-row"><label for="gradYear">Class Of (Graduation Year)</label><input type="text" name="gradYear" id="gradYear" required></div>
+        <div class="form-row"><label for="position">Position</label><input type="text" name="position" id="position" placeholder="Guard, Forward, etc"></div>
+      </div>
+    </div>
+
+    <div class="rule" style="margin-top:36px;"></div>
+
+    <div class="form-section">
+      <div class="section-title">Contact Information</div>
+      <div class="form-two">
+        <div class="form-row"><label for="playerPhone">Player Phone</label><input type="tel" name="playerPhone" id="playerPhone"></div>
+        <div class="form-row"><label for="playerEmail">Player Email</label><input type="email" name="playerEmail" id="playerEmail"></div>
+      </div>
+      <div class="form-two">
+        <div class="form-row"><label for="guardianName">Parent Or Guardian Name</label><input type="text" name="guardianName" id="guardianName" required></div>
+        <div class="form-row"><label for="guardianPhone">Parent Or Guardian Phone</label><input type="tel" name="guardianPhone" id="guardianPhone" required></div>
+      </div>
+      <div class="form-row"><label for="guardianEmail">Parent Or Guardian Email</label><input type="email" name="guardianEmail" id="guardianEmail" required></div>
+    </div>
+
+    <div class="rule" style="margin-top:36px;"></div>
+
+    <div class="form-section">
+      <div class="section-title">Academic Info</div>
+      <div class="section-sub">Optional, but coaches ask.</div>
+      <div class="form-three">
+        <div class="form-row"><label for="gpa">GPA</label><input type="text" name="gpa" id="gpa"></div>
+        <div class="form-row"><label for="sat">SAT</label><input type="text" name="sat" id="sat"></div>
+        <div class="form-row"><label for="act">ACT</label><input type="text" name="act" id="act"></div>
+      </div>
+      <div class="form-row"><label for="dualEnrollment">Dual Enrollment</label><input type="text" name="dualEnrollment" id="dualEnrollment" placeholder="Classes or credits, if any"></div>
+    </div>
+
+    <div class="rule" style="margin-top:36px;"></div>
+
+    <div class="form-section">
+      <div class="section-title">Measurables</div>
+      <div class="form-three">
+        <div class="form-row"><label for="height">Height</label><input type="text" name="height" id="height" placeholder="5'8"></div>
+        <div class="form-row"><label for="weight">Weight</label><input type="text" name="weight" id="weight"></div>
+        <div class="form-row"><label for="standingReach">Standing Reach</label><input type="text" name="standingReach" id="standingReach"></div>
+      </div>
+      <div class="form-two">
+        <div class="form-row"><label for="wingspan">Wingspan</label><input type="text" name="wingspan" id="wingspan"></div>
+        <div class="form-row"><label for="shoeSize">Shoe Size</label><input type="text" name="shoeSize" id="shoeSize"></div>
+      </div>
+    </div>
+
+    <div class="rule" style="margin-top:36px;"></div>
+
+    <div class="form-section">
+      <div class="section-title">Athletic Testing</div>
+      <div class="section-sub">Fill in whatever she has tested, skip the rest.</div>
+      <div class="form-three">
+        <div class="form-row"><label for="standingVertical">Standing Vertical</label><input type="text" name="standingVertical" id="standingVertical"></div>
+        <div class="form-row"><label for="maxVertical">Max Vertical</label><input type="text" name="maxVertical" id="maxVertical"></div>
+        <div class="form-row"><label for="benchDeadliftSquat">Bench / Deadlift / Squat</label><input type="text" name="benchDeadliftSquat" id="benchDeadliftSquat" placeholder="115/UN/UN"></div>
+      </div>
+      <div class="form-three">
+        <div class="form-row"><label for="laneAgility">Lane Agility</label><input type="text" name="laneAgility" id="laneAgility"></div>
+        <div class="form-row"><label for="shuttleRun">Shuttle Run (3/4 Court)</label><input type="text" name="shuttleRun" id="shuttleRun"></div>
+        <div class="form-row"><label for="threeQtrSprint">Three Qtr Sprint</label><input type="text" name="threeQtrSprint" id="threeQtrSprint"></div>
+      </div>
+    </div>
+
+    <div class="rule" style="margin-top:36px;"></div>
+
+    <div class="form-section">
+      <div class="section-title">Season Stats</div>
+      <div class="section-sub">Leave any year blank if she hasn't played it yet.</div>
+      <div class="stat-table-wrap">
+        <table class="stat-table">
+          <thead>
+            <tr><th>Season</th><th>PPG</th><th>Rebounds</th><th>Steals</th><th>Blocks</th><th>Assists</th><th>Total Points</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Freshman</td>
+              <td><input type="text" name="statFreshmanPPG"></td>
+              <td><input type="text" name="statFreshmanRebounds"></td>
+              <td><input type="text" name="statFreshmanSteals"></td>
+              <td><input type="text" name="statFreshmanBlocks"></td>
+              <td><input type="text" name="statFreshmanAssists"></td>
+              <td><input type="text" name="statFreshmanTotalPoints"></td>
+            </tr>
+            <tr>
+              <td>Sophomore</td>
+              <td><input type="text" name="statSophomorePPG"></td>
+              <td><input type="text" name="statSophomoreRebounds"></td>
+              <td><input type="text" name="statSophomoreSteals"></td>
+              <td><input type="text" name="statSophomoreBlocks"></td>
+              <td><input type="text" name="statSophomoreAssists"></td>
+              <td><input type="text" name="statSophomoreTotalPoints"></td>
+            </tr>
+            <tr>
+              <td>Junior</td>
+              <td><input type="text" name="statJuniorPPG"></td>
+              <td><input type="text" name="statJuniorRebounds"></td>
+              <td><input type="text" name="statJuniorSteals"></td>
+              <td><input type="text" name="statJuniorBlocks"></td>
+              <td><input type="text" name="statJuniorAssists"></td>
+              <td><input type="text" name="statJuniorTotalPoints"></td>
+            </tr>
+            <tr>
+              <td>Senior</td>
+              <td><input type="text" name="statSeniorPPG"></td>
+              <td><input type="text" name="statSeniorRebounds"></td>
+              <td><input type="text" name="statSeniorSteals"></td>
+              <td><input type="text" name="statSeniorBlocks"></td>
+              <td><input type="text" name="statSeniorAssists"></td>
+              <td><input type="text" name="statSeniorTotalPoints"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="rule" style="margin-top:36px;"></div>
+
+    <div class="form-section">
+      <div class="section-title">Film &amp; Social Links</div>
+      <div class="section-sub">Paste whichever links she already has, leave the rest blank.</div>
+      <div class="form-two">
+        <div class="form-row"><label for="hudl">Hudl</label><input type="url" name="hudl" id="hudl" placeholder="https://"></div>
+        <div class="form-row"><label for="maxpreps">MaxPreps</label><input type="url" name="maxpreps" id="maxpreps" placeholder="https://"></div>
+      </div>
+      <div class="form-two">
+        <div class="form-row"><label for="fieldlevel">FieldLevel</label><input type="url" name="fieldlevel" id="fieldlevel" placeholder="https://"></div>
+        <div class="form-row"><label for="prepgirlshoops">Prep Girls Hoops</label><input type="url" name="prepgirlshoops" id="prepgirlshoops" placeholder="https://"></div>
+      </div>
+      <div class="form-two">
+        <div class="form-row"><label for="instagram">Instagram</label><input type="url" name="instagram" id="instagram" placeholder="https://"></div>
+        <div class="form-row"><label for="twitter">X / Twitter</label><input type="url" name="twitter" id="twitter" placeholder="https://"></div>
+      </div>
+      <div class="form-row"><label for="youtube">YouTube (Highlights / Game Film)</label><input type="url" name="youtube" id="youtube" placeholder="https://"></div>
+    </div>
+
+    <div class="rule" style="margin-top:36px;"></div>
+
+    <div class="form-section">
+      <div class="section-title">Coach Contact</div>
+      <div class="section-sub">Her team or club coach, so we can confirm details if needed.</div>
+      <div class="form-three">
+        <div class="form-row"><label for="coachName">Coach Name</label><input type="text" name="coachName" id="coachName"></div>
+        <div class="form-row"><label for="coachPhone">Coach Phone</label><input type="tel" name="coachPhone" id="coachPhone"></div>
+        <div class="form-row"><label for="coachEmail">Coach Email</label><input type="email" name="coachEmail" id="coachEmail"></div>
+      </div>
+    </div>
+
+    <div class="rule" style="margin-top:36px;"></div>
+
+    <div class="form-section">
+      <div class="section-title">College Interest</div>
+      <div class="form-row"><label for="currentOffers">Current Offers <span class="hint">List any schools, one per line</span></label><textarea name="currentOffers" id="currentOffers"></textarea></div>
+      <div class="form-row"><label for="ncaaId">NCAA ID Number</label><input type="text" name="ncaaId" id="ncaaId"></div>
+    </div>
+
+    <div class="rule" style="margin-top:36px;"></div>
+
+    <div class="form-section">
+      <div class="section-title">Photo</div>
+      <div class="form-row">
+        <label for="playerPhoto">Upload One Photo <span class="hint">JPG or PNG, this is the photo used on her profile</span></label>
+        <input type="file" name="playerPhoto" id="playerPhoto" accept="image/*">
+      </div>
+    </div>
+
+    <div class="rule" style="margin-top:36px;"></div>
+
+    <div class="form-section">
+      <div class="form-row"><label for="message">Anything Else We Should Know</label><textarea name="message" id="message"></textarea></div>
+    </div>
+
+    <button type="submit" class="btn primary form-submit">Submit Questionnaire</button>
+    <p class="form-status" id="formStatus" hidden></p>
+  </form>
+</div>
+
+<footer>
+  <div class="foot-bottom">
+    <div><a href="index.html">&larr; Back to Elevate Her Hoops Report</a></div>
+    <div class="mono">Hoops Report</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var form = document.getElementById('questionnaireForm');
+  var formStatus = document.getElementById('formStatus');
+  if(!form) return;
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = new FormData(form);
+    var submitBtn = form.querySelector('.form-submit');
+    if(submitBtn) submitBtn.disabled = true;
+    formStatus.hidden = false;
+    formStatus.className = 'form-status';
+    formStatus.textContent = 'Sending her info...';
+
+    fetch('/', { method: 'POST', body: data }).then(function(response){
+      if(!response.ok) throw new Error('form submission failed');
+      formStatus.className = 'form-status success';
+      formStatus.textContent = 'Thanks! We received her info and will reach out to get her profile built.';
+      form.reset();
+      if(submitBtn) submitBtn.disabled = false;
+      window.scrollTo({top:0, behavior:'smooth'});
+    }).catch(function(){
+      formStatus.className = 'form-status error';
+      formStatus.textContent = 'Something went wrong sending this. Please email the details to coachthaynes@gmail.com instead.';
+      if(submitBtn) submitBtn.disabled = false;
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
