@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sophia Butler | Middleburg Lady Broncos</title>
+<meta name="description" content="Sophia Butler, Middleburg Lady Broncos. Full stats and film on MaxPreps.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sophia Butler | Middleburg Lady Broncos">
+<meta property="og:description" content="Sophia Butler, Middleburg Lady Broncos. Full stats and film on MaxPreps.">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0a0a0a;
+    --panel:#151515;
+    --red:#d0202c;
+    --red-dark:#8c0f18;
+    --white:#f5f5f3;
+    --line:#2a2a2a;
+    --gray:#9a9a9a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--white);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .display{
+    font-family:'Anton',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    line-height:0.98;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 28px;}
+  .rule{height:1px;background:var(--line);width:100%;}
+
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(10,10,10,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    height:64px;
+  }
+  .nav-name{font-family:'Anton',sans-serif;font-size:19px;letter-spacing:0.03em;text-transform:uppercase;}
+  .nav-name span{color:var(--red);}
+  .nav-links{display:flex;gap:26px;font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;}
+  .nav-links a{color:var(--gray);transition:color .2s;}
+  .nav-links a:hover{color:var(--white);}
+  @media (max-width:640px){ .nav-links{gap:16px;font-size:11px;} }
+
+  .hero{
+    position:relative;
+    text-align:center;
+    padding:96px 24px 72px;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-eyebrow{
+    color:var(--red);font-weight:700;font-size:14px;letter-spacing:0.08em;
+    margin-bottom:16px;text-transform:uppercase;
+  }
+  .hero h1{
+    font-size:clamp(44px,8vw,84px);
+    color:var(--white);
+  }
+  .hero-sub{
+    margin:18px auto 0;font-size:17px;color:var(--gray);max-width:44ch;line-height:1.55;
+  }
+  .hero-cta{margin-top:32px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+  .btn{
+    display:inline-block;padding:13px 22px;font-weight:700;font-size:13px;
+    letter-spacing:0.05em;text-transform:uppercase;
+    border:1px solid var(--white);transition:all .2s;
+  }
+  .btn.primary{background:var(--red);border-color:var(--red);color:var(--white);}
+  .btn.primary:hover{background:var(--red-dark);border-color:var(--red-dark);}
+  .btn.ghost:hover{background:var(--white);color:var(--black);}
+
+  section{padding:72px 0;position:relative;}
+  .section-head{margin-bottom:36px;max-width:60ch;margin-left:auto;margin-right:auto;text-align:center;}
+  .section-head .display{font-size:clamp(28px,4vw,40px);color:var(--white);}
+  .section-head p{color:var(--gray);margin-top:12px;font-size:15px;line-height:1.6;}
+
+  .vitals{border:1px solid var(--line);background:var(--panel);max-width:520px;margin:0 auto;}
+  .vitals-row{
+    display:flex;justify-content:space-between;padding:14px 20px;
+    border-bottom:1px solid var(--line);font-size:14px;
+  }
+  .vitals-row:last-child{border-bottom:none;}
+  .vitals-row span:first-child{color:var(--gray);}
+  .vitals-row span:last-child{font-weight:700;color:var(--white);}
+  .vitals-title{
+    padding:16px 20px;font-family:'Anton',sans-serif;letter-spacing:0.04em;
+    background:var(--red);color:var(--white);font-size:15px;text-align:center;
+  }
+
+  .contact-card{border:1px solid var(--line);background:var(--panel);padding:26px 28px;max-width:520px;margin:0 auto;}
+  .contact-card h4{font-family:'Anton',sans-serif;font-size:16px;letter-spacing:0.04em;margin-bottom:16px;}
+  .contact-row{font-size:14px;color:#d5d5d5;margin-bottom:8px;}
+  .contact-row span{color:var(--gray);}
+
+  footer{padding:56px 0 40px;border-top:1px solid var(--line);}
+  .links-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:40px;max-width:760px;margin-left:auto;margin-right:auto;
+  }
+  .link-pill{
+    border:1px solid var(--line);padding:16px 18px;font-size:13px;font-weight:600;
+    display:flex;align-items:center;justify-content:space-between;transition:all .2s;
+  }
+  .link-pill:hover{border-color:var(--red);color:var(--red);}
+  .foot-bottom{
+    display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;
+    color:var(--gray);font-size:13px;text-align:center;
+  }
+  .foot-bottom .brand{color:var(--white);font-weight:700;}
+  @media (max-width:640px){ .links-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="nav-name">SOPHIA BUTLER</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#links">Links</a>
+      <a href="players-directory.html">Elevate Her Hoops</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero" id="top">
+  <div class="hero-eyebrow">Middleburg Lady Broncos</div>
+  <h1 class="display">SOPHIA BUTLER</h1>
+  <p class="hero-sub">Full stats, game film, and season updates are on the way. Her MaxPreps profile is live now.</p>
+  <div class="hero-cta">
+    <a class="btn primary" href="https://www.maxpreps.com/fl/middleburg/middleburg-broncos/athletes/sophia-butler/?careerid=8vrcld9u7susc" target="_blank" rel="noopener">View On MaxPreps</a>
+    <a class="btn ghost" href="#links">All Links</a>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display">About</div>
+      <p>This page is just getting started. Check back soon for her full bio, stats, and highlight film.</p>
+    </div>
+    <div class="vitals">
+      <div class="vitals-title">Team</div>
+      <div class="vitals-row"><span>Team</span><span>Middleburg Lady Broncos</span></div>
+      <div class="vitals-row"><span>Full Profile</span><span>MaxPreps</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="coach" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display">Coach Contact</div>
+      <p>Reach the Middleburg Lady Broncos coaching staff.</p>
+    </div>
+    <div class="contact-card">
+      <h4>Tenise Haynes</h4>
+      <div class="contact-row"><span>Phone </span>904 290 0261</div>
+      <div class="contact-row"><span>Email </span>coachthaynes@gmail.com</div>
+    </div>
+  </div>
+</section>
+
+<footer id="links">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display" style="font-size:clamp(24px,3.4vw,34px);">Links</div>
+    </div>
+    <div class="links-grid">
+      <a class="link-pill" href="https://www.maxpreps.com/fl/middleburg/middleburg-broncos/athletes/sophia-butler/?careerid=8vrcld9u7susc" target="_blank" rel="noopener">MaxPreps &nbsp; &#8599;</a>
+      <a class="link-pill" href="players-directory.html">Elevate Her Hoops &nbsp; &#8599;</a>
+      <a class="link-pill" href="mailto:coachthaynes@gmail.com">Email Coach &nbsp; &#8599;</a>
+    </div>
+    <div class="rule" style="margin-bottom:24px;"></div>
+    <div class="foot-bottom">
+      <div><span class="brand">Sophia Butler</span> &middot; Middleburg Lady Broncos</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
