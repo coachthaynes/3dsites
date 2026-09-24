@@ -32,6 +32,7 @@ function loginPage(errorMessage) {
   .btn{width:100%;padding:12px;border:none;border-radius:999px;background:var(--magenta);color:var(--white);font-weight:700;font-size:14px;margin-top:8px;cursor:pointer;}
   .error{background:rgba(255,46,147,0.12);border:1px solid var(--magenta);color:var(--white);padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:16px;}
   .note{margin-top:18px;font-size:12.5px;color:var(--dim);text-align:center;}
+  .hint{font-size:11.5px;color:var(--dim);margin-top:4px;}
 </style>
 </head>
 <body>
@@ -40,7 +41,11 @@ function loginPage(errorMessage) {
   <div class="sub">Sign in to edit your Elevate Her profile.</div>
   ${errorMessage ? `<div class="error">${esc(errorMessage)}</div>` : ""}
   <form method="POST" action="/player-login">
-    <div class="field"><label>Email</label><input type="email" name="email" required></div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" name="email" required>
+      <div class="hint">Use the player email you entered on your profile, not a parent or guardian email.</div>
+    </div>
     <div class="field"><label>Password</label><input type="password" name="password" required></div>
     <button type="submit" class="btn">Log In</button>
   </form>
