@@ -1,2 +1,59 @@
 [build]
   publish = "."
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/players-directory.html"
+  to = "/.netlify/functions/directory"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/nyla-parsons.html"
+  to = "/.netlify/functions/player?slug=nyla-parsons"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/maliya-lassiter.html"
+  to = "/.netlify/functions/player?slug=maliya-lassiter"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/janiyla-owens.html"
+  to = "/.netlify/functions/player?slug=janiyla-owens"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/sophia-butler.html"
+  to = "/.netlify/functions/player?slug=sophia-butler"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/catherine-bodway.html"
+  to = "/.netlify/functions/player?slug=catherine-bodway"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/aliyna-mccobb.html"
+  to = "/.netlify/functions/player?slug=aliyna-mccobb"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/savanna-padgett.html"
+  to = "/.netlify/functions/player?slug=savanna-padgett"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/players/*"
+  to = "/.netlify/functions/player?slug=:splat"
+  status = 200
+  force = true
