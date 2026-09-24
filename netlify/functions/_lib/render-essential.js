@@ -1,4 +1,5 @@
 const CSS = require("./essential-css");
+const { getSchoolColors } = require("./school-colors");
 
 function esc(s) {
   if (s === undefined || s === null) return "";
@@ -35,7 +36,8 @@ function renderEssentialPlayer(p) {
   const name = p.playerName || "Player";
   const upper = name.toUpperCase();
   const school = p.highSchool || "Middleburg High School";
-  const team = "Middleburg Lady Broncos";
+  const schoolColors = getSchoolColors(school);
+  const team = /middleburg/i.test(school) ? "Middleburg Lady Broncos" : `${school} Girls Basketball`;
   const tagLine = [p.position, p.gradYear ? `Class of ${p.gradYear}` : ""].filter(Boolean).join(", ");
 
   const vitalsRows = [
@@ -99,16 +101,17 @@ function renderEssentialPlayer(p) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${esc(name)} | Middleburg Lady Broncos</title>
-<meta name="description" content="${esc(name)}, Middleburg Lady Broncos. Full stats and film on MaxPreps.">
+<title>${esc(name)} | ${esc(team)}</title>
+<meta name="description" content="${esc(name)}, ${esc(team)}. Full stats and film on MaxPreps.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="${esc(name)} | Middleburg Lady Broncos">
-<meta property="og:description" content="${esc(name)}, Middleburg Lady Broncos.">
+<meta property="og:title" content="${esc(name)} | ${esc(team)}">
+<meta property="og:description" content="${esc(name)}, ${esc(team)}.">
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>${CSS}</style>
+<style>:root{--red:${schoolColors.accent};--red-dark:${schoolColors.accentDark};}</style>
 </head>
 <body>
 
@@ -209,7 +212,7 @@ ${hasContact ? `<section id="contact">
   <div class="wrap">
     <div class="section-head">
       <div class="display">Coach Contact</div>
-      <p>Reach the Middleburg Lady Broncos coaching staff.</p>
+      <p>Reach the ${esc(team)} coaching staff.</p>
     </div>
     <div class="contact-card">
       <h4>${esc(p.coachName || "Tenise Haynes")}</h4>
