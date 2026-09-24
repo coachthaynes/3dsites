@@ -148,7 +148,7 @@
     </div>
     <div class="card" style="padding:0;overflow-x:auto;">
       <table>
-        <thead><tr><th>Name</th><th>School</th><th>Status</th><th>MaxPreps</th><th></th></tr></thead>
+        <thead><tr><th>Name</th><th>School</th><th>Status</th><th>Views</th><th>MaxPreps</th><th></th></tr></thead>
         <tbody id="playersTableBody"></tbody>
       </table>
     </div>
@@ -479,7 +479,7 @@
   function renderPlayers(){
     var tbody = document.getElementById('playersTableBody');
     if(playersCache.length === 0){
-      tbody.innerHTML = '<tr><td colspan="5" class="empty-note">No players yet.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-note">No players yet.</td></tr>';
       return;
     }
     tbody.innerHTML = playersCache.map(function(p){
@@ -488,6 +488,7 @@
         '<td><strong>' + esc(p.playerName || '(unnamed)') + '</strong></td>' +
         '<td>' + esc(p.highSchool || '') + '</td>' +
         '<td><span class="status-pill ' + status + '">' + status + '</span></td>' +
+        '<td>' + (p.views || 0) + '</td>' +
         '<td>' + (p.maxpreps ? '<a href="' + esc(p.maxpreps) + '" target="_blank" rel="noopener" class="mono" style="font-size:11px;color:var(--teal);">link &#8599;</a>' : '') + '</td>' +
         '<td class="row-actions">' +
           '<a class="btn small" href="/players/' + esc(p.slug) + '" target="_blank" rel="noopener">View</a>' +

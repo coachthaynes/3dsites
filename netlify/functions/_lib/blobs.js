@@ -28,6 +28,23 @@ function photosStore() {
   return makeStore("photos");
 }
 
+function viewsStore() {
+  return makeStore("views");
+}
+
+async function incrementViews(slug) {
+  const store = viewsStore();
+  const current = (await store.get(slug, { type: "json" })) || 0;
+  const next = current + 1;
+  await store.setJSON(slug, next);
+  return next;
+}
+
+async function getViews(slug) {
+  const store = viewsStore();
+  return (await store.get(slug, { type: "json" })) || 0;
+}
+
 async function listPlayers() {
   const store = playersStore();
   const { blobs } = await store.list();
@@ -79,6 +96,9 @@ module.exports = {
   playersStore,
   submissionsStore,
   photosStore,
+  viewsStore,
+  incrementViews,
+  getViews,
   listPlayers,
   getPlayer,
   savePlayer,

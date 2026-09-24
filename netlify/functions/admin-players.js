@@ -1,4 +1,4 @@
-const { listPlayers, savePlayer, deletePlayer } = require("./_lib/blobs");
+const { listPlayers, savePlayer, deletePlayer, getViews } = require("./_lib/blobs");
 const { checkAdminSecret } = require("./_lib/auth");
 
 function slugify(name) {
@@ -24,7 +24,10 @@ exports.handler = async (event) => {
 
   if (event.httpMethod === "GET") {
     const players = await listPlayers();
-    return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ players }) };
+    const withViews = await Promise.all(
+      players.map(async (p) => Object.assign({}, p, { views: await getViews(p.slug) }))
+    );
+    return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ players: withViews }) };
   }
 
   if (event.httpMethod === "POST") {

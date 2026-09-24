@@ -1,4 +1,4 @@
-const { getPlayer } = require("./_lib/blobs");
+const { getPlayer, incrementViews } = require("./_lib/blobs");
 const { renderEssentialPlayer } = require("./_lib/render-essential");
 
 function slugFromPath(path) {
@@ -16,6 +16,11 @@ exports.handler = async (event) => {
   const player = await getPlayer(slug);
   if (!player) {
     return { statusCode: 404, body: "Player not found" };
+  }
+  try {
+    await incrementViews(slug);
+  } catch (e) {
+    // never fail the page load over a view-count write
   }
   const html = renderEssentialPlayer(player);
   return {

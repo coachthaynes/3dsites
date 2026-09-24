@@ -1,4 +1,4 @@
-const { getPlayer } = require("./_lib/blobs");
+const { getPlayer, getViews } = require("./_lib/blobs");
 const { checkPlayerToken } = require("./_lib/auth");
 
 function esc(s) {
@@ -98,6 +98,9 @@ exports.handler = async (event) => {
     return invalidPage("This edit link is invalid or has expired. Ask your coach for a fresh link.");
   }
 
+  const views = await getViews(slug);
+  const viewsBlock = `<div class="stat-num">${views.toLocaleString()}</div><div class="stat-label">Total page views</div>`;
+
   const sections = FIELDS.map(([title, fields]) => {
     const rows = fields.map(([key, label, type]) => {
       const val = esc(player[key]);
@@ -170,12 +173,28 @@ exports.handler = async (event) => {
   .btn{display:inline-block;padding:12px 22px;font-weight:700;font-size:13px;letter-spacing:0.03em;border-radius:999px;border:none;cursor:pointer;}
   .btn.primary{background:var(--magenta);color:var(--white);margin-top:28px;}
   #status{margin-top:14px;font-size:13.5px;color:var(--dim);}
+  .stat-card{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:20px 22px;margin-bottom:20px;}
+  .stat-num{font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:700;color:var(--teal);}
+  .stat-label{font-size:12.5px;color:var(--dim);margin-top:4px;}
+  .upsell-card{border:1px solid var(--magenta);background:linear-gradient(135deg, rgba(255,46,147,0.12), rgba(0,245,212,0.06));border-radius:16px;padding:22px 24px;margin-bottom:28px;}
+  .upsell-title{font-family:'Fredoka',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;}
+  .upsell-card p{font-size:13.5px;color:var(--dim);line-height:1.5;margin:0 0 14px;}
+  .upsell-btn{background:var(--magenta);color:var(--white);text-decoration:none;font-size:13px;font-weight:700;padding:11px 20px;border-radius:999px;letter-spacing:0.02em;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Edit Your Page</h1>
   <div class="sub">Update your info below, then save. Changes go live on your page right away.</div>
+
+  <div class="stat-card">${viewsBlock}</div>
+
+  <div class="upsell-card">
+    <div class="upsell-title">Want More From Your Page?</div>
+    <p>Premium Profile Showcase adds a full custom player website, professional photography, and a highlight video built around your season. Ask your coach about upgrading.</p>
+    <a class="upsell-btn" href="/index.html#pricing" target="_blank" rel="noopener">See Premium Details &#8599;</a>
+  </div>
+
   <form id="editForm">
     ${sections}
     ${statTable}
