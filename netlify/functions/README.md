@@ -4,12 +4,21 @@ Backs the admin dashboard (`/admin-3be6507c/`) and the 7 Essential tier
 player pages. Player data lives in Netlify Blobs, not in files, so
 edits and new form submissions take effect immediately with no rebuild.
 
-## Required environment variable
+## Required environment variables
 
 - `ADMIN_API_SECRET` — shared secret the dashboard sends as the
-  `X-Admin-Secret` header on every admin API call. Set under Site
-  configuration → Environment variables. **Changing this value requires
-  a new deploy before functions pick it up.**
+  `X-Admin-Secret` header on every admin API call.
+- `BLOBS_SITE_ID` / `BLOBS_TOKEN` — this site's deploys don't go through
+  Netlify's own build pipeline, so `@netlify/blobs`'s zero-config
+  auto-detection never finds a deploy context and throws
+  `MissingBlobsEnvironmentError`. These two make `_lib/blobs.js` fall
+  back to explicit manual configuration instead. `BLOBS_TOKEN` is a
+  Netlify Personal Access Token (User settings → Applications →
+  Personal access tokens).
+
+All three are set under Site configuration → Environment variables.
+**Changing any of them requires a new deploy before functions pick it
+up.**
 
 ## Required manual setup: form notifications
 
