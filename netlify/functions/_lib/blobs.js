@@ -1,4 +1,5 @@
 const { getStore } = require("@netlify/blobs");
+const crypto = require("crypto");
 const seed = require("../../../data/players.json");
 
 const SITE_ID = process.env.BLOBS_SITE_ID || process.env.SITE_ID;
@@ -62,6 +63,9 @@ async function savePlayer(player) {
   const store = playersStore();
   const existing = await store.get(player.slug, { type: "json" });
   const merged = Object.assign({}, existing || {}, player);
+  if (!merged.editToken) {
+    merged.editToken = crypto.randomBytes(18).toString("base64url");
+  }
   await store.setJSON(player.slug, merged);
   return merged;
 }

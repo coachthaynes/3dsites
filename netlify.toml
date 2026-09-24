@@ -63,3 +63,15 @@
   to = "/.netlify/functions/photo?slug=:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/edit-player"
+  to = "/.netlify/functions/player-edit"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/save-player"
+  to = "/.netlify/functions/player-self-save"
+  status = 200
+  force = true

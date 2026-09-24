@@ -4,4 +4,8 @@ function checkAdminSecret(event) {
   return Boolean(expected) && provided === expected;
 }
 
-module.exports = { checkAdminSecret };
+function checkPlayerToken(player, token) {
+  return Boolean(player) && Boolean(player.editToken) && Boolean(token) && player.editToken === token;
+}
+
+module.exports = { checkAdminSecret, checkPlayerToken };

@@ -492,6 +492,7 @@
         '<td class="row-actions">' +
           '<a class="btn small" href="/players/' + esc(p.slug) + '" target="_blank" rel="noopener">View</a>' +
           '<button class="btn small" onclick="window.__editPlayer(\'' + esc(p.slug) + '\')">Edit</button>' +
+          '<button class="btn small" onclick="window.__copyEditLink(\'' + esc(p.slug) + '\')">Copy Her Edit Link</button>' +
           '<button class="btn small danger" onclick="window.__deletePlayer(\'' + esc(p.slug) + '\')">Delete</button>' +
         '</td>' +
       '</tr>';
@@ -614,6 +615,26 @@
     if(!confirm("Delete this player's page? This cannot be undone.")) return;
     api('/admin-players?slug=' + encodeURIComponent(slug), { method:'DELETE' }).then(function(){
       toast('Deleted');
+      loadPlayers();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  };
+  window.__copyEditLink = function(slug){
+    var p = playersCache.find(function(x){ return x.slug === slug; });
+    var buildLink = function(player){
+      var url = window.location.origin + '/edit-player?slug=' + encodeURIComponent(player.slug) + '&token=' + encodeURIComponent(player.editToken);
+      navigator.clipboard.writeText(url).then(function(){
+        toast('Edit link copied. Send it to ' + (player.playerName || 'her') + '.');
+      }).catch(function(){
+        prompt('Copy this link:', url);
+      });
+    };
+    if(p && p.editToken){
+      buildLink(p);
+      return;
+    }
+    // no token yet (older record); saving generates one
+    api('/admin-players', { method:'POST', body: JSON.stringify({ slug: slug }) }).then(function(res){
+      buildLink(res.player);
       loadPlayers();
     }).catch(function(e){ toast('Error: ' + e.message); });
   };
