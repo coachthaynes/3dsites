@@ -177,18 +177,37 @@ function normalize(s) {
     .trim();
 }
 
-function getSchoolColors(highSchool) {
+function matchSchool(highSchool) {
   const normalized = normalize(highSchool);
-  if (!normalized) return DEFAULT_COLORS;
+  if (!normalized) return null;
   for (const school of SCHOOLS) {
     for (const alias of school.aliases) {
       const normalizedAlias = normalize(alias);
       if (normalized.includes(normalizedAlias) || normalizedAlias.includes(normalized)) {
-        return school.colors;
+        return school;
       }
     }
   }
-  return DEFAULT_COLORS;
+  return null;
 }
 
-module.exports = { getSchoolColors, SCHOOLS };
+function getSchoolColors(highSchool) {
+  const school = matchSchool(highSchool);
+  return school ? school.colors : DEFAULT_COLORS;
+}
+
+const STOPWORDS = new Set(["of", "for", "and", "the", "a", "an"]);
+
+function getSchoolInitials(highSchool) {
+  const school = matchSchool(highSchool);
+  const name = (school && school.name) || highSchool || SCHOOLS[0].name;
+  const words = String(name)
+    .split(/[\s/]+/)
+    .map((w) => w.replace(/[^a-zA-Z]/g, ""))
+    .filter((w) => w && !STOPWORDS.has(w.toLowerCase()));
+  if (words.length === 0) return "HS";
+  const initials = words.map((w) => w[0].toUpperCase()).join("");
+  return initials.slice(0, 4);
+}
+
+module.exports = { getSchoolColors, getSchoolInitials, SCHOOLS };

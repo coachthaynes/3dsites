@@ -1,5 +1,5 @@
 const CSS = require("./essential-css");
-const { getSchoolColors } = require("./school-colors");
+const { getSchoolColors, getSchoolInitials } = require("./school-colors");
 
 function esc(s) {
   if (s === undefined || s === null) return "";
@@ -37,12 +37,14 @@ function renderEssentialPlayer(p) {
   const upper = name.toUpperCase();
   const school = p.highSchool || "Middleburg High School";
   const schoolColors = getSchoolColors(school);
+  const schoolInitials = getSchoolInitials(school);
+  const schoolBadge = `<span class="school-badge">${esc(schoolInitials)}</span>`;
   const team = /middleburg/i.test(school) ? "Middleburg Lady Broncos" : `${school} Girls Basketball`;
   const tagLine = [p.position, p.gradYear ? `Class of ${p.gradYear}` : ""].filter(Boolean).join(", ");
 
   const vitalsRows = [
     row("Jersey Number", p.jerseyNumber),
-    row("High School", school),
+    `<div class="vitals-row"><span>High School</span><span>${schoolBadge} ${esc(school)}</span></div>`,
     row("Position", p.position),
     row("Class Of", p.gradYear),
     row("Height", p.height),
@@ -176,7 +178,7 @@ function renderEssentialPlayer(p) {
 </nav>
 
 <div class="hero" id="top">
-  <div class="hero-eyebrow">${esc(team)}</div>
+  <div class="hero-eyebrow">${schoolBadge} ${esc(team)}</div>
   <h1 class="display">${esc(upper)}</h1>
   <p class="hero-sub">${tagLine ? esc(tagLine) : "Full stats, game film, and season updates are on the way."}</p>
   <div class="hero-cta">

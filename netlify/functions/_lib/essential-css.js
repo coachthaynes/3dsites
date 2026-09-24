@@ -54,6 +54,12 @@ module.exports = `
     color:var(--red);font-weight:700;font-size:14px;letter-spacing:0.08em;
     margin-bottom:16px;text-transform:uppercase;
   }
+  .school-badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:24px;height:20px;padding:0 5px;border-radius:4px;background:var(--red);color:var(--white);
+    font-family:'Anton',sans-serif;font-size:10px;letter-spacing:0.02em;vertical-align:middle;
+    margin-right:6px;position:relative;top:-1px;
+  }
   .hero h1{
     font-size:clamp(44px,8vw,84px);
     color:var(--white);
