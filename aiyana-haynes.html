@@ -461,6 +461,38 @@
   </div>
 </section>
 
+
+<section id="news" style="display:none;" data-news-section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display" style="font-size:clamp(24px,3.4vw,34px);">Latest News</div>
+    </div>
+    <div id="newsFeed" style="display:grid;gap:16px;"></div>
+  </div>
+</section>
+<script>
+(function(){
+  fetch('/player-articles?slug=aiyana-haynes')
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      var articles = res.articles || [];
+      if(articles.length === 0) return;
+      var section = document.querySelector('[data-news-section]');
+      var feed = document.getElementById('newsFeed');
+      feed.innerHTML = articles.map(function(a){
+        var paras = String(a.body || '').split(/\n\n+/).map(function(p){
+          return '<p style="margin-bottom:10px;line-height:1.5;">' + p.replace(/</g,'&lt;') + '</p>';
+        }).join('');
+        return '<div style="border:1px solid rgba(255,255,255,0.12);padding:20px 22px;border-radius:4px;">' +
+          '<h4 style="margin-bottom:10px;">' + String(a.headline || '').replace(/</g,'&lt;') + '</h4>' + paras +
+        '</div>';
+      }).join('');
+      section.style.display = '';
+    })
+    .catch(function(){ /* no news yet, leave hidden */ });
+})();
+</script>
+
 <footer id="links">
   <div class="wrap">
     <div class="section-head">

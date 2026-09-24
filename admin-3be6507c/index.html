@@ -112,6 +112,8 @@
   <div class="wrap tabs">
     <button class="tab-btn active" data-tab="overview">Overview</button>
     <button class="tab-btn" data-tab="players">Players</button>
+    <button class="tab-btn" data-tab="articles">Articles</button>
+    <button class="tab-btn" data-tab="fulfillment">Fulfillment</button>
     <button class="tab-btn" data-tab="forms">Forms</button>
     <button class="tab-btn" data-tab="marketing">Marketing</button>
   </div>
@@ -152,6 +154,41 @@
         <tbody id="playersTableBody"></tbody>
       </table>
     </div>
+  </section>
+
+  <section class="panel" id="panel-articles">
+    <div class="card">
+      <h3>Generate a recap article</h3>
+      <p>Writes an original recap article from a player's on-file stats. Optionally tries pulling a bit more from her MaxPreps page first, that part is experimental and falls back to her saved stats if it doesn't find anything usable.</p>
+      <div class="form-grid" style="margin-top:12px;">
+        <div class="form-field">
+          <label>Player</label>
+          <select id="articlePlayerSelect"></select>
+        </div>
+        <div class="form-field">
+          <label>&nbsp;</label>
+          <label style="font-weight:400;display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <input type="checkbox" id="articleUseMaxPreps" style="width:auto;"> Try MaxPreps first (experimental)
+          </label>
+        </div>
+      </div>
+      <button class="btn primary" id="btnGenerateArticle" style="margin-top:14px;">Generate Article</button>
+      <div id="articleGenStatus" class="mono" style="margin-top:10px;font-size:12px;"></div>
+    </div>
+    <div class="card" style="padding:0;overflow-x:auto;">
+      <table>
+        <thead><tr><th>Player</th><th>Headline</th><th>Created</th><th>Status</th><th></th></tr></thead>
+        <tbody id="articlesTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-fulfillment">
+    <div class="card">
+      <h3>Premium &amp; Elite fulfillment</h3>
+      <p>What's actually promised on each paid package, so nothing gets missed. Pulled straight from the pricing page.</p>
+    </div>
+    <div id="fulfillmentList"></div>
   </section>
 
   <section class="panel" id="panel-forms">
@@ -258,6 +295,13 @@
         <div class="form-field"><label>Position</label><input id="f_position"></div>
         <div class="form-field"><label>Status</label>
           <select id="f_status"><option value="published">Published</option><option value="draft">Draft</option></select>
+        </div>
+        <div class="form-field"><label>Package Tier</label>
+          <select id="f_tier">
+            <option value="essential">Essential</option>
+            <option value="premium">Premium</option>
+            <option value="elite">Elite</option>
+          </select>
         </div>
       </div>
       <div class="section-title">Contact Information</div>
@@ -458,6 +502,9 @@
       playersCache = res.players || [];
       renderPlayers();
       renderOverview();
+      renderArticlePlayerSelect();
+      renderFulfillment();
+      renderArticles();
     }).catch(function(e){ toast('Error loading players: ' + e.message); });
   }
 
@@ -467,6 +514,163 @@
       renderSubmissions();
       renderOverview();
     }).catch(function(e){ toast('Error loading submissions: ' + e.message); });
+  }
+
+  var articlesCache = [];
+
+  function loadArticles(){
+    return api('/admin-articles').then(function(res){
+      articlesCache = res.articles || [];
+      renderArticles();
+    }).catch(function(e){ toast('Error loading articles: ' + e.message); });
+  }
+
+  function renderArticlePlayerSelect(){
+    var sel = document.getElementById('articlePlayerSelect');
+    if(!sel) return;
+    var current = sel.value;
+    sel.innerHTML = playersCache.map(function(p){
+      return '<option value="' + esc(p.slug) + '">' + esc(p.playerName || p.slug) + (p.tier && p.tier !== 'essential' ? ' (' + esc(p.tier) + ')' : '') + '</option>';
+    }).join('');
+    if(current) sel.value = current;
+  }
+
+  function renderArticles(){
+    var tbody = document.getElementById('articlesTableBody');
+    if(!tbody) return;
+    if(articlesCache.length === 0){
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-note">No articles yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = articlesCache.map(function(a){
+      var player = playersCache.find(function(p){ return p.slug === a.playerSlug; });
+      var when = a.createdAt ? new Date(a.createdAt).toLocaleDateString() : '';
+      return '<tr>' +
+        '<td>' + esc(player ? player.playerName : a.playerSlug) + '</td>' +
+        '<td>' + esc(a.headline) + '</td>' +
+        '<td>' + esc(when) + '</td>' +
+        '<td><span class="status-pill ' + (a.published ? 'published' : 'draft') + '">' + (a.published ? 'published' : 'draft') + '</span></td>' +
+        '<td class="row-actions">' +
+          '<button class="btn small" onclick="window.__viewArticle(\'' + esc(a.id) + '\')">View / Edit</button>' +
+          '<button class="btn small" onclick="window.__togglePublishArticle(\'' + esc(a.id) + '\', ' + !a.published + ')">' + (a.published ? 'Unpublish' : 'Publish') + '</button>' +
+          '<button class="btn small danger" onclick="window.__deleteArticle(\'' + esc(a.id) + '\')">Delete</button>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  window.__viewArticle = function(id){
+    var a = articlesCache.find(function(x){ return x.id === id; });
+    if(!a) return;
+    var newHeadline = prompt('Headline:', a.headline);
+    if(newHeadline === null) return;
+    var newBody = prompt('Body (edit as needed):', a.body);
+    if(newBody === null) return;
+    api('/admin-articles', { method:'POST', body: JSON.stringify({ id: a.id, headline: newHeadline, body: newBody }) }).then(function(){
+      toast('Article updated');
+      loadArticles();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  };
+  window.__togglePublishArticle = function(id, publish){
+    api('/admin-articles', { method:'POST', body: JSON.stringify({ id: id, published: publish }) }).then(function(){
+      toast(publish ? 'Published' : 'Unpublished');
+      loadArticles();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  };
+  window.__deleteArticle = function(id){
+    if(!confirm('Delete this article?')) return;
+    api('/admin-articles?id=' + encodeURIComponent(id), { method:'DELETE' }).then(function(){
+      toast('Deleted');
+      loadArticles();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  };
+
+  document.getElementById('btnGenerateArticle').addEventListener('click', function(){
+    var sel = document.getElementById('articlePlayerSelect');
+    var slug = sel.value;
+    var useMaxPreps = document.getElementById('articleUseMaxPreps').checked;
+    var status = document.getElementById('articleGenStatus');
+    if(!slug){ status.textContent = 'Pick a player first.'; return; }
+    status.textContent = 'Generating... this can take a few seconds.';
+    api('/admin-generate-article', { method:'POST', body: JSON.stringify({ slug: slug, useMaxPreps: useMaxPreps }) }).then(function(res){
+      var note = '';
+      if(useMaxPreps){
+        note = res.maxPrepsFoundStats ? ' Used stats found on MaxPreps.' : ' MaxPreps fetch did not find usable stats, used her saved stats instead.';
+      }
+      status.textContent = 'Article generated as a draft.' + note;
+      loadArticles();
+    }).catch(function(e){ status.textContent = 'Error: ' + e.message; });
+  });
+
+  var FULFILLMENT_ITEMS = {
+    premium: [
+      ['premiumWebsiteBuilt', 'Premium player website built'],
+      ['mediaReceived', "Her own videos and photos received"],
+      ['videoEmbedded', 'Video embedded and links added'],
+      ['weeklyGraphicLastSent', 'Weekly stat / accolade graphic sent this week', 'date'],
+      ['commitmentGraphic', 'Commitment graphic delivered (when she commits)'],
+    ],
+    elite: [
+      ['premiumWebsiteBuilt', 'Premium player website built'],
+      ['mediaReceived', "Her own videos and photos received"],
+      ['videoEmbedded', 'Video embedded and links added'],
+      ['fullGameFootage', 'Full game / highlight video footage delivered'],
+      ['photoShoot', 'Player photo shoot completed'],
+      ['weeklyGraphicLastSent', 'Weekly stat / accolade graphic sent this week', 'date'],
+      ['commitmentGraphic', 'Commitment graphic delivered (when she commits)'],
+      ['socialPhotos', 'Social media / marketing photos delivered'],
+    ],
+  };
+
+  function renderFulfillment(){
+    var container = document.getElementById('fulfillmentList');
+    if(!container) return;
+    var paying = playersCache.filter(function(p){ return p.tier === 'premium' || p.tier === 'elite'; });
+    if(paying.length === 0){
+      container.innerHTML = '<div class="card"><p>No Premium or Elite players yet. Set a player\'s Package Tier to Premium or Elite in her edit form to track her here.</p></div>';
+      return;
+    }
+    container.innerHTML = paying.map(function(p){
+      var items = FULFILLMENT_ITEMS[p.tier] || [];
+      var fulfillment = p.fulfillment || {};
+      var rows = items.map(function(item){
+        var key = item[0], label = item[1], type = item[2];
+        if(type === 'date'){
+          var val = fulfillment[key] || '';
+          return '<div class="form-field"><label>' + esc(label) + '</label>' +
+            '<input type="date" data-fkey="' + esc(key) + '" data-slug="' + esc(p.slug) + '" value="' + esc(val) + '" class="fulfillment-date"></div>';
+        }
+        var checked = fulfillment[key] ? 'checked' : '';
+        return '<label style="display:flex;align-items:center;gap:8px;font-size:13.5px;margin-bottom:10px;">' +
+          '<input type="checkbox" data-fkey="' + esc(key) + '" data-slug="' + esc(p.slug) + '" class="fulfillment-check" ' + checked + ' style="width:auto;"> ' + esc(label) +
+        '</label>';
+      }).join('');
+      return '<div class="card">' +
+        '<h3>' + esc(p.playerName || p.slug) + ' <span class="tool-status">' + esc(p.tier) + '</span></h3>' +
+        rows +
+      '</div>';
+    }).join('');
+
+    container.querySelectorAll('.fulfillment-check').forEach(function(el){
+      el.addEventListener('change', function(){
+        saveFulfillment(el.getAttribute('data-slug'), el.getAttribute('data-fkey'), el.checked);
+      });
+    });
+    container.querySelectorAll('.fulfillment-date').forEach(function(el){
+      el.addEventListener('change', function(){
+        saveFulfillment(el.getAttribute('data-slug'), el.getAttribute('data-fkey'), el.value);
+      });
+    });
+  }
+
+  function saveFulfillment(slug, key, value){
+    var p = playersCache.find(function(x){ return x.slug === slug; });
+    var fulfillment = Object.assign({}, (p && p.fulfillment) || {});
+    fulfillment[key] = value;
+    api('/admin-players', { method:'POST', body: JSON.stringify({ slug: slug, fulfillment: fulfillment }) }).then(function(){
+      toast('Saved');
+      loadPlayers();
+    }).catch(function(e){ toast('Error: ' + e.message); });
   }
 
   function renderOverview(){
@@ -527,7 +731,7 @@
 
   /* modal / edit form */
   var modalBackdrop = document.getElementById('playerModalBackdrop');
-  var fields = ['slug','playerName','jerseyNumber','highSchool','gradYear','position','status',
+  var fields = ['slug','playerName','jerseyNumber','highSchool','gradYear','position','status','tier',
     'playerPhone','playerEmail','guardianName','guardianPhone','guardianEmail',
     'gpa','sat','act','dualEnrollment',
     'height','weight','standingReach','wingspan','shoeSize',
@@ -698,6 +902,7 @@
 
   loadPlayers();
   loadSubmissions();
+  loadArticles();
 })();
 </script>
 

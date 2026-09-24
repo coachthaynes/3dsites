@@ -99,3 +99,9 @@
   to = "/.netlify/functions/player-set-password"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/player-articles"
+  to = "/.netlify/functions/player-articles"
+  status = 200
+  force = true

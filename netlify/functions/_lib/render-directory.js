@@ -95,7 +95,9 @@ ${links}
 }
 
 function renderDirectory(players) {
-  const published = (players || []).filter((p) => p.status !== "draft" && p.playerName);
+  const published = (players || []).filter(
+    (p) => p.status !== "draft" && p.playerName && p.tier !== "premium" && p.tier !== "elite"
+  );
 
   const playersBySchool = {};
   const unmatched = [];

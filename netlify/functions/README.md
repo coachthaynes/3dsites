@@ -16,9 +16,18 @@ edits and new form submissions take effect immediately with no rebuild.
   Netlify Personal Access Token (User settings → Applications →
   Personal access tokens).
 
-All three are set under Site configuration → Environment variables.
-**Changing any of them requires a new deploy before functions pick it
-up.**
+- `ANTHROPIC_API_KEY` — used by `admin-generate-article.js` to call the
+  Claude API and write recap articles from a player's stats. Get one at
+  console.anthropic.com. Without it, article generation returns an
+  error but nothing else on the site is affected.
+- `SESSION_SECRET` (optional) — signs the player login session cookie.
+  If unset, `ADMIN_API_SECRET` is reused for this instead, so it's not
+  strictly required, but setting a separate one means rotating the
+  admin secret doesn't also log every player out.
+
+All of the above are set under Site configuration → Environment
+variables. **Changing any of them requires a new deploy before
+functions pick it up.**
 
 ## Required manual setup: form notifications
 
@@ -46,3 +55,19 @@ the dashboard's Forms tab.
   `X-Admin-Secret`.
 - `_lib/` — shared render templates, the Blobs helper, and the auth
   check. Not deployed as functions themselves.
+- `player-edit.js` / `player-self-save.js` / `player-login.js` /
+  `player-logout.js` / `player-set-password.js` — a player's own
+  self-edit page, reachable either via a one-time token link (copied
+  from the dashboard) to set a password, or afterwards at
+  `/player-login` with just her email and password.
+- `admin-photo-upload.js` / `photo.js` — upload and serve a player
+  photo. Accepts `X-Admin-Secret`, her edit token, or her login session.
+- `admin-generate-article.js` / `admin-articles.js` /
+  `player-articles.js` — writes a recap article from a player's stats
+  via Claude (optionally trying her MaxPreps page first, best-effort
+  only), lets the coach review/edit/publish it, and serves published
+  articles publicly for her page's "Latest News" section. A player's
+  `tier` field (`essential` / `premium` / `elite`) also drives the
+  Fulfillment tab in the dashboard and keeps Premium/Elite records out
+  of the public directory and the Essential page template, since they
+  have their own dedicated static sites.

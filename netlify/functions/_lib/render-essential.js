@@ -32,7 +32,7 @@ function linkPill(label, url) {
   return `<a class="link-pill" href="${esc(href)}" target="_blank" rel="noopener">${esc(label)} &nbsp; &#8599;</a>`;
 }
 
-function renderEssentialPlayer(p) {
+function renderEssentialPlayer(p, articles) {
   const name = p.playerName || "Player";
   const upper = name.toUpperCase();
   const school = p.highSchool || "Middleburg High School";
@@ -200,6 +200,20 @@ function renderEssentialPlayer(p) {
     </div>
   </div>
 </section>
+
+${(articles || []).length ? `<section id="news">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display">Latest News</div>
+    </div>
+    <div class="box-row">
+      ${articles.map((a) => `<div class="contact-card">
+        <h4>${esc(a.headline)}</h4>
+        ${String(a.body || "").split(/\n\n+/).map((para) => `<p style="font-size:14px;color:#d5d5d5;margin-bottom:10px;line-height:1.5;">${esc(para)}</p>`).join("\n")}
+      </div>`).join("\n")}
+    </div>
+  </div>
+</section>` : ""}
 
 <section id="contact" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
   <div class="wrap">

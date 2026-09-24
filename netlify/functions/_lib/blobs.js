@@ -32,6 +32,39 @@ function viewsStore() {
   return makeStore("views");
 }
 
+function articlesStore() {
+  return makeStore("articles");
+}
+
+async function listArticles(slug) {
+  const store = articlesStore();
+  const { blobs } = await store.list();
+  const articles = await Promise.all(blobs.map((b) => store.get(b.key, { type: "json" })));
+  const all = articles.filter(Boolean);
+  const filtered = slug ? all.filter((a) => a.playerSlug === slug) : all;
+  return filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+async function getArticle(id) {
+  const store = articlesStore();
+  return store.get(id, { type: "json" });
+}
+
+async function saveArticle(article) {
+  if (!article.id) article.id = crypto.randomUUID();
+  const store = articlesStore();
+  const existing = await store.get(article.id, { type: "json" });
+  const merged = Object.assign({}, existing || {}, article);
+  if (!merged.createdAt) merged.createdAt = new Date().toISOString();
+  await store.setJSON(merged.id, merged);
+  return merged;
+}
+
+async function deleteArticle(id) {
+  const store = articlesStore();
+  await store.delete(id);
+}
+
 async function incrementViews(slug) {
   const store = viewsStore();
   const current = (await store.get(slug, { type: "json" })) || 0;
@@ -99,6 +132,11 @@ module.exports = {
   viewsStore,
   incrementViews,
   getViews,
+  articlesStore,
+  listArticles,
+  getArticle,
+  saveArticle,
+  deleteArticle,
   listPlayers,
   getPlayer,
   savePlayer,
