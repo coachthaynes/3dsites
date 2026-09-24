@@ -60,6 +60,9 @@ module.exports = `
     font-family:'Anton',sans-serif;font-size:10px;letter-spacing:0.02em;vertical-align:middle;
     margin-right:6px;position:relative;top:-1px;
   }
+  .school-logo-img{
+    height:26px;width:auto;vertical-align:middle;margin-right:8px;position:relative;top:-2px;
+  }
   .hero h1{
     font-size:clamp(44px,8vw,84px);
     color:var(--white);

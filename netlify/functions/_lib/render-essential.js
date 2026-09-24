@@ -1,5 +1,5 @@
 const CSS = require("./essential-css");
-const { getSchoolColors, getSchoolInitials } = require("./school-colors");
+const { getSchoolColors, getSchoolInitials, getSchoolLogo } = require("./school-colors");
 
 function esc(s) {
   if (s === undefined || s === null) return "";
@@ -37,8 +37,10 @@ function renderEssentialPlayer(p) {
   const upper = name.toUpperCase();
   const school = p.highSchool || "Middleburg High School";
   const schoolColors = getSchoolColors(school);
-  const schoolInitials = getSchoolInitials(school);
-  const schoolBadge = `<span class="school-badge">${esc(schoolInitials)}</span>`;
+  const schoolLogo = getSchoolLogo(school);
+  const schoolBadge = schoolLogo
+    ? `<img class="school-logo-img" src="${esc(schoolLogo)}" alt="${esc(school)} logo">`
+    : `<span class="school-badge">${esc(getSchoolInitials(school))}</span>`;
   const team = /middleburg/i.test(school) ? "Middleburg Lady Broncos" : `${school} Girls Basketball`;
   const tagLine = [p.position, p.gradYear ? `Class of ${p.gradYear}` : ""].filter(Boolean).join(", ");
 

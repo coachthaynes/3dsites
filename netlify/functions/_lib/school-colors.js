@@ -8,6 +8,7 @@ const SCHOOLS = [
     aliases: ["middleburg"],
     name: "Middleburg High School",
     colors: { accent: "#d0202c", accentDark: "#8c0f18" },
+    logo: "/assets/logos/middleburg.jpg",
   },
   {
     aliases: ["clay high", "clay senior"],
@@ -18,6 +19,7 @@ const SCHOOLS = [
     aliases: ["fleming island"],
     name: "Fleming Island High School",
     colors: { accent: "#d9a91b", accentDark: "#a37f14" },
+    logo: "/assets/logos/fleming-island.jpg",
   },
   {
     aliases: ["keystone heights"],
@@ -33,11 +35,13 @@ const SCHOOLS = [
     aliases: ["orange park"],
     name: "Orange Park High School",
     colors: { accent: "#e0672b", accentDark: "#a34a1d" },
+    logo: "/assets/logos/orange-park.jpg",
   },
   {
     aliases: ["ridgeview"],
     name: "Ridgeview High School",
     colors: { accent: "#24438f", accentDark: "#172e63" },
+    logo: "/assets/logos/ridgeview.png",
   },
   {
     aliases: ["andrew jackson"],
@@ -196,6 +200,11 @@ function getSchoolColors(highSchool) {
   return school ? school.colors : DEFAULT_COLORS;
 }
 
+function getSchoolLogo(highSchool) {
+  const school = matchSchool(highSchool);
+  return (school && school.logo) || null;
+}
+
 const STOPWORDS = new Set(["of", "for", "and", "the", "a", "an"]);
 
 function getSchoolInitials(highSchool) {
@@ -210,4 +219,4 @@ function getSchoolInitials(highSchool) {
   return initials.slice(0, 4);
 }
 
-module.exports = { getSchoolColors, getSchoolInitials, SCHOOLS };
+module.exports = { getSchoolColors, getSchoolInitials, getSchoolLogo, SCHOOLS };
