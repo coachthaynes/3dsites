@@ -92,9 +92,58 @@ function renderEssentialPlayer(p) {
     ? `<a class="btn primary" href="${esc(p.maxpreps)}" target="_blank" rel="noopener">View On MaxPreps</a>`
     : "";
 
-  const photoBlock = p.playerPhoto
-    ? `<div class="wrap"><div class="record-photo" style="max-width:420px;margin:28px auto 0;border:1px solid var(--line);overflow:hidden;"><img src="${esc(p.playerPhoto)}" alt="${esc(name)}" style="width:100%;display:block;"></div></div>`
+  const photoCard = p.playerPhoto
+    ? `<div class="photo-card"><img src="${esc(p.playerPhoto)}" alt="${esc(name)}"></div>`
     : "";
+
+  const statsCard = seasonRows
+    ? `<div class="table-wrap">
+      <div class="vitals-title">Season Stats</div>
+      <table>
+        <thead><tr>
+          <th>Season</th><th>PPG</th><th>Rebounds</th><th>Steals</th><th>Blocks</th><th>Assists</th><th>Total Points</th>
+        </tr></thead>
+        <tbody>${seasonRows}</tbody>
+      </table>
+    </div>`
+    : "";
+
+  const vitalsCard = `<div class="vitals">
+      <div class="vitals-title">Player Info</div>
+      ${vitalsRows || row("Team", team)}
+    </div>`;
+
+  const testingCard = hasTesting
+    ? `<div class="vitals">
+      <div class="vitals-title">Measurables</div>
+      ${testingRows}
+    </div>`
+    : "";
+
+  const recruitingCard = hasOffers
+    ? `<div class="vitals">
+      <div class="vitals-title">Recruiting</div>
+      ${row("Current Offers", p.currentOffers)}
+      ${row("NCAA ID", p.ncaaId)}
+    </div>`
+    : "";
+
+  const contactCard = hasContact
+    ? `<div class="contact-card">
+      <h4>Player</h4>
+      ${p.playerPhone ? `<div class="contact-row"><span>Phone </span>${esc(p.playerPhone)}</div>` : ""}
+      ${p.playerEmail ? `<div class="contact-row"><span>Email </span>${esc(p.playerEmail)}</div>` : ""}
+      ${p.guardianName ? `<div class="rule" style="margin:16px 0;"></div><h4>Parent / Guardian, ${esc(p.guardianName)}</h4>` : ""}
+      ${p.guardianPhone ? `<div class="contact-row"><span>Phone </span>${esc(p.guardianPhone)}</div>` : ""}
+      ${p.guardianEmail ? `<div class="contact-row"><span>Email </span>${esc(p.guardianEmail)}</div>` : ""}
+    </div>`
+    : "";
+
+  const coachCard = `<div class="contact-card">
+      <h4>${esc(p.coachName || "Tenise Haynes")}</h4>
+      ${p.coachPhone ? `<div class="contact-row"><span>Phone </span>${esc(p.coachPhone)}</div>` : ""}
+      ${p.coachEmail ? `<div class="contact-row"><span>Email </span>${esc(p.coachEmail)}</div>` : ""}
+    </div>`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -142,82 +191,20 @@ function renderEssentialPlayer(p) {
       <div class="display">About</div>
       <p>${p.message ? esc(p.message) : "Check back soon for her full bio, stats, and highlight film."}</p>
     </div>
-    <div class="vitals">
-      <div class="vitals-title">Player Info</div>
-      ${vitalsRows || row("Team", team)}
+    <div class="box-row">
+      ${[photoCard, statsCard, vitalsCard, testingCard, recruitingCard].filter(Boolean).join("\n")}
     </div>
   </div>
 </section>
 
-${hasTesting ? `<section id="testing" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="display">Athletic Testing</div>
-    </div>
-    <div class="vitals">
-      <div class="vitals-title">Measurables</div>
-      ${testingRows}
-    </div>
-  </div>
-</section>` : ""}
-
-${seasonRows ? `<section id="stats">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="display">Season Stats</div>
-    </div>
-    <div class="table-wrap" style="border:1px solid var(--line);overflow-x:auto;">
-      <table class="stats" style="width:100%;border-collapse:collapse;font-size:14px;">
-        <thead><tr>
-          <th style="padding:14px;text-align:left;">Season</th><th style="padding:14px;">PPG</th><th style="padding:14px;">Rebounds</th><th style="padding:14px;">Steals</th><th style="padding:14px;">Blocks</th><th style="padding:14px;">Assists</th><th style="padding:14px;">Total Points</th>
-        </tr></thead>
-        <tbody>${seasonRows}</tbody>
-      </table>
-    </div>
-  </div>
-</section>` : ""}
-
-${hasOffers ? `<section id="recruiting" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="display">College Interest</div>
-    </div>
-    <div class="vitals">
-      <div class="vitals-title">Recruiting</div>
-      ${row("Current Offers", p.currentOffers)}
-      ${row("NCAA ID", p.ncaaId)}
-    </div>
-  </div>
-</section>` : ""}
-
-${photoBlock}
-
-${hasContact ? `<section id="contact">
+<section id="contact" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
   <div class="wrap">
     <div class="section-head">
       <div class="display">Contact</div>
+      <p>Reach ${esc(name)} or the ${esc(team)} coaching staff.</p>
     </div>
-    <div class="contact-card">
-      <h4>Player</h4>
-      ${p.playerPhone ? `<div class="contact-row"><span>Phone </span>${esc(p.playerPhone)}</div>` : ""}
-      ${p.playerEmail ? `<div class="contact-row"><span>Email </span>${esc(p.playerEmail)}</div>` : ""}
-      ${p.guardianName ? `<div class="rule" style="margin:16px 0;"></div><h4>Parent / Guardian, ${esc(p.guardianName)}</h4>` : ""}
-      ${p.guardianPhone ? `<div class="contact-row"><span>Phone </span>${esc(p.guardianPhone)}</div>` : ""}
-      ${p.guardianEmail ? `<div class="contact-row"><span>Email </span>${esc(p.guardianEmail)}</div>` : ""}
-    </div>
-  </div>
-</section>` : ""}
-
-<section id="coach" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="display">Coach Contact</div>
-      <p>Reach the ${esc(team)} coaching staff.</p>
-    </div>
-    <div class="contact-card">
-      <h4>${esc(p.coachName || "Tenise Haynes")}</h4>
-      ${p.coachPhone ? `<div class="contact-row"><span>Phone </span>${esc(p.coachPhone)}</div>` : ""}
-      ${p.coachEmail ? `<div class="contact-row"><span>Email </span>${esc(p.coachEmail)}</div>` : ""}
+    <div class="box-row">
+      ${[contactCard, coachCard].filter(Boolean).join("\n")}
     </div>
   </div>
 </section>
