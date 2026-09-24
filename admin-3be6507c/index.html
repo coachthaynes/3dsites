@@ -263,18 +263,43 @@
     return fetch(API + path, opts).then(function(r){
       if(r.status === 401){
         localStorage.removeItem('ehAdminKey');
-        throw new Error('Access key was rejected. Refresh the page and re-enter it.');
+        throw new Error('401 Unauthorized on ' + path + ' — access key was rejected, refresh to re-enter it.');
       }
-      if(!r.ok) return r.json().catch(function(){return {};}).then(function(e){ throw new Error(e.error || r.statusText); });
+      if(!r.ok){
+        return r.text().then(function(t){
+          var detail = t;
+          try { detail = JSON.parse(t).error || t; } catch(e){}
+          throw new Error(r.status + ' ' + r.statusText + ' on ' + path + (detail ? ': ' + detail : ''));
+        });
+      }
       return r.json();
+    }).catch(function(err){
+      if(err instanceof TypeError){
+        throw new Error('Network error calling ' + path + ' (' + err.message + '). Check the function is deployed and reachable.');
+      }
+      throw err;
     });
   }
 
+  var toastQueue = [];
+  var toastShowing = false;
   function toast(msg){
+    console.error('[dashboard]', msg);
+    toastQueue.push(msg);
+    if(toastShowing) return;
+    showNextToast();
+  }
+  function showNextToast(){
+    var msg = toastQueue.shift();
+    if(msg === undefined){ toastShowing = false; return; }
+    toastShowing = true;
     var t = document.getElementById('toast');
     t.textContent = msg;
     t.style.display = 'block';
-    setTimeout(function(){ t.style.display = 'none'; }, 3200);
+    setTimeout(function(){
+      t.style.display = 'none';
+      setTimeout(showNextToast, 200);
+    }, 4200);
   }
 
   /* tabs */
