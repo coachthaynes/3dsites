@@ -57,3 +57,9 @@
   to = "/.netlify/functions/player?slug=:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/player-photos/*"
+  to = "/.netlify/functions/photo?slug=:splat"
+  status = 200
+  force = true

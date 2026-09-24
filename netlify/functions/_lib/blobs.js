@@ -23,6 +23,10 @@ function submissionsStore() {
   return makeStore("submissions");
 }
 
+function photosStore() {
+  return makeStore("photos");
+}
+
 async function listPlayers() {
   const store = playersStore();
   const { blobs } = await store.list();
@@ -70,6 +74,7 @@ async function deletePlayer(slug) {
 module.exports = {
   playersStore,
   submissionsStore,
+  photosStore,
   listPlayers,
   getPlayer,
   savePlayer,

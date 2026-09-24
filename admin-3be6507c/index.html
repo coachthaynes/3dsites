@@ -320,7 +320,13 @@
       </div>
       <div class="section-title">Photo</div>
       <div class="form-grid full">
-        <div class="form-field"><label>Photo URL <span style="font-weight:400;text-transform:none;letter-spacing:0;">(direct image link, used on her profile)</span></label><input id="f_playerPhoto" placeholder="https://"></div>
+        <div class="form-field">
+          <label>Upload One Photo <span style="font-weight:400;text-transform:none;letter-spacing:0;">(JPG or PNG, this is the photo used on her profile)</span></label>
+          <input type="hidden" id="f_playerPhoto">
+          <input type="file" id="f_playerPhotoFile" accept="image/*">
+          <img id="photoPreview" style="display:none;max-width:160px;margin-top:10px;border-radius:10px;border:1px solid var(--line);">
+          <div id="photoStatus" style="font-size:12px;color:var(--dim);margin-top:6px;"></div>
+        </div>
       </div>
       <div class="section-title">Anything Else</div>
       <div class="form-grid full">
@@ -490,14 +496,61 @@
     'coachName','coachPhone','coachEmail',
     'currentOffers','ncaaId','playerPhoto','message'];
 
+  function slugify(name){
+    return String(name || '').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  }
+
+  function setPhotoPreview(url){
+    var img = document.getElementById('photoPreview');
+    if(url){ img.src = url; img.style.display = 'block'; }
+    else { img.src = ''; img.style.display = 'none'; }
+  }
+
   function openModal(player){
     document.getElementById('modalTitle').textContent = player ? 'Edit Player' : 'Add Player';
     fields.forEach(function(f){
       var el = document.getElementById('f_' + f);
       if(el) el.value = (player && player[f]) || el.defaultValue || '';
     });
+    document.getElementById('f_playerPhotoFile').value = '';
+    document.getElementById('photoStatus').textContent = '';
+    setPhotoPreview(player && player.playerPhoto);
     modalBackdrop.classList.add('open');
   }
+
+  document.getElementById('f_playerPhotoFile').addEventListener('change', function(e){
+    var file = e.target.files && e.target.files[0];
+    if(!file) return;
+    var photoStatus = document.getElementById('photoStatus');
+    var nameEl = document.getElementById('f_playerName');
+    var slugEl = document.getElementById('f_slug');
+    if(!nameEl.value.trim()){
+      photoStatus.textContent = "Enter the player's name first, then upload her photo.";
+      e.target.value = '';
+      return;
+    }
+    if(!slugEl.value.trim()) slugEl.value = slugify(nameEl.value);
+    var photoKey = slugEl.value.trim() + '-' + Date.now();
+
+    photoStatus.textContent = 'Uploading...';
+    var reader = new FileReader();
+    reader.onload = function(){
+      var dataUrl = reader.result;
+      var base64 = dataUrl.split(',')[1];
+      api('/admin-photo-upload', {
+        method: 'POST',
+        body: JSON.stringify({ slug: photoKey, contentType: file.type, dataBase64: base64 })
+      }).then(function(res){
+        document.getElementById('f_playerPhoto').value = res.url;
+        setPhotoPreview(dataUrl);
+        photoStatus.textContent = 'Photo uploaded.';
+      }).catch(function(err){
+        photoStatus.textContent = 'Error uploading photo: ' + err.message;
+        e.target.value = '';
+      });
+    };
+    reader.readAsDataURL(file);
+  });
   function closeModal(){ modalBackdrop.classList.remove('open'); }
 
   document.getElementById('btnAddPlayer').addEventListener('click', function(){ openModal(null); });
