@@ -211,7 +211,49 @@
       <div class="form-grid">
         <div class="form-field"><label>Player Full Name</label><input id="f_playerName" required></div>
         <div class="form-field"><label>Jersey Number</label><input id="f_jerseyNumber"></div>
-        <div class="form-field"><label>High School</label><input id="f_highSchool" value="Middleburg High School"></div>
+        <div class="form-field"><label>High School</label>
+          <select id="f_highSchool">
+            <optgroup label="Duval County">
+              <option>Andrew Jackson High School</option>
+              <option>Atlantic Coast High School</option>
+              <option>Baldwin Middle-Senior High School</option>
+              <option>Edward H. White High School</option>
+              <option>Englewood High School</option>
+              <option>First Coast High School</option>
+              <option>Duncan U. Fletcher High School</option>
+              <option>Mandarin High School</option>
+              <option>Paxon School for Advanced Studies</option>
+              <option>William M. Raines High School</option>
+              <option>Jean Ribault High School</option>
+              <option>Riverside High School</option>
+              <option>Sandalwood High School</option>
+              <option>Stanton College Preparatory School</option>
+              <option>Terry Parker High School</option>
+              <option>Westside High School</option>
+              <option>Samuel W. Wolfson High School</option>
+            </optgroup>
+            <optgroup label="Clay County">
+              <option>Clay High School</option>
+              <option>Fleming Island High School</option>
+              <option>Keystone Heights Junior/Senior High School</option>
+              <option selected>Middleburg High School</option>
+              <option>Oakleaf High School</option>
+              <option>Orange Park High School</option>
+              <option>Ridgeview High School</option>
+            </optgroup>
+            <optgroup label="St. Johns County">
+              <option>Allen D. Nease High School</option>
+              <option>Bartram Trail High School</option>
+              <option>Beachside High School</option>
+              <option>Creekside High School</option>
+              <option>Pedro Menendez High School</option>
+              <option>Ponte Vedra High School</option>
+              <option>St. Augustine High School</option>
+              <option>Tocoi Creek High School</option>
+            </optgroup>
+            <option value="Other">Other, Not Listed</option>
+          </select>
+        </div>
         <div class="form-field"><label>Class Of</label><input id="f_gradYear"></div>
         <div class="form-field"><label>Position</label><input id="f_position"></div>
         <div class="form-field"><label>Status</label>
@@ -510,7 +552,15 @@
     document.getElementById('modalTitle').textContent = player ? 'Edit Player' : 'Add Player';
     fields.forEach(function(f){
       var el = document.getElementById('f_' + f);
-      if(el) el.value = (player && player[f]) || el.defaultValue || '';
+      if(!el) return;
+      if(player && player[f]){
+        el.value = player[f];
+      } else if(el.tagName === 'SELECT'){
+        var def = el.querySelector('option[selected]');
+        el.value = def ? def.value : el.options[0].value;
+      } else {
+        el.value = el.defaultValue || '';
+      }
     });
     document.getElementById('f_playerPhotoFile').value = '';
     document.getElementById('photoStatus').textContent = '';
