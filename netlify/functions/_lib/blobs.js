@@ -1,12 +1,26 @@
 const { getStore } = require("@netlify/blobs");
 const seed = require("../../../data/players.json");
 
+const SITE_ID = process.env.BLOBS_SITE_ID || process.env.SITE_ID;
+const TOKEN = process.env.BLOBS_TOKEN;
+
+function makeStore(name) {
+  // Zero-config getStore(name) relies on deploy context Netlify injects
+  // automatically for functions built through its own build pipeline.
+  // This site's deploys don't go through that path, so it never shows
+  // up; fall back to explicit manual configuration when available.
+  if (SITE_ID && TOKEN) {
+    return getStore({ name, siteID: SITE_ID, token: TOKEN });
+  }
+  return getStore(name);
+}
+
 function playersStore() {
-  return getStore("players");
+  return makeStore("players");
 }
 
 function submissionsStore() {
-  return getStore("submissions");
+  return makeStore("submissions");
 }
 
 async function listPlayers() {
