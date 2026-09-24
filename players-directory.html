@@ -56,7 +56,25 @@
   .nav-links{display:flex;gap:22px;font-size:13.5px;font-weight:600;}
   .nav-links a{color:var(--dim);transition:color .2s;white-space:nowrap;}
   .nav-links a:hover,.nav-links a:focus-visible{color:var(--white);}
-  @media (max-width:760px){ .nav-links{display:none;} }
+  .nav-right{display:flex;align-items:center;gap:14px;}
+  .nav-toggle{
+    display:none;background:none;border:none;cursor:pointer;padding:6px;
+    align-items:center;justify-content:center;color:var(--white);
+  }
+  .nav-toggle svg{width:22px;height:22px;display:block;}
+  @media (max-width:760px){
+    .nav-toggle{display:flex;}
+    .nav-links{
+      display:none;flex-direction:column;gap:0;
+      position:absolute;top:100%;left:0;right:0;
+      background:var(--violet-deep);border-bottom:1px solid var(--line);
+      padding:6px 20px 14px;
+      box-shadow:0 16px 30px rgba(0,0,0,0.35);
+    }
+    .nav-links.mobile-open{display:flex;}
+    .nav-links a{padding:13px 0;border-bottom:1px solid var(--line);}
+    .nav-links a:last-child{border-bottom:none;}
+  }
 
   .btn{display:inline-block;padding:13px 24px;font-weight:700;font-size:13.5px;border-radius:999px;font-family:'Poppins',sans-serif;border:2px solid transparent;transition:all .2s;white-space:nowrap;}
   .btn.primary{background:var(--magenta);color:var(--white);box-shadow:0 8px 22px rgba(255,46,147,0.35);}
@@ -127,13 +145,22 @@
         <span class="brand-sub">Hoops Report</span>
       </span>
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="navLinks">
       <a href="index.html#players">Players</a>
       <a href="index.html#pricing">Pricing</a>
       <a href="index.html#how-it-works">How It Works</a>
       <a href="index.html#about">About</a>
     </div>
-    <a class="btn primary small" href="index.html#pricing">Sign Up</a>
+    <div class="nav-right">
+      <a class="btn primary small" href="index.html#pricing">Sign Up</a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
   </div>
 </nav>
 
@@ -248,6 +275,32 @@
     </div>
   </div>
 </footer>
+
+<script>
+(function(){
+  "use strict";
+  var navToggle = document.getElementById('navToggle');
+  var navLinks = document.getElementById('navLinks');
+  if(!navToggle || !navLinks) return;
+  function closeMobileNav(){
+    navLinks.classList.remove('mobile-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.setAttribute('aria-label', 'Open menu');
+  }
+  function toggleMobileNav(){
+    var open = navLinks.classList.toggle('mobile-open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  navToggle.addEventListener('click', toggleMobileNav);
+  navLinks.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', closeMobileNav);
+  });
+  window.addEventListener('resize', function(){
+    if(window.innerWidth > 760) closeMobileNav();
+  });
+})();
+</script>
 
 </body>
 </html>
