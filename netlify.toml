@@ -75,3 +75,27 @@
   to = "/.netlify/functions/player-self-save"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/player-login"
+  to = "/.netlify/functions/player-login"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/my-dashboard"
+  to = "/.netlify/functions/player-edit"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/player-logout"
+  to = "/.netlify/functions/player-logout"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/set-player-password"
+  to = "/.netlify/functions/player-set-password"
+  status = 200
+  force = true

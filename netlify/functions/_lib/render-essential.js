@@ -224,6 +224,7 @@ function renderEssentialPlayer(p) {
     <div class="rule" style="margin-bottom:24px;"></div>
     <div class="foot-bottom">
       <div><span class="brand">${esc(name)}</span> &middot; ${esc(team)}</div>
+      <div><a href="/player-login" style="color:var(--gray);">Player Login</a></div>
     </div>
   </div>
 </footer>

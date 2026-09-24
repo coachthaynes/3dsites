@@ -1,5 +1,5 @@
 const { getPlayer, savePlayer } = require("./_lib/blobs");
-const { checkPlayerToken } = require("./_lib/auth");
+const { checkPlayerToken, verifySessionCookie } = require("./_lib/auth");
 
 // Fields a player may edit about herself. Slug, editToken, status, and her
 // coach's contact info are intentionally excluded, those stay coach-controlled.
@@ -29,14 +29,25 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: "Invalid JSON" };
   }
 
-  const { slug, token } = body;
-  if (!slug || !token) {
-    return { statusCode: 400, body: JSON.stringify({ error: "slug and token are required" }) };
-  }
+  let slug = body.slug;
+  const token = body.token;
 
-  const player = await getPlayer(slug);
-  if (!checkPlayerToken(player, token)) {
-    return { statusCode: 403, body: JSON.stringify({ error: "Invalid or expired edit link" }) };
+  let player = null;
+  if (slug && token) {
+    player = await getPlayer(slug);
+    if (!checkPlayerToken(player, token)) {
+      return { statusCode: 403, body: JSON.stringify({ error: "Invalid or expired edit link" }) };
+    }
+  } else {
+    const sessionSlug = verifySessionCookie(event.headers.cookie || event.headers.Cookie);
+    if (!sessionSlug) {
+      return { statusCode: 403, body: JSON.stringify({ error: "Not logged in" }) };
+    }
+    slug = sessionSlug;
+    player = await getPlayer(slug);
+    if (!player) {
+      return { statusCode: 404, body: JSON.stringify({ error: "Player not found" }) };
+    }
   }
 
   const update = { slug, id: player.id || slug };

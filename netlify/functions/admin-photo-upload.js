@@ -1,5 +1,5 @@
 const { photosStore, getPlayer } = require("./_lib/blobs");
-const { checkAdminSecret, checkPlayerToken } = require("./_lib/auth");
+const { checkAdminSecret, checkPlayerToken, verifySessionCookie } = require("./_lib/auth");
 
 // Netlify functions cap request bodies around 6MB; stay well under that
 // once the base64 encoding overhead and JSON wrapper are counted.
@@ -30,12 +30,17 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "slug and dataBase64 are required" }) };
   }
 
+  // photoKey is "<playerSlug>-<timestamp>"; recover the player slug to check ownership
+  const playerSlug = slug.replace(/-\d+$/, "");
+
   let authorized = checkAdminSecret(event);
   if (!authorized && token) {
-    // photoKey is "<playerSlug>-<timestamp>"; recover the player slug to check her own token
-    const playerSlug = slug.replace(/-\d+$/, "");
     const player = await getPlayer(playerSlug);
     authorized = checkPlayerToken(player, token);
+  }
+  if (!authorized) {
+    const sessionSlug = verifySessionCookie(event.headers.cookie || event.headers.Cookie);
+    authorized = Boolean(sessionSlug) && sessionSlug === playerSlug;
   }
   if (!authorized) {
     return { statusCode: 401, headers: cors, body: JSON.stringify({ error: "Unauthorized" }) };
