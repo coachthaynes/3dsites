@@ -159,9 +159,63 @@
         <div class="form-row"><label for="jerseyNumber">Jersey Number</label><input type="text" name="jerseyNumber" id="jerseyNumber"></div>
       </div>
       <div class="form-three">
-        <div class="form-row"><label for="highSchool">High School</label><input type="text" name="highSchool" id="highSchool" required></div>
+        <div class="form-row">
+          <label for="highSchool">High School</label>
+          <select name="highSchool" id="highSchool" required>
+            <option value="" disabled selected>Select her school</option>
+            <optgroup label="Duval County">
+              <option>Andrew Jackson High School</option>
+              <option>Atlantic Coast High School</option>
+              <option>Baldwin Middle-Senior High School</option>
+              <option>Edward H. White High School</option>
+              <option>Englewood High School</option>
+              <option>First Coast High School</option>
+              <option>Duncan U. Fletcher High School</option>
+              <option>Mandarin High School</option>
+              <option>Paxon School for Advanced Studies</option>
+              <option>William M. Raines High School</option>
+              <option>Jean Ribault High School</option>
+              <option>Riverside High School</option>
+              <option>Sandalwood High School</option>
+              <option>Stanton College Preparatory School</option>
+              <option>Terry Parker High School</option>
+              <option>Westside High School</option>
+              <option>Samuel W. Wolfson High School</option>
+            </optgroup>
+            <optgroup label="Clay County">
+              <option>Clay High School</option>
+              <option>Fleming Island High School</option>
+              <option>Keystone Heights Junior/Senior High School</option>
+              <option>Middleburg High School</option>
+              <option>Oakleaf High School</option>
+              <option>Orange Park High School</option>
+              <option>Ridgeview High School</option>
+            </optgroup>
+            <optgroup label="St. Johns County">
+              <option>Allen D. Nease High School</option>
+              <option>Bartram Trail High School</option>
+              <option>Beachside High School</option>
+              <option>Creekside High School</option>
+              <option>Pedro Menendez High School</option>
+              <option>Ponte Vedra High School</option>
+              <option>St. Augustine High School</option>
+              <option>Tocoi Creek High School</option>
+            </optgroup>
+            <option value="Other">Other, Not Listed</option>
+          </select>
+        </div>
         <div class="form-row"><label for="gradYear">Class Of (Graduation Year)</label><input type="text" name="gradYear" id="gradYear" required></div>
-        <div class="form-row"><label for="position">Position</label><input type="text" name="position" id="position" placeholder="Guard, Forward, etc"></div>
+        <div class="form-row">
+          <label for="position">Position</label>
+          <select name="position" id="position">
+            <option value="" disabled selected>Select her position</option>
+            <option>Point Guard</option>
+            <option>Shooting Guard</option>
+            <option>Small Forward</option>
+            <option>Power Forward</option>
+            <option>Center</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -216,7 +270,7 @@
       <div class="form-three">
         <div class="form-row"><label for="standingVertical">Standing Vertical</label><input type="text" name="standingVertical" id="standingVertical"></div>
         <div class="form-row"><label for="maxVertical">Max Vertical</label><input type="text" name="maxVertical" id="maxVertical"></div>
-        <div class="form-row"><label for="benchDeadliftSquat">Bench / Deadlift / Squat</label><input type="text" name="benchDeadliftSquat" id="benchDeadliftSquat" placeholder="115/UN/UN"></div>
+        <div class="form-row"><label for="benchDeadliftSquat">Bench / Squat / Deadlift</label><input type="text" name="benchDeadliftSquat" id="benchDeadliftSquat" placeholder="115/100/185"></div>
       </div>
       <div class="form-three">
         <div class="form-row"><label for="laneAgility">Lane Agility</label><input type="text" name="laneAgility" id="laneAgility"></div>
