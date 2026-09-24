@@ -8,7 +8,7 @@ const SCHOOLS = [
     aliases: ["middleburg"],
     name: "Middleburg High School",
     colors: { accent: "#d0202c", accentDark: "#8c0f18" },
-    logo: "/assets/logos/middleburg.jpg",
+    logo: "/assets/logos/middleburg.png",
   },
   {
     aliases: ["clay high", "clay senior"],
@@ -19,7 +19,7 @@ const SCHOOLS = [
     aliases: ["fleming island"],
     name: "Fleming Island High School",
     colors: { accent: "#d9a91b", accentDark: "#a37f14" },
-    logo: "/assets/logos/fleming-island.jpg",
+    logo: "/assets/logos/fleming-island.png",
   },
   {
     aliases: ["keystone heights"],
@@ -35,7 +35,7 @@ const SCHOOLS = [
     aliases: ["orange park"],
     name: "Orange Park High School",
     colors: { accent: "#e0672b", accentDark: "#a34a1d" },
-    logo: "/assets/logos/orange-park.jpg",
+    logo: "/assets/logos/orange-park.png",
   },
   {
     aliases: ["ridgeview"],

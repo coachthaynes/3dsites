@@ -61,7 +61,7 @@ module.exports = `
     margin-right:6px;position:relative;top:-1px;
   }
   .school-logo-img{
-    height:26px;width:auto;vertical-align:middle;margin-right:8px;position:relative;top:-2px;
+    height:44px;width:auto;vertical-align:middle;margin-right:10px;position:relative;top:-3px;
   }
   .hero h1{
     font-size:clamp(44px,8vw,84px);
