@@ -81,6 +81,14 @@
   }
   .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;}
   .section-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin:22px 0 4px;}
+  .section-sub{font-size:12px;color:var(--dim);margin-bottom:4px;}
+  .stat-table-wrap{margin-top:12px;overflow-x:auto;border:1px solid var(--line);border-radius:14px;}
+  table.stat-table{border-collapse:collapse;width:100%;min-width:560px;}
+  table.stat-table th,table.stat-table td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:left;}
+  table.stat-table th{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:var(--teal);font-weight:600;background:var(--panel);}
+  table.stat-table th:first-child,table.stat-table td:first-child{position:sticky;left:0;background:var(--panel-2);font-weight:600;font-size:12.5px;min-width:90px;}
+  table.stat-table td input{width:100%;background:var(--violet-deep);border:1px solid var(--line);border-radius:8px;padding:6px 7px;color:var(--white);font-size:12.5px;font-family:'IBM Plex Mono',monospace;}
+  table.stat-table tr:last-child td{border-bottom:none;}
 
   .marketing-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
   @media (max-width:760px){ .marketing-grid{grid-template-columns:1fr;} }
@@ -210,32 +218,113 @@
           <select id="f_status"><option value="published">Published</option><option value="draft">Draft</option></select>
         </div>
       </div>
-      <div class="section-title">Contact</div>
+      <div class="section-title">Contact Information</div>
       <div class="form-grid">
         <div class="form-field"><label>Player Phone</label><input id="f_playerPhone"></div>
         <div class="form-field"><label>Player Email</label><input id="f_playerEmail"></div>
-        <div class="form-field"><label>Guardian Name</label><input id="f_guardianName"></div>
-        <div class="form-field"><label>Guardian Phone</label><input id="f_guardianPhone"></div>
+        <div class="form-field"><label>Parent Or Guardian Name</label><input id="f_guardianName"></div>
+        <div class="form-field"><label>Parent Or Guardian Phone</label><input id="f_guardianPhone"></div>
+        <div class="form-field"><label>Parent Or Guardian Email</label><input id="f_guardianEmail"></div>
+      </div>
+      <div class="section-title">Academic Info</div>
+      <div class="form-grid">
+        <div class="form-field"><label>GPA</label><input id="f_gpa"></div>
+        <div class="form-field"><label>SAT</label><input id="f_sat"></div>
+        <div class="form-field"><label>ACT</label><input id="f_act"></div>
+        <div class="form-field"><label>Dual Enrollment</label><input id="f_dualEnrollment" placeholder="Classes or credits, if any"></div>
       </div>
       <div class="section-title">Measurables</div>
       <div class="form-grid">
-        <div class="form-field"><label>Height</label><input id="f_height"></div>
+        <div class="form-field"><label>Height</label><input id="f_height" placeholder="5'8&quot;"></div>
         <div class="form-field"><label>Weight</label><input id="f_weight"></div>
+        <div class="form-field"><label>Standing Reach</label><input id="f_standingReach"></div>
         <div class="form-field"><label>Wingspan</label><input id="f_wingspan"></div>
         <div class="form-field"><label>Shoe Size</label><input id="f_shoeSize"></div>
       </div>
-      <div class="section-title">Links</div>
+      <div class="section-title">Athletic Testing</div>
       <div class="form-grid">
-        <div class="form-field"><label>MaxPreps</label><input id="f_maxpreps"></div>
-        <div class="form-field"><label>Hudl</label><input id="f_hudl"></div>
-        <div class="form-field"><label>Instagram</label><input id="f_instagram"></div>
-        <div class="form-field"><label>YouTube</label><input id="f_youtube"></div>
+        <div class="form-field"><label>Standing Vertical</label><input id="f_standingVertical"></div>
+        <div class="form-field"><label>Max Vertical</label><input id="f_maxVertical"></div>
+        <div class="form-field"><label>Bench / Squat / Deadlift</label><input id="f_benchDeadliftSquat" placeholder="115/100/185"></div>
+        <div class="form-field"><label>Lane Agility</label><input id="f_laneAgility"></div>
+        <div class="form-field"><label>Shuttle Run (3/4 Court)</label><input id="f_shuttleRun"></div>
+        <div class="form-field"><label>Three Qtr Sprint</label><input id="f_threeQtrSprint"></div>
       </div>
-      <div class="section-title">Coach</div>
+      <div class="section-title">Season Stats</div>
+      <div class="section-sub">Leave any year blank if she hasn't played it yet.</div>
+      <div class="stat-table-wrap">
+        <table class="stat-table">
+          <thead><tr><th>Season</th><th>PPG</th><th>Rebounds</th><th>Steals</th><th>Blocks</th><th>Assists</th><th>Total Points</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Freshman</td>
+              <td><input id="f_statFreshmanPPG"></td>
+              <td><input id="f_statFreshmanRebounds"></td>
+              <td><input id="f_statFreshmanSteals"></td>
+              <td><input id="f_statFreshmanBlocks"></td>
+              <td><input id="f_statFreshmanAssists"></td>
+              <td><input id="f_statFreshmanTotalPoints"></td>
+            </tr>
+            <tr>
+              <td>Sophomore</td>
+              <td><input id="f_statSophomorePPG"></td>
+              <td><input id="f_statSophomoreRebounds"></td>
+              <td><input id="f_statSophomoreSteals"></td>
+              <td><input id="f_statSophomoreBlocks"></td>
+              <td><input id="f_statSophomoreAssists"></td>
+              <td><input id="f_statSophomoreTotalPoints"></td>
+            </tr>
+            <tr>
+              <td>Junior</td>
+              <td><input id="f_statJuniorPPG"></td>
+              <td><input id="f_statJuniorRebounds"></td>
+              <td><input id="f_statJuniorSteals"></td>
+              <td><input id="f_statJuniorBlocks"></td>
+              <td><input id="f_statJuniorAssists"></td>
+              <td><input id="f_statJuniorTotalPoints"></td>
+            </tr>
+            <tr>
+              <td>Senior</td>
+              <td><input id="f_statSeniorPPG"></td>
+              <td><input id="f_statSeniorRebounds"></td>
+              <td><input id="f_statSeniorSteals"></td>
+              <td><input id="f_statSeniorBlocks"></td>
+              <td><input id="f_statSeniorAssists"></td>
+              <td><input id="f_statSeniorTotalPoints"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-title">Film &amp; Social Links</div>
+      <div class="form-grid">
+        <div class="form-field"><label>MaxPreps</label><input id="f_maxpreps" placeholder="https://"></div>
+        <div class="form-field"><label>Hudl</label><input id="f_hudl" placeholder="https://"></div>
+        <div class="form-field"><label>FieldLevel</label><input id="f_fieldlevel" placeholder="https://"></div>
+        <div class="form-field"><label>Prep Girls Hoops</label><input id="f_prepgirlshoops" placeholder="https://"></div>
+        <div class="form-field"><label>Instagram</label><input id="f_instagram" placeholder="https://"></div>
+        <div class="form-field"><label>X / Twitter</label><input id="f_twitter" placeholder="https://"></div>
+      </div>
+      <div class="form-grid full">
+        <div class="form-field"><label>YouTube (Highlights / Game Film)</label><input id="f_youtube" placeholder="https://"></div>
+      </div>
+      <div class="section-title">Coach Contact</div>
       <div class="form-grid">
         <div class="form-field"><label>Coach Name</label><input id="f_coachName" value="Tenise Haynes"></div>
         <div class="form-field"><label>Coach Phone</label><input id="f_coachPhone" value="904 290 0261"></div>
         <div class="form-field"><label>Coach Email</label><input id="f_coachEmail" value="coachthaynes@gmail.com"></div>
+      </div>
+      <div class="section-title">College Interest</div>
+      <div class="form-grid full">
+        <div class="form-field"><label>Current Offers <span style="font-weight:400;text-transform:none;letter-spacing:0;">(one per line)</span></label><textarea id="f_currentOffers" rows="3"></textarea></div>
+        <div class="form-field"><label>NCAA ID Number</label><input id="f_ncaaId"></div>
+      </div>
+      <div class="section-title">Photo</div>
+      <div class="form-grid full">
+        <div class="form-field"><label>Photo URL <span style="font-weight:400;text-transform:none;letter-spacing:0;">(direct image link, used on her profile)</span></label><input id="f_playerPhoto" placeholder="https://"></div>
+      </div>
+      <div class="section-title">Anything Else</div>
+      <div class="form-grid full">
+        <div class="form-field"><label>Anything Else We Should Know</label><textarea id="f_message" rows="3"></textarea></div>
       </div>
       <div class="modal-actions">
         <button type="button" class="btn" id="btnCancelModal">Cancel</button>
@@ -389,8 +478,17 @@
   /* modal / edit form */
   var modalBackdrop = document.getElementById('playerModalBackdrop');
   var fields = ['slug','playerName','jerseyNumber','highSchool','gradYear','position','status',
-    'playerPhone','playerEmail','guardianName','guardianPhone','height','weight','wingspan','shoeSize',
-    'maxpreps','hudl','instagram','youtube','coachName','coachPhone','coachEmail'];
+    'playerPhone','playerEmail','guardianName','guardianPhone','guardianEmail',
+    'gpa','sat','act','dualEnrollment',
+    'height','weight','standingReach','wingspan','shoeSize',
+    'standingVertical','maxVertical','benchDeadliftSquat','laneAgility','shuttleRun','threeQtrSprint',
+    'statFreshmanPPG','statFreshmanRebounds','statFreshmanSteals','statFreshmanBlocks','statFreshmanAssists','statFreshmanTotalPoints',
+    'statSophomorePPG','statSophomoreRebounds','statSophomoreSteals','statSophomoreBlocks','statSophomoreAssists','statSophomoreTotalPoints',
+    'statJuniorPPG','statJuniorRebounds','statJuniorSteals','statJuniorBlocks','statJuniorAssists','statJuniorTotalPoints',
+    'statSeniorPPG','statSeniorRebounds','statSeniorSteals','statSeniorBlocks','statSeniorAssists','statSeniorTotalPoints',
+    'maxpreps','hudl','fieldlevel','prepgirlshoops','instagram','twitter','youtube',
+    'coachName','coachPhone','coachEmail',
+    'currentOffers','ncaaId','playerPhoto','message'];
 
   function openModal(player){
     document.getElementById('modalTitle').textContent = player ? 'Edit Player' : 'Add Player';
