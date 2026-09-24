@@ -219,4 +219,9 @@ function getSchoolInitials(highSchool) {
   return initials.slice(0, 4);
 }
 
-module.exports = { getSchoolColors, getSchoolInitials, getSchoolLogo, SCHOOLS };
+function getCanonicalSchoolName(highSchool) {
+  const school = matchSchool(highSchool);
+  return school ? school.name : null;
+}
+
+module.exports = { getSchoolColors, getSchoolInitials, getSchoolLogo, getCanonicalSchoolName, SCHOOLS };

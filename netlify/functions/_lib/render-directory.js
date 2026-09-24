@@ -1,15 +1,150 @@
 const CSS = require("./directory-css");
+const { getCanonicalSchoolName } = require("./school-colors");
 
 function esc(s) {
   if (s === undefined || s === null) return "";
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
+const COUNTIES = [
+  {
+    id: "duval",
+    name: "Duval County",
+    intro: "Jacksonville area public high schools.",
+    schools: [
+      { name: "Andrew Jackson High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/andrew-jackson-tigers/basketball/girls/" },
+      { name: "Atlantic Coast High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/atlantic-coast-stingrays/basketball/girls/" },
+      { name: "Baldwin Middle-Senior High School", maxpreps: "https://www.maxpreps.com/fl/baldwin/baldwin-indians/basketball/girls/" },
+      { name: "Edward H. White High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/ed-white-commanders/basketball/girls/" },
+      { name: "Englewood High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/englewood-rams/basketball/girls/" },
+      { name: "First Coast High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/first-coast-buccaneers/basketball/girls/" },
+      { name: "Duncan U. Fletcher High School", maxpreps: "https://www.maxpreps.com/fl/neptune-beach/fletcher-senators/basketball/girls/" },
+      { name: "Mandarin High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/mandarin-mustangs/basketball/girls/" },
+      { name: "Paxon School for Advanced Studies", maxpreps: "https://www.maxpreps.com/fl/jacksonville/paxon-school-for-advanced-studies-golden-eagles/basketball/girls/" },
+      { name: "William M. Raines High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/raines-vikings/basketball/girls/" },
+      { name: "Jean Ribault High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/ribault-trojans/basketball/girls/" },
+      { name: "Riverside High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/riverside-generals/basketball/girls/" },
+      { name: "Sandalwood High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/sandalwood-mighty-saints/basketball/girls/" },
+      { name: "Stanton College Preparatory School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/stanton-blue-devils/basketball/girls/" },
+      { name: "Terry Parker High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/parker-braves/basketball/girls/" },
+      { name: "Westside High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/westside-wolverines/basketball/girls/" },
+      { name: "Samuel W. Wolfson High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/wolfson-wolfpack/basketball/girls/" },
+    ],
+  },
+  {
+    id: "clay",
+    name: "Clay County",
+    intro: "Green Cove Springs, Middleburg, and Orange Park area public high schools.",
+    schools: [
+      { name: "Clay High School", maxpreps: "https://www.maxpreps.com/fl/green-cove-springs/clay-blue-devils/basketball/girls/" },
+      { name: "Fleming Island High School", maxpreps: "https://www.maxpreps.com/fl/orange-park/fleming-island-golden-eagles/basketball/girls/" },
+      { name: "Keystone Heights Junior/Senior High School", maxpreps: "https://www.maxpreps.com/fl/keystone-heights/keystone-heights-indians/basketball/girls/" },
+      {
+        name: "Middleburg High School",
+        maxpreps: "https://www.maxpreps.com/fl/middleburg/middleburg-broncos/basketball/girls/",
+        extraLinks: [
+          { href: "aiyana-haynes.html", label: "Aiyana Haynes" },
+          { href: "kennedy-jeffress.html", label: "Kennedy Jeffress" },
+        ],
+      },
+      { name: "Oakleaf High School", maxpreps: "https://www.maxpreps.com/fl/orange-park/oakleaf-knights/basketball/girls/" },
+      { name: "Orange Park High School", maxpreps: "https://www.maxpreps.com/fl/orange-park/orange-park-raiders/basketball/girls/" },
+      { name: "Ridgeview High School", maxpreps: "https://www.maxpreps.com/fl/orange-park/ridgeview-panthers/basketball/girls/" },
+    ],
+  },
+  {
+    id: "stjohns",
+    name: "St. Johns County",
+    intro: "St. Augustine and Ponte Vedra area public high schools.",
+    schools: [
+      { name: "Allen D. Nease High School", maxpreps: "https://www.maxpreps.com/fl/ponte-vedra/nease-panthers/basketball/girls/" },
+      { name: "Bartram Trail High School", maxpreps: "https://www.maxpreps.com/fl/st-johns/bartram-trail-bears/basketball/girls/" },
+      { name: "Beachside High School", maxpreps: "https://www.maxpreps.com/fl/st-johns/beachside-barracudas/basketball/girls/" },
+      { name: "Creekside High School", maxpreps: "https://www.maxpreps.com/fl/st-johns/creekside-knights/basketball/girls/" },
+      { name: "Pedro Menendez High School", maxpreps: "https://www.maxpreps.com/fl/st-augustine/menendez-falcons/basketball/girls/" },
+      { name: "Ponte Vedra High School", maxpreps: "https://www.maxpreps.com/fl/ponte-vedra/ponte-vedra-sharks/basketball/girls/" },
+      { name: "St. Augustine High School", maxpreps: "https://www.maxpreps.com/fl/st-augustine/st-augustine-yellow-jackets/basketball/girls/" },
+      { name: "Tocoi Creek High School", maxpreps: "https://www.maxpreps.com/fl/st-augustine/tocoi-creek-toros/basketball/girls/" },
+    ],
+  },
+];
+
+function schoolCard(school, playersBySchool) {
+  const livePlayers = playersBySchool[school.name] || [];
+  const extraLinks = school.extraLinks || [];
+  const hasLive = livePlayers.length > 0 || extraLinks.length > 0;
+
+  const links = [
+    ...extraLinks.map((l) => `          <a href="${esc(l.href)}">${esc(l.label)} &#8599;</a>`),
+    ...livePlayers.map((p) => `          <a href="players/${esc(p.slug)}">${esc(p.playerName)} &#8599;</a>`),
+  ].join("\n");
+
+  if (!hasLive) {
+    return `      <div class="school-card"><span class="school-name">${esc(school.name)}</span><a class="school-link" href="${esc(school.maxpreps)}" target="_blank" rel="noopener">Team page &#8599;</a></div>`;
+  }
+
+  return `      <div class="school-card has-live">
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+          <span class="school-name">${esc(school.name)}</span>
+          <a class="school-link" href="${esc(school.maxpreps)}" target="_blank" rel="noopener">Team page &#8599;</a>
+        </div>
+        <div class="live-block">
+${links}
+        </div>
+      </div>`;
+}
+
 function renderDirectory(players) {
   const published = (players || []).filter((p) => p.status !== "draft" && p.playerName);
-  const middleburgLinks = published
-    .map((p) => `          <a href="players/${esc(p.slug)}">${esc(p.playerName)} &#8599;</a>`)
-    .join("\n");
+
+  const playersBySchool = {};
+  const unmatched = [];
+  for (const p of published) {
+    const canonical = getCanonicalSchoolName(p.highSchool);
+    if (canonical) {
+      (playersBySchool[canonical] = playersBySchool[canonical] || []).push(p);
+    } else {
+      unmatched.push(p);
+    }
+  }
+
+  const countySections = COUNTIES.map((county) => {
+    const cards = county.schools.map((school) => schoolCard(school, playersBySchool)).join("\n\n");
+    return `<section class="county" id="${esc(county.id)}">
+  <div class="wrap">
+    <div class="county-head">
+      <div class="display">${esc(county.name)}</div>
+      <span class="county-count mono">${county.schools.length} schools</span>
+    </div>
+    <p class="county-intro">${esc(county.intro)}</p>
+    <div class="school-grid">
+${cards}
+    </div>
+  </div>
+</section>`;
+  }).join("\n\n");
+
+  const unmatchedBlock = unmatched.length
+    ? `<section class="county" id="other">
+  <div class="wrap">
+    <div class="county-head">
+      <div class="display">Other Schools</div>
+      <span class="county-count mono">${unmatched.length} player${unmatched.length === 1 ? "" : "s"}</span>
+    </div>
+    <p class="county-intro">Not yet matched to a school in the three counties above.</p>
+    <div class="school-grid">
+      <div class="school-card has-live">
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+          <span class="school-name">Unlisted</span>
+        </div>
+        <div class="live-block">
+${unmatched.map((p) => `          <a href="players/${esc(p.slug)}">${esc(p.playerName)}, ${esc(p.highSchool || "school not set")} &#8599;</a>`).join("\n")}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>`
+    : "";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -88,85 +223,9 @@ function renderDirectory(players) {
   </div>
 </div>
 
-<section class="county" id="duval">
-  <div class="wrap">
-    <div class="county-head">
-      <div class="display">Duval County</div>
-      <span class="county-count mono">17 schools</span>
-    </div>
-    <p class="county-intro">Jacksonville area public high schools.</p>
-    <div class="school-grid">
-      <div class="school-card"><span class="school-name">Andrew Jackson High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/andrew-jackson-tigers/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Atlantic Coast High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/atlantic-coast-stingrays/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Baldwin Middle-Senior High School</span><a class="school-link" href="https://www.maxpreps.com/fl/baldwin/baldwin-indians/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Edward H. White High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/ed-white-commanders/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Englewood High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/englewood-rams/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">First Coast High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/first-coast-buccaneers/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Duncan U. Fletcher High School</span><a class="school-link" href="https://www.maxpreps.com/fl/neptune-beach/fletcher-senators/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Mandarin High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/mandarin-mustangs/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Paxon School for Advanced Studies</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/paxon-school-for-advanced-studies-golden-eagles/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">William M. Raines High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/raines-vikings/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Jean Ribault High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/ribault-trojans/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Riverside High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/riverside-generals/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Sandalwood High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/sandalwood-mighty-saints/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Stanton College Preparatory School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/stanton-blue-devils/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Terry Parker High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/parker-braves/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Westside High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/westside-wolverines/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Samuel W. Wolfson High School</span><a class="school-link" href="https://www.maxpreps.com/fl/jacksonville/wolfson-wolfpack/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-    </div>
-  </div>
-</section>
+${countySections}
 
-<section class="county" id="clay">
-  <div class="wrap">
-    <div class="county-head">
-      <div class="display">Clay County</div>
-      <span class="county-count mono">7 schools</span>
-    </div>
-    <p class="county-intro">Green Cove Springs, Middleburg, and Orange Park area public high schools.</p>
-    <div class="school-grid">
-      <div class="school-card"><span class="school-name">Clay High School</span><a class="school-link" href="https://www.maxpreps.com/fl/green-cove-springs/clay-blue-devils/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Fleming Island High School</span><a class="school-link" href="https://www.maxpreps.com/fl/orange-park/fleming-island-golden-eagles/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Keystone Heights Junior/Senior High School</span><a class="school-link" href="https://www.maxpreps.com/fl/keystone-heights/keystone-heights-indians/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-
-      <div class="school-card has-live" style="grid-column: span 1;">
-        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-          <span class="school-name">Middleburg High School</span>
-          <a class="school-link" href="https://www.maxpreps.com/fl/middleburg/middleburg-broncos/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a>
-        </div>
-        <div class="live-block">
-          <a href="aiyana-haynes.html">Aiyana Haynes &#8599;</a>
-          <a href="kennedy-jeffress.html">Kennedy Jeffress &#8599;</a>
-${middleburgLinks}
-        </div>
-      </div>
-
-      <div class="school-card"><span class="school-name">Oakleaf High School</span><a class="school-link" href="https://www.maxpreps.com/fl/orange-park/oakleaf-knights/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Orange Park High School</span><a class="school-link" href="https://www.maxpreps.com/fl/orange-park/orange-park-raiders/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Ridgeview High School</span><a class="school-link" href="https://www.maxpreps.com/fl/orange-park/ridgeview-panthers/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-    </div>
-  </div>
-</section>
-
-<section class="county" id="stjohns">
-  <div class="wrap">
-    <div class="county-head">
-      <div class="display">St. Johns County</div>
-      <span class="county-count mono">8 schools</span>
-    </div>
-    <p class="county-intro">St. Augustine and Ponte Vedra area public high schools.</p>
-    <div class="school-grid">
-      <div class="school-card"><span class="school-name">Allen D. Nease High School</span><a class="school-link" href="https://www.maxpreps.com/fl/ponte-vedra/nease-panthers/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Bartram Trail High School</span><a class="school-link" href="https://www.maxpreps.com/fl/st-johns/bartram-trail-bears/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Beachside High School</span><a class="school-link" href="https://www.maxpreps.com/fl/st-johns/beachside-barracudas/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Creekside High School</span><a class="school-link" href="https://www.maxpreps.com/fl/st-johns/creekside-knights/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Pedro Menendez High School</span><a class="school-link" href="https://www.maxpreps.com/fl/st-augustine/menendez-falcons/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Ponte Vedra High School</span><a class="school-link" href="https://www.maxpreps.com/fl/ponte-vedra/ponte-vedra-sharks/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">St. Augustine High School</span><a class="school-link" href="https://www.maxpreps.com/fl/st-augustine/st-augustine-yellow-jackets/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-      <div class="school-card"><span class="school-name">Tocoi Creek High School</span><a class="school-link" href="https://www.maxpreps.com/fl/st-augustine/tocoi-creek-toros/basketball/girls/" target="_blank" rel="noopener">Team page &#8599;</a></div>
-    </div>
-  </div>
-</section>
+${unmatchedBlock}
 
 <footer>
   <div class="wrap">
