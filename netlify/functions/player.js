@@ -1,8 +1,15 @@
 const { getPlayer } = require("./_lib/blobs");
 const { renderEssentialPlayer } = require("./_lib/render-essential");
 
+function slugFromPath(path) {
+  // /players/nyla-parsons -> nyla-parsons
+  const segments = (path || "").split("/").filter(Boolean);
+  return segments[segments.length - 1] || "";
+}
+
 exports.handler = async (event) => {
-  const slug = event.queryStringParameters && event.queryStringParameters.slug;
+  const qsSlug = event.queryStringParameters && event.queryStringParameters.slug;
+  const slug = qsSlug && qsSlug !== ":splat" ? qsSlug : slugFromPath(event.path);
   if (!slug) {
     return { statusCode: 400, body: "Missing slug" };
   }
