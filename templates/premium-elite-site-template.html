@@ -1,0 +1,563 @@
+<!--
+  PREMIUM / ELITE SITE TEMPLATE
+  =============================
+  Starting point for hand building a new Premium or Elite player site,
+  extracted from aiyana-haynes.html and kennedy-jeffress.html so every
+  new build starts from the same design instead of from scratch.
+
+  How to use this file:
+  1. Copy it to the repo root as "<player-slug>.html" (e.g. "maya-smith.html").
+  2. Find and replace every {{TOKEN}} below with her real info.
+  3. ACCENT / ACCENT_DARK: unlike the Essential template, Premium and Elite
+     KEEP the player's own school colors as the accent (that's why Aiyana's
+     and Kennedy's sites are both red, they're both Middleburg). Pull the
+     real hex values for her school from netlify/functions/_lib/school-colors.js
+     (the `colors.accent` / `colors.accentDark` fields), don't invent new ones.
+  4. Sections marked "OPTIONAL" below can be deleted entirely if she doesn't
+     have that content (e.g. no extra photos, no ranking, no offers yet).
+     Repeatable blocks (stat rows, video embeds, skill cards, link pills,
+     offers) can be copy pasted for as many as she has.
+  5. Wire her up: add her to the pricing page's Featured Players cards on
+     index.html (a "Live Example" card linking to her new page), and set
+     her `tier` field to "premium" or "elite" in the admin dashboard so
+     the Fulfillment and Articles tabs, and the directory exclusion, pick
+     her up correctly. This file itself is static HTML, it is NOT wired
+     into the dashboard the way Essential players are.
+  6. The Latest News section at the bottom already works as-is, it fetches
+     from /player-articles?slug={{SLUG}} the same way Aiyana's and
+     Kennedy's do, just make sure {{SLUG}} matches the filename you saved.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{PLAYER_NAME}} | {{TEAM_NAME}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0a0a0a;
+    --panel:#151515;
+    --red:{{ACCENT}};
+    --red-dark:{{ACCENT_DARK}};
+    --white:#f5f5f3;
+    --line:#2a2a2a;
+    --gray:#9a9a9a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--white);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .display{
+    font-family:'Anton',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    line-height:0.92;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 28px;}
+  .rule{height:1px;background:var(--line);width:100%;}
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(10,10,10,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    height:64px;
+  }
+  .nav-name{font-family:'Anton',sans-serif;font-size:20px;letter-spacing:0.03em;text-transform:uppercase;}
+  .nav-name span{color:var(--red);}
+  .nav-links{display:flex;gap:26px;font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;}
+  .nav-links a{color:var(--gray);transition:color .2s;}
+  .nav-links a:hover{color:var(--white);}
+  @media (max-width:640px){ .nav-links{gap:16px;font-size:11px;} }
+
+  /* HERO */
+  .hero{
+    position:relative;
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    align-items:stretch;
+    min-height:640px;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-text{
+    position:relative;z-index:2;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:64px 48px;
+  }
+  .hero-eyebrow{
+    color:var(--red);font-weight:700;font-size:14px;letter-spacing:0.06em;
+    margin-bottom:14px;
+  }
+  .hero h1{
+    font-size:clamp(48px,7vw,92px);
+    color:var(--white);
+  }
+  .hero h1 .num{color:var(--red);}
+  .hero-sub{
+    margin-top:18px;font-size:17px;color:var(--gray);max-width:36ch;line-height:1.5;
+  }
+  .hero-tags{
+    display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;
+  }
+  .tag{
+    border:1px solid var(--red);color:var(--red);
+    padding:7px 14px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+  }
+  .hero-cta{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{
+    display:inline-block;padding:13px 22px;font-weight:700;font-size:13px;
+    letter-spacing:0.05em;text-transform:uppercase;
+    border:1px solid var(--white);transition:all .2s;
+  }
+  .btn.primary{background:var(--red);border-color:var(--red);color:var(--white);}
+  .btn.primary:hover{background:var(--red-dark);border-color:var(--red-dark);}
+  .btn.ghost:hover{background:var(--white);color:var(--black);}
+
+  .hero-photo{
+    position:relative;overflow:hidden;
+    background:#000;
+  }
+  .hero-photo img{
+    width:100%;height:100%;object-fit:cover;object-position:top center;
+    display:block;
+  }
+  .hero-photo::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0) 24%);
+  }
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;min-height:auto;}
+    .hero-photo{height:420px;order:-1;}
+    .hero-photo::after{background:linear-gradient(180deg, rgba(10,10,10,0) 55%, rgba(10,10,10,1) 100%);}
+    .hero-text{padding:40px 24px;}
+  }
+
+  /* STAT STRIP */
+  .statstrip{
+    background:var(--panel);
+    border-bottom:1px solid var(--line);
+  }
+  .statstrip .wrap{
+    display:grid;grid-template-columns:repeat(5,1fr);
+    text-align:center;
+  }
+  .stat-item{
+    padding:30px 10px;border-left:1px solid var(--line);
+  }
+  .stat-item:first-child{border-left:none;}
+  .stat-num{font-family:'Anton',sans-serif;font-size:clamp(28px,4vw,44px);color:var(--white);}
+  .stat-label{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray);margin-top:4px;}
+  @media (max-width:640px){
+    .statstrip .wrap{grid-template-columns:repeat(3,1fr);}
+    .stat-item:nth-child(4){border-left:none;}
+  }
+
+  /* SECTION SHELL */
+  section{padding:80px 0;position:relative;}
+  .section-head{margin-bottom:44px;max-width:60ch;}
+  .section-head .display{font-size:clamp(30px,4vw,46px);color:var(--white);}
+  .section-head p{color:var(--gray);margin-top:12px;font-size:15px;line-height:1.6;}
+
+  /* ABOUT */
+  .about-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:56px;align-items:start;}
+  .about-body p{color:#cfcfcf;font-size:16px;line-height:1.75;margin-bottom:16px;}
+  .vitals{border:1px solid var(--line);background:var(--panel);}
+  .vitals-row{
+    display:flex;justify-content:space-between;padding:14px 20px;
+    border-bottom:1px solid var(--line);font-size:14px;
+  }
+  .vitals-row:last-child{border-bottom:none;}
+  .vitals-row span:first-child{color:var(--gray);}
+  .vitals-row span:last-child{font-weight:700;color:var(--white);}
+  .vitals-title{
+    padding:16px 20px;font-family:'Anton',sans-serif;letter-spacing:0.04em;
+    background:var(--red);color:var(--white);font-size:15px;
+  }
+  @media (max-width:860px){ .about-grid{grid-template-columns:1fr;} }
+
+  /* SKILLSET */
+  .skill-section{background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .skill-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:40px;align-items:start;}
+  .record-photo{
+    border:1px solid var(--line);overflow:hidden;
+  }
+  .record-photo img{width:100%;display:block;}
+  .skill-card{
+    background:var(--black);border:1px solid var(--line);padding:34px;
+    position:relative;
+  }
+  .skill-card .num{
+    font-family:'Anton',sans-serif;color:var(--red);font-size:15px;letter-spacing:0.08em;margin-bottom:14px;display:block;
+  }
+  .skill-card h3{font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;margin-bottom:12px;}
+  .skill-card p{color:#c8c8c8;font-size:15px;line-height:1.7;}
+  .record-strip{
+    margin-top:40px;display:flex;align-items:center;gap:28px;
+    background:linear-gradient(90deg, var(--red-dark), var(--red));
+    padding:26px 34px;flex-wrap:wrap;
+  }
+  .record-strip .rnum{font-family:'Anton',sans-serif;font-size:44px;}
+  .record-strip .rlabel{font-size:12px;letter-spacing:0.06em;text-transform:uppercase;opacity:0.85;}
+  .record-strip .rblock{padding-right:28px;border-right:1px solid rgba(255,255,255,0.35);}
+  .record-strip .rblock:last-of-type{border-right:none;}
+  @media (max-width:860px){ .skill-grid{grid-template-columns:1fr;} }
+
+  /* SEASON STATS TABLE */
+  table.stats{
+    width:100%;border-collapse:collapse;font-size:14px;
+  }
+  table.stats th, table.stats td{
+    padding:16px 14px;text-align:center;border-bottom:1px solid var(--line);
+  }
+  table.stats th{
+    font-family:'Anton',sans-serif;font-size:13px;letter-spacing:0.05em;color:var(--gray);text-transform:uppercase;font-weight:400;
+  }
+  table.stats td:first-child, table.stats th:first-child{
+    text-align:left;font-weight:700;color:var(--white);
+  }
+  table.stats tbody tr:hover{background:rgba(208,32,44,0.06);}
+  .table-wrap{border:1px solid var(--line);overflow-x:auto;}
+
+  /* HIGHLIGHTS */
+  .video-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  }
+  .video-frame{
+    position:relative;width:100%;padding-top:177.7%;
+    background:#000;border:1px solid var(--line);overflow:hidden;
+  }
+  .video-frame iframe{
+    position:absolute;inset:0;width:100%;height:100%;border:0;
+  }
+  .video-cap{font-size:13px;color:var(--gray);margin-top:10px;}
+  @media (max-width:860px){ .video-grid{grid-template-columns:1fr;} }
+
+  /* MORE PHOTOS (optional) */
+  .photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+  @media (max-width:860px){ .photo-grid{grid-template-columns:1fr;max-width:420px;} }
+
+  /* RECRUITING */
+  .recruit-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+  .rank-photo{border:1px solid var(--line);overflow:hidden;margin-top:24px;}
+  .rank-photo img{width:100%;display:block;}
+  .rank-cap{font-size:13px;color:var(--gray);margin-top:10px;}
+  .offer-list{list-style:none;}
+  .offer-list li{
+    padding:16px 0;border-bottom:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;font-size:16px;
+  }
+  .offer-list li:first-child{padding-top:0;}
+  .offer-list .status{
+    font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--red);font-weight:700;
+  }
+  .contact-card{border:1px solid var(--line);background:var(--panel);padding:26px 28px;}
+  .contact-card h4{font-family:'Anton',sans-serif;font-size:16px;letter-spacing:0.04em;margin-bottom:16px;}
+  .contact-row{font-size:14px;color:#d5d5d5;margin-bottom:8px;}
+  .contact-row span{color:var(--gray);}
+  @media (max-width:860px){ .recruit-grid{grid-template-columns:1fr;} }
+
+  /* LINKS / FOOTER */
+  footer{
+    padding:64px 0 40px;border-top:1px solid var(--line);
+  }
+  .links-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:48px;
+  }
+  .link-pill{
+    border:1px solid var(--line);padding:16px 18px;font-size:13px;font-weight:600;
+    display:flex;align-items:center;justify-content:space-between;transition:all .2s;
+  }
+  .link-pill:hover{border-color:var(--red);color:var(--red);}
+  .foot-bottom{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+    color:var(--gray);font-size:13px;
+  }
+  .foot-bottom .brand{color:var(--white);font-weight:700;}
+  @media (max-width:860px){ .links-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .links-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="nav-name">{{PLAYER_NAME_UPPER}} <span>#{{JERSEY_NUMBER}}</span></div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#game">Game</a>
+      <a href="#stats">Stats</a>
+      <a href="#highlights">Highlights</a>
+      <a href="#recruiting">Recruiting</a>
+      <a href="#links">Links</a>
+      <a href="players-directory.html">Elevate Her Hoops</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow">{{TEAM_NAME}} &middot; Class of {{GRAD_YEAR}}</div>
+    <h1 class="display">{{PLAYER_FIRST_NAME_UPPER}}<br>{{PLAYER_LAST_NAME_UPPER}} <span class="num">{{JERSEY_NUMBER}}</span></h1>
+    <p class="hero-sub">{{POSITION}}, {{HIGH_SCHOOL}}.</p>
+    <div class="hero-tags">
+      <!-- 2-3 short tags that describe her game, e.g. "Three And D", "Long Range Shooter", "5'8 Guard" -->
+      <span class="tag">{{TAG_1}}</span>
+      <span class="tag">{{TAG_2}}</span>
+      <span class="tag">{{TAG_3}}</span>
+    </div>
+    <div class="hero-cta">
+      <a class="btn primary" href="#highlights">Watch Highlights</a>
+      <a class="btn ghost" href="#links">All Links</a>
+    </div>
+  </div>
+  <div class="hero-photo">
+    <img src="{{HERO_PHOTO_SRC}}" alt="{{HERO_PHOTO_ALT}}">
+  </div>
+</div>
+
+<div class="statstrip">
+  <div class="wrap">
+    <!-- exactly 5 headline numbers, pick her best/most recent -->
+    <div class="stat-item"><div class="stat-num">{{STAT_1_VALUE}}</div><div class="stat-label">{{STAT_1_LABEL}}</div></div>
+    <div class="stat-item"><div class="stat-num">{{STAT_2_VALUE}}</div><div class="stat-label">{{STAT_2_LABEL}}</div></div>
+    <div class="stat-item"><div class="stat-num">{{STAT_3_VALUE}}</div><div class="stat-label">{{STAT_3_LABEL}}</div></div>
+    <div class="stat-item"><div class="stat-num">{{STAT_4_VALUE}}</div><div class="stat-label">{{STAT_4_LABEL}}</div></div>
+    <div class="stat-item"><div class="stat-num">{{STAT_5_VALUE}}</div><div class="stat-label">{{STAT_5_LABEL}}</div></div>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-body">
+        <div class="section-head" style="margin-bottom:24px;">
+          <div class="display" style="font-size:clamp(28px,4vw,42px);">About {{PLAYER_FIRST_NAME}}</div>
+        </div>
+        <!-- 2-4 short paragraphs, her bio in her/the family's own words -->
+        <p>{{ABOUT_PARAGRAPH_1}}</p>
+        <p>{{ABOUT_PARAGRAPH_2}}</p>
+      </div>
+      <div class="vitals">
+        <div class="vitals-title">Vitals</div>
+        <div class="vitals-row"><span>Height</span><span>{{HEIGHT}}</span></div>
+        <div class="vitals-row"><span>Weight</span><span>{{WEIGHT}}</span></div>
+        <div class="vitals-row"><span>Wingspan</span><span>{{WINGSPAN}}</span></div>
+        <div class="vitals-row"><span>Shoe Size</span><span>{{SHOE_SIZE}}</span></div>
+        <div class="vitals-row"><span>Standing Vertical</span><span>{{STANDING_VERTICAL}}</span></div>
+        <div class="vitals-row"><span>Strength</span><span>{{STRENGTH}}</span></div>
+        <div class="vitals-row"><span>GPA</span><span>{{GPA}}</span></div>
+        <div class="vitals-row"><span>Graduation Year</span><span>{{GRAD_YEAR}}</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="game" class="skill-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display">On The Court</div>
+      <p>What defines her game.</p>
+    </div>
+    <div class="skill-grid">
+      <div>
+        <!-- 2 skill cards, her identity as a player and her signature strength -->
+        <div class="skill-card" style="margin-bottom:28px;">
+          <span class="num">Identity</span>
+          <h3>{{SKILL_1_TITLE}}</h3>
+          <p>{{SKILL_1_BODY}}</p>
+        </div>
+        <div class="skill-card">
+          <span class="num">Signature</span>
+          <h3>{{SKILL_2_TITLE}}</h3>
+          <p>{{SKILL_2_BODY}}</p>
+        </div>
+      </div>
+      <div class="record-photo">
+        <img src="{{ACTION_PHOTO_SRC}}" alt="{{ACTION_PHOTO_ALT}}">
+      </div>
+    </div>
+    <div class="record-strip">
+      <!-- 3 personal-best/record numbers -->
+      <div class="rblock"><div class="rnum">{{RECORD_1_VALUE}}</div><div class="rlabel">{{RECORD_1_LABEL}}</div></div>
+      <div class="rblock"><div class="rnum">{{RECORD_2_VALUE}}</div><div class="rlabel">{{RECORD_2_LABEL}}</div></div>
+      <div class="rblock"><div class="rnum">{{RECORD_3_VALUE}}</div><div class="rlabel">{{RECORD_3_LABEL}}</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display">Season Stats</div>
+      <p>Per game averages by season.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="stats">
+        <thead>
+          <tr>
+            <th>Season</th>
+            <th>PPG</th>
+            <th>Rebounds</th>
+            <th>Steals</th>
+            <th>Blocks</th>
+            <th>Assists</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- one row per season she has stats for, delete rows she hasn't played yet -->
+          <tr><td>Freshman</td><td>{{FR_PPG}}</td><td>{{FR_REB}}</td><td>{{FR_STL}}</td><td>{{FR_BLK}}</td><td>{{FR_AST}}</td></tr>
+          <tr><td>Sophomore</td><td>{{SO_PPG}}</td><td>{{SO_REB}}</td><td>{{SO_STL}}</td><td>{{SO_BLK}}</td><td>{{SO_AST}}</td></tr>
+          <tr><td>Junior</td><td>{{JR_PPG}}</td><td>{{JR_REB}}</td><td>{{JR_STL}}</td><td>{{JR_BLK}}</td><td>{{JR_AST}}</td></tr>
+          <tr><td>Senior</td><td>{{SR_PPG}}</td><td>{{SR_REB}}</td><td>{{SR_STL}}</td><td>{{SR_BLK}}</td><td>{{SR_AST}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="highlights" class="skill-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display">Highlight Film</div>
+      <p>Playable right here, no need to leave the page.</p>
+    </div>
+    <div class="video-grid">
+      <!-- one block per video, copy/paste for as many clips as she has, YouTube embed URLs only -->
+      <div>
+        <div class="video-frame">
+          <iframe src="{{VIDEO_1_EMBED_URL}}" title="{{PLAYER_NAME}} highlight video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <div class="video-cap">{{VIDEO_1_CAPTION}}</div>
+      </div>
+      <div>
+        <div class="video-frame">
+          <iframe src="{{VIDEO_2_EMBED_URL}}" title="{{PLAYER_NAME}} highlight video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <div class="video-cap">{{VIDEO_2_CAPTION}}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OPTIONAL: delete this whole section if she doesn't have extra photos to show -->
+<section id="photos">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display">More Photos</div>
+      <p>A few more looks from this season.</p>
+    </div>
+    <div class="photo-grid">
+      <!-- one block per photo, copy/paste for as many as she has -->
+      <div class="record-photo">
+        <img src="{{EXTRA_PHOTO_1_SRC}}" alt="{{EXTRA_PHOTO_1_ALT}}">
+      </div>
+      <div class="record-photo">
+        <img src="{{EXTRA_PHOTO_2_SRC}}" alt="{{EXTRA_PHOTO_2_ALT}}">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="recruiting">
+  <div class="wrap">
+    <div class="recruit-grid">
+      <div>
+        <div class="section-head" style="margin-bottom:24px;">
+          <div class="display" style="font-size:clamp(28px,4vw,42px);">Recruiting</div>
+        </div>
+        <!-- one <li> per offer/ranking, delete this whole <ul> if she has none yet -->
+        <ul class="offer-list">
+          <li>{{OFFER_1_SCHOOL}} <span class="status">{{OFFER_1_STATUS}}</span></li>
+          <li>{{OFFER_2_SCHOOL}} <span class="status">{{OFFER_2_STATUS}}</span></li>
+        </ul>
+        <div class="contact-row" style="margin-top:20px;"><span>NCAA ID </span>{{NCAA_ID}}</div>
+        <!-- OPTIONAL: delete the next two lines if there's no ranking photo -->
+        <div class="rank-photo">
+          <img src="{{RANK_PHOTO_SRC}}" alt="{{RANK_PHOTO_ALT}}">
+        </div>
+        <div class="rank-cap">{{RANK_CAPTION}}</div>
+      </div>
+      <div class="contact-card">
+        <h4>Contact</h4>
+        <div class="contact-row"><span>Player Phone </span>{{PLAYER_PHONE}}</div>
+        <div class="contact-row"><span>Player Email </span>{{PLAYER_EMAIL}}</div>
+        <div class="rule" style="margin:16px 0;"></div>
+        <h4>Coach / Parent, {{COACH_NAME}}</h4>
+        <div class="contact-row"><span>Phone </span>{{COACH_PHONE}}</div>
+        <div class="contact-row"><span>Email </span>{{COACH_EMAIL}}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="news" style="display:none;" data-news-section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display" style="font-size:clamp(24px,3.4vw,34px);">Latest News</div>
+    </div>
+    <div id="newsFeed" style="display:grid;gap:16px;"></div>
+  </div>
+</section>
+<script>
+(function(){
+  fetch('/player-articles?slug={{SLUG}}')
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      var articles = res.articles || [];
+      if(articles.length === 0) return;
+      var section = document.querySelector('[data-news-section]');
+      var feed = document.getElementById('newsFeed');
+      feed.innerHTML = articles.map(function(a){
+        var paras = String(a.body || '').split(/\n\n+/).map(function(p){
+          return '<p style="margin-bottom:10px;line-height:1.5;">' + p.replace(/</g,'&lt;') + '</p>';
+        }).join('');
+        return '<div style="border:1px solid rgba(255,255,255,0.12);padding:20px 22px;border-radius:4px;">' +
+          '<h4 style="margin-bottom:10px;">' + String(a.headline || '').replace(/</g,'&lt;') + '</h4>' + paras +
+        '</div>';
+      }).join('');
+      section.style.display = '';
+    })
+    .catch(function(){ /* no news yet, leave hidden */ });
+})();
+</script>
+
+<footer id="links">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display" style="font-size:clamp(24px,3.4vw,34px);">Follow Along And Watch More Film</div>
+    </div>
+    <!-- one link-pill per social/recruiting profile she actually has, delete any she doesn't -->
+    <div class="links-grid">
+      <a class="link-pill" href="{{INSTAGRAM_URL}}" target="_blank" rel="noopener">Instagram &nbsp; &#8599;</a>
+      <a class="link-pill" href="{{TWITTER_URL}}" target="_blank" rel="noopener">X / Twitter &nbsp; &#8599;</a>
+      <a class="link-pill" href="{{YOUTUBE_URL}}" target="_blank" rel="noopener">YouTube &nbsp; &#8599;</a>
+      <a class="link-pill" href="{{HUDL_URL}}" target="_blank" rel="noopener">Hudl &nbsp; &#8599;</a>
+      <a class="link-pill" href="{{FIELDLEVEL_URL}}" target="_blank" rel="noopener">Field Level &nbsp; &#8599;</a>
+      <a class="link-pill" href="{{MAXPREPS_URL}}" target="_blank" rel="noopener">MaxPreps &nbsp; &#8599;</a>
+      <a class="link-pill" href="{{PREPGIRLSHOOPS_URL}}" target="_blank" rel="noopener">Prep Girls Hoops &nbsp; &#8599;</a>
+      <a class="link-pill" href="mailto:{{PLAYER_EMAIL}}">Email {{PLAYER_FIRST_NAME}} &nbsp; &#8599;</a>
+      <a class="link-pill" href="players-directory.html">Elevate Her Hoops &nbsp; &#8599;</a>
+    </div>
+    <div class="rule" style="margin-bottom:24px;"></div>
+    <div class="foot-bottom">
+      <div><span class="brand">{{PLAYER_NAME}}</span> &middot; {{TEAM_NAME}} &middot; Class of {{GRAD_YEAR}}</div>
+      <div>{{TEAM_HASHTAG}}</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
