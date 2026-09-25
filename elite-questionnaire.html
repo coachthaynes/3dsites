@@ -107,6 +107,26 @@
 
   footer{padding:56px 0 46px;border-top:1px solid var(--line);}
   .foot-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:12.5px;max-width:1120px;margin:0 auto;}
+
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(10,4,24,0.72);display:none;
+    align-items:center;justify-content:center;z-index:100;padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal-card{
+    background:var(--panel-2);border:1px solid var(--line);border-radius:20px;
+    padding:34px 30px;max-width:420px;width:100%;text-align:center;
+    box-shadow:0 30px 70px rgba(0,0,0,0.5);
+  }
+  .modal-check{
+    width:52px;height:52px;border-radius:50%;background:rgba(0,245,212,0.14);color:var(--teal);
+    display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;
+    margin:0 auto 16px;
+  }
+  .modal-title{font-family:'Fredoka',sans-serif;font-size:22px;font-weight:600;color:var(--white);}
+  .modal-msg{color:var(--dim);font-size:14px;margin-top:12px;line-height:1.6;}
+  .modal-ok{margin-top:22px;width:100%;border:none;cursor:pointer;}
+
   :focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
 </style>
 </head>
@@ -405,11 +425,39 @@
   </div>
 </footer>
 
+<div class="modal-overlay" id="thanksModal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="thanksModalTitle">
+    <div class="modal-check">&#10003;</div>
+    <div class="modal-title" id="thanksModalTitle">Thanks!</div>
+    <p class="modal-msg" id="thanksModalMsg"></p>
+    <button type="button" class="btn primary modal-ok" id="thanksModalOk">OK</button>
+  </div>
+</div>
+
 <script>
 (function(){
   var form = document.getElementById('questionnaireForm');
   var formStatus = document.getElementById('formStatus');
   if(!form) return;
+
+  var thanksModal = document.getElementById('thanksModal');
+  var thanksModalMsg = document.getElementById('thanksModalMsg');
+  var thanksModalOk = document.getElementById('thanksModalOk');
+  function openThanksModal(message){
+    if(!thanksModal) return;
+    thanksModalMsg.textContent = message;
+    thanksModal.classList.add('open');
+    thanksModal.setAttribute('aria-hidden', 'false');
+  }
+  function closeThanksModal(){
+    if(!thanksModal) return;
+    thanksModal.classList.remove('open');
+    thanksModal.setAttribute('aria-hidden', 'true');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  if(thanksModalOk) thanksModalOk.addEventListener('click', closeThanksModal);
+  if(thanksModal) thanksModal.addEventListener('click', function(e){ if(e.target === thanksModal) closeThanksModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && thanksModal && thanksModal.classList.contains('open')) closeThanksModal(); });
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
@@ -422,11 +470,10 @@
 
     fetch('/', { method: 'POST', body: data }).then(function(response){
       if(!response.ok) throw new Error('form submission failed');
-      formStatus.className = 'form-status success';
-      formStatus.textContent = 'Thanks! We received her info and media. We will be in touch to finish building her Elite profile.';
+      formStatus.hidden = true;
       form.reset();
       if(submitBtn) submitBtn.disabled = false;
-      window.scrollTo({top:0, behavior:'smooth'});
+      openThanksModal('Thanks! We received her info and media. We will be in touch to finish building her Elite profile.');
     }).catch(function(){
       formStatus.className = 'form-status error';
       formStatus.textContent = 'Something went wrong sending this. Please email the details to coachthaynes@gmail.com instead.';
