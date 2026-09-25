@@ -43,10 +43,12 @@ Outgoing webhook, URL:
 
 `https://elevateherhoopsreport.netlify.app/.netlify/functions/submissions-webhook`
 
-Add it for both `package-inquiry` and `player-questionnaire`. Once set,
-every questionnaire submission automatically creates or updates that
-player's live page, and every submission (either form) shows up under
-the dashboard's Forms tab.
+Add it for `package-inquiry`, `player-questionnaire`, `premium-questionnaire`,
+and `elite-questionnaire`. Once set, every questionnaire submission (all
+three tiers) automatically creates or updates that player's record, and
+every submission from any of the four forms shows up under the
+dashboard's Forms tab. **This has to be added for the two new premium/elite
+forms specifically, or their submissions never reach the backend at all.**
 
 ## Files
 

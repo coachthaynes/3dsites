@@ -39,8 +39,11 @@ exports.handler = async (event) => {
     createdAt: payload.created_at || new Date().toISOString(),
   });
 
-  // the player questionnaire also auto-creates/updates a live player record
-  if (formName === "player-questionnaire" && data.playerName) {
+  // any of the three player questionnaires also auto-creates/updates a
+  // live player record; premium/elite forms carry their own hidden tier
+  // field so those two land in the right tier straight away.
+  const QUESTIONNAIRE_FORMS = ["player-questionnaire", "premium-questionnaire", "elite-questionnaire"];
+  if (QUESTIONNAIRE_FORMS.includes(formName) && data.playerName) {
     const slug = slugify(data.playerName);
     await savePlayer(Object.assign({}, data, { id: slug, slug, status: "published" }));
   }

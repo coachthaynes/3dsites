@@ -134,6 +134,16 @@
       <p>New Essential Scout questionnaire submissions automatically create or update a player's page. Package inquiry and questionnaire form submissions both show up under the Forms tab.</p>
     </div>
     <div class="card">
+      <h3>Templates &amp; Tiers Key</h3>
+      <p>Quick reference for which players use which page design and how to tell them apart.</p>
+      <ul style="margin:10px 0 0;padding-left:18px;line-height:1.8;font-size:13.5px;color:var(--dim);">
+        <li><strong style="color:var(--white);">Essential</strong> (free) &mdash; auto generated from the questionnaire. New signups now get the violet/teal &quot;Jordan Reese&quot; design (<a href="../essential-mockup.html" target="_blank" rel="noopener">see the sample</a>); anyone who joined before that design existed keeps the original red/black look, unchanged.</li>
+        <li><strong style="color:var(--white);">Premium</strong> ($350) &mdash; hand built to match <a href="../aiyana-haynes.html" target="_blank" rel="noopener">Aiyana Haynes's site</a>. Currently: Aiyana. Not connected to this dashboard's Player editor.</li>
+        <li><strong style="color:var(--white);">Elite</strong> ($850) &mdash; hand built to match <a href="../kennedy-jeffress.html" target="_blank" rel="noopener">Kennedy Jeffress's site</a>. Currently: Kennedy. Not connected to this dashboard's Player editor.</li>
+      </ul>
+      <p style="margin-top:10px;font-size:12px;">A player's tier is set on the Players tab and controls the Articles and Fulfillment tabs, an Essential player's tier is left blank.</p>
+    </div>
+    <div class="card">
       <h3>Test the auto update pipeline</h3>
       <p>Creates a throwaway player, opens her live page in a new tab so you can see it update instantly, then lets you remove it again.</p>
       <div class="row-actions">
@@ -160,6 +170,7 @@
     <div class="card">
       <h3>Generate a recap article</h3>
       <p>Writes an original recap article from a player's on-file stats. Optionally tries pulling a bit more from her MaxPreps page first, that part is experimental and falls back to her saved stats if it doesn't find anything usable.</p>
+      <p style="color:var(--dim);font-size:13px;">Only available for Premium and Elite players, since that's what their package promises. Right now that's Aiyana and Kennedy.</p>
       <div class="form-grid" style="margin-top:12px;">
         <div class="form-field">
           <label>Player</label>
@@ -529,9 +540,14 @@
     var sel = document.getElementById('articlePlayerSelect');
     if(!sel) return;
     var current = sel.value;
-    sel.innerHTML = playersCache.map(function(p){
-      return '<option value="' + esc(p.slug) + '">' + esc(p.playerName || p.slug) + (p.tier && p.tier !== 'essential' ? ' (' + esc(p.tier) + ')' : '') + '</option>';
-    }).join('');
+    var eligible = playersCache.filter(function(p){ return p.tier === 'premium' || p.tier === 'elite'; });
+    if(eligible.length === 0){
+      sel.innerHTML = '<option value="" disabled selected>No Premium or Elite players yet</option>';
+    } else {
+      sel.innerHTML = eligible.map(function(p){
+        return '<option value="' + esc(p.slug) + '">' + esc(p.playerName || p.slug) + ' (' + esc(p.tier) + ')</option>';
+      }).join('');
+    }
     if(current) sel.value = current;
   }
 
