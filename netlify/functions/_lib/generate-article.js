@@ -1,4 +1,9 @@
-const Anthropic = require("@anthropic-ai/sdk");
+// Uses Google Gemini's free tier (no Anthropic dependency). The exact
+// REST shape below is the long-standing Generative Language API
+// contract, but it hasn't been verified live from this environment (no
+// outbound network access here), so the first real generation should be
+// treated as the actual test of this integration.
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
 function buildStatsSummary(p) {
   const lines = [];
@@ -21,9 +26,9 @@ function buildStatsSummary(p) {
 }
 
 async function generateArticle(player, externalStats) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error("ANTHROPIC_API_KEY is not set");
+    throw new Error("GEMINI_API_KEY is not set");
   }
 
   const statsSummary = buildStatsSummary(player);
@@ -34,8 +39,6 @@ async function generateArticle(player, externalStats) {
   if (!statsSummary && !externalStats) {
     throw new Error("No stats on file for this player yet, add season stats before generating an article");
   }
-
-  const client = new Anthropic({ apiKey });
 
   const prompt = `Write a short, upbeat high school girls basketball recap article for a player recruiting website, in the style of a local sports section (2-3 short paragraphs, energetic but factual, no invented stats or games).
 
@@ -52,14 +55,30 @@ Only use the numbers given above, never invent stats, scores, or specific games 
 Respond with ONLY a JSON object, no markdown fences, no extra text, in exactly this shape:
 {"headline": "short punchy headline", "body": "the article body as 2-3 paragraphs separated by \\n\\n"}`;
 
-  const response = await client.messages.create({
-    model: "claude-opus-5",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: prompt }],
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+    }),
   });
 
-  const textBlock = response.content.find((b) => b.type === "text");
-  const raw = textBlock ? textBlock.text.trim() : "";
+  if (!res.ok) {
+    const errText = await res.text().catch(() => "");
+    throw new Error(`Gemini API error ${res.status}: ${errText.slice(0, 300)}`);
+  }
+
+  const data = await res.json();
+  const raw = (
+    data &&
+    data.candidates &&
+    data.candidates[0] &&
+    data.candidates[0].content &&
+    data.candidates[0].content.parts &&
+    data.candidates[0].content.parts[0] &&
+    data.candidates[0].content.parts[0].text
+  || "").trim().replace(/^```json\s*|```$/g, "").trim();
 
   let parsed;
   try {

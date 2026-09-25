@@ -16,10 +16,14 @@ edits and new form submissions take effect immediately with no rebuild.
   Netlify Personal Access Token (User settings → Applications →
   Personal access tokens).
 
-- `ANTHROPIC_API_KEY` — used by `admin-generate-article.js` to call the
-  Claude API and write recap articles from a player's stats. Get one at
-  console.anthropic.com. Without it, article generation returns an
-  error but nothing else on the site is affected.
+- `GEMINI_API_KEY` — used by `admin-generate-article.js` to call
+  Google's Gemini API (free tier) and write recap articles from a
+  player's stats. Get one at aistudio.google.com. Without it, article
+  generation returns an error but nothing else on the site is
+  affected. Untested from this environment (no outbound network
+  access here) — the first real generation is the real test.
+- `GEMINI_MODEL` (optional) — defaults to `gemini-2.0-flash`. Override
+  if Google renames or retires that model.
 - `SESSION_SECRET` (optional) — signs the player login session cookie.
   If unset, `ADMIN_API_SECRET` is reused for this instead, so it's not
   strictly required, but setting a separate one means rotating the
@@ -64,7 +68,7 @@ the dashboard's Forms tab.
   photo. Accepts `X-Admin-Secret`, her edit token, or her login session.
 - `admin-generate-article.js` / `admin-articles.js` /
   `player-articles.js` — writes a recap article from a player's stats
-  via Claude (optionally trying her MaxPreps page first, best-effort
+  via Gemini (optionally trying her MaxPreps page first, best-effort
   only), lets the coach review/edit/publish it, and serves published
   articles publicly for her page's "Latest News" section. A player's
   `tier` field (`essential` / `premium` / `elite`) also drives the
