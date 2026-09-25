@@ -142,7 +142,7 @@
     <div class="eyebrow">Free Essential Scout</div>
     <div class="display">Player Questionnaire</div>
     <p>Fill this out with as much detail as you have. Leave anything blank you don't have yet, you can always send it to us later and we will add it to her profile.</p>
-    <div class="free-note">This questionnaire is free to fill out. Once we have her info we will build her Essential Scout profile and reach out before anything is ever posted.</div>
+    <div class="free-note">This questionnaire is free to fill out. As soon as we have her info, her Essential Scout profile is built and goes live automatically, no waiting on us.</div>
   </div>
 
   <form name="player-questionnaire" id="questionnaireForm" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data">
@@ -417,7 +417,7 @@
     fetch('/', { method: 'POST', body: data }).then(function(response){
       if(!response.ok) throw new Error('form submission failed');
       formStatus.className = 'form-status success';
-      formStatus.textContent = 'Thanks! We received her info. We will be in touch once her free Essential Scout profile is built.';
+      formStatus.textContent = "Thanks! Her Essential Scout profile is on its way. Check the player directory in a little while and look for her name, that's her site going live. Once everything's finalized she'll get an email with her player login so she can make changes anytime.";
       form.reset();
       if(submitBtn) submitBtn.disabled = false;
       window.scrollTo({top:0, behavior:'smooth'});
