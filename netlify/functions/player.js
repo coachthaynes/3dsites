@@ -1,5 +1,6 @@
 const { getPlayer, incrementViews, listArticles } = require("./_lib/blobs");
 const { renderEssentialPlayer } = require("./_lib/render-essential");
+const { renderEssentialPlayerV2 } = require("./_lib/render-essential-v2");
 
 function slugFromPath(path) {
   // /players/nyla-parsons -> nyla-parsons
@@ -33,7 +34,9 @@ exports.handler = async (event) => {
   } catch (e) {
     // never fail the page load over the news feed
   }
-  const html = renderEssentialPlayer(player, articles);
+  const html = player.templateVersion === "v2"
+    ? renderEssentialPlayerV2(player, articles)
+    : renderEssentialPlayer(player, articles);
   return {
     statusCode: 200,
     headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=0, must-revalidate" },

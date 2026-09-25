@@ -116,6 +116,12 @@ async function savePlayer(player) {
   if (!merged.editToken) {
     merged.editToken = crypto.randomBytes(18).toString("base64url");
   }
+  if (!existing && !merged.templateVersion) {
+    // Brand-new players get the current Essential template going forward.
+    // Existing players are left on whatever template they already have
+    // (nothing, meaning the original one) so their live pages don't change.
+    merged.templateVersion = "v2";
+  }
   await store.setJSON(player.slug, merged);
   return merged;
 }

@@ -51,7 +51,16 @@ the dashboard's Forms tab.
 ## Files
 
 - `player.js` / `directory.js` — render an Essential player's page /
-  the player directory page from Blobs data.
+  the player directory page from Blobs data. There are two Essential page
+  designs, `_lib/render-essential.js` (the original, red/black, per-school
+  colored one) and `_lib/render-essential-v2.js` (the newer violet/teal/
+  magenta one modeled on the Jordan Reese sample profile, no per-school
+  colors, just each school's logo or a text badge). Which one a player
+  gets is decided once, at creation, by `player.templateVersion` set in
+  `_lib/blobs.js`'s `savePlayer()`: brand-new players are stamped `"v2"`,
+  players that already existed before this was added have no
+  `templateVersion` and keep rendering on the original template forever,
+  even as they're edited later.
 - `admin-players.js` — GET (list), POST (create or update), DELETE.
   Requires `X-Admin-Secret`.
 - `submissions-webhook.js` — receives the Forms notification above.
