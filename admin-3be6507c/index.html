@@ -725,10 +725,10 @@
   function renderSubmissions(){
     var tbody = document.getElementById('submissionsTableBody');
     if(submissionsCache.length === 0){
-      tbody.innerHTML = '<tr><td colspan="4" class="empty-note">No form submissions yet.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-note">No form submissions yet.</td></tr>';
       return;
     }
-    tbody.innerHTML = submissionsCache.map(function(s){
+    tbody.innerHTML = submissionsCache.map(function(s, i){
       var d = s.data || {};
       var name = d.playerName || d.name || '(no name)';
       var contact = d.playerEmail || d.email || d.guardianEmail || '';
@@ -738,9 +738,29 @@
         '<td>' + esc(when) + '</td>' +
         '<td>' + esc(name) + '</td>' +
         '<td>' + esc(contact) + '</td>' +
-      '</tr>';
+        '<td><button class="btn small" onclick="window.__toggleRawSubmission(' + i + ')">View Raw</button></td>' +
+      '</tr>' +
+      '<tr id="rawSub' + i + '" style="display:none;"><td colspan="5"><pre class="mono" style="white-space:pre-wrap;word-break:break-all;font-size:11px;max-height:340px;overflow:auto;margin:0;">' + esc(formatRawSubmission(d)) + '</pre></td></tr>';
     }).join('');
   }
+
+  function formatRawSubmission(d){
+    var out = {};
+    Object.keys(d).forEach(function(k){
+      var v = d[k];
+      if(typeof v === 'string' && v.length > 300){
+        out[k] = v.slice(0, 300) + '... (truncated, ' + v.length + ' chars total)';
+      } else {
+        out[k] = v;
+      }
+    });
+    return JSON.stringify(out, null, 2);
+  }
+
+  window.__toggleRawSubmission = function(i){
+    var row = document.getElementById('rawSub' + i);
+    if(row) row.style.display = row.style.display === 'none' ? '' : 'none';
+  };
 
   function esc(s){
     if(s === undefined || s === null) return '';
