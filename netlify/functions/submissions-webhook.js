@@ -8,6 +8,22 @@ function slugify(name) {
     .replace(/^-+|-+$/g, "");
 }
 
+// Netlify sends file upload fields as {filename, type, size, url} instead
+// of a plain string, so any field shaped like that needs unwrapping to
+// just its url before it's usable as an <img>/<video> src.
+function unwrapFileFields(data) {
+  const out = {};
+  for (const key of Object.keys(data)) {
+    const value = data[key];
+    if (value && typeof value === "object" && typeof value.url === "string") {
+      out[key] = value.url;
+    } else {
+      out[key] = value;
+    }
+  }
+  return out;
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
@@ -45,7 +61,7 @@ exports.handler = async (event) => {
   const QUESTIONNAIRE_FORMS = ["player-questionnaire", "premium-questionnaire", "elite-questionnaire"];
   if (QUESTIONNAIRE_FORMS.includes(formName) && data.playerName) {
     const slug = slugify(data.playerName);
-    await savePlayer(Object.assign({}, data, { id: slug, slug, status: "published" }));
+    await savePlayer(Object.assign({}, unwrapFileFields(data), { id: slug, slug, status: "published" }));
   }
 
   return { statusCode: 200, body: JSON.stringify({ ok: true }) };
