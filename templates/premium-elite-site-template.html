@@ -26,6 +26,11 @@
   6. The Latest News section at the bottom already works as-is, it fetches
      from /player-articles?slug={{SLUG}} the same way Aiyana's and
      Kennedy's do, just make sure {{SLUG}} matches the filename you saved.
+  7. Featured In / press section: search Prep Girls Hoops, Reps On Reps
+     Hoops, MaxPreps, and local news (Clay Today, etc.) for a real,
+     verified write-up or profile about HER specifically, then link it
+     in the "press" section below. Don't guess or attach an article you
+     haven't confirmed is actually about her.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -499,6 +504,23 @@
         <div class="contact-row"><span>Phone </span>{{COACH_PHONE}}</div>
         <div class="contact-row"><span>Email </span>{{COACH_EMAIL}}</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- OPTIONAL: delete this whole section if you haven't found any write-ups on her yet.
+     Search Prep Girls Hoops, Reps On Reps Hoops, MaxPreps, local news (Clay Today, etc.),
+     and any other recruiting sites for a real profile/article about HER specifically
+     before adding a link, don't guess or attach an article you haven't actually verified
+     is about her. One link-pill per write-up found, copy/paste for more. -->
+<section id="press">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="display" style="font-size:clamp(28px,4vw,42px);">Featured In</div>
+      <p>Recruiting sites and local coverage on {{PLAYER_FIRST_NAME}}.</p>
+    </div>
+    <div class="links-grid" style="margin-bottom:0;">
+      <a class="link-pill" href="{{PRESS_LINK_1_URL}}" target="_blank" rel="noopener">{{PRESS_LINK_1_LABEL}} &nbsp; &#8599;</a>
     </div>
   </div>
 </section>
