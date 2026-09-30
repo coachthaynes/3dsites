@@ -353,6 +353,9 @@
           </select>
         </div>
       </div>
+      <div class="form-grid full">
+        <div class="form-field"><label>Live URL <span style="font-weight:400;text-transform:none;letter-spacing:0;">(only for a hand built page, like a subdomain, overrides the View button and skips this player's own dynamic site)</span></label><input id="f_liveUrl" placeholder="https://"></div>
+      </div>
       <div class="section-title">Contact Information</div>
       <div class="form-grid">
         <div class="form-field"><label>Player Phone</label><input id="f_playerPhone"></div>
@@ -914,7 +917,8 @@
     }
     tbody.innerHTML = playersCache.map(function(p){
       var status = p.status === 'draft' ? 'draft' : 'published';
-      var viewHref = p.tier === 'elite' ? '/elite/' + esc(p.slug)
+      var viewHref = p.liveUrl ? p.liveUrl
+        : p.tier === 'elite' ? '/elite/' + esc(p.slug)
         : p.tier === 'illumination' ? '/illumination/' + esc(p.slug)
         : p.tier === 'premium' ? '/' + esc(p.slug) + '.html'
         : '/players/' + esc(p.slug);
@@ -981,7 +985,7 @@
 
   /* modal / edit form */
   var modalBackdrop = document.getElementById('playerModalBackdrop');
-  var fields = ['slug','playerName','jerseyNumber','highSchool','gradYear','position','status','tier',
+  var fields = ['slug','playerName','jerseyNumber','highSchool','gradYear','position','status','tier','liveUrl',
     'playerPhone','playerEmail','guardianName','guardianPhone','guardianEmail',
     'gpa','sat','act','dualEnrollment',
     'height','weight','standingReach','wingspan','shoeSize',
