@@ -69,9 +69,9 @@ function renderIlluminationSite(player, feed) {
   const actionPhoto = (feed && feed.portrait) || poster || "";
   const heroVideoSrc = videoSources(feed && feed.hero);
   const filmClips = (feed && feed.film) || [];
-  // Madi's photo vault tags each photo "nil" or "editorial"; Elite sites only ever
-  // show the editorial ones, NIL photos are for a different purpose and never appear here.
-  const vault = ((feed && feed.photos) || []).filter((p) => p.use !== "nil");
+  // This is the Illumination template (auto-built from Madi), not the hand-built
+  // Elite template, so both NIL and editorial photos from Madi's vault show here.
+  const vault = (feed && feed.photos) || [];
   const kit = (feed && feed.kit) || [];
 
   const statStrip = latestStatStrip(player);
