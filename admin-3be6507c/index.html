@@ -484,10 +484,6 @@
         <div class="form-field"><label>Skill 2 Title</label><input id="f_skill2Title" placeholder="Signature"></div>
         <div class="form-field"><label>Skill 2 Body</label><input id="f_skill2Body"></div>
       </div>
-      <div class="form-grid">
-        <div class="form-field"><label>Press Link URL <span style="font-weight:400;text-transform:none;letter-spacing:0;">(verified write up about her, not a guess)</span></label><input id="f_pressLinkUrl" placeholder="https://"></div>
-        <div class="form-field"><label>Press Link Label</label><input id="f_pressLinkLabel" placeholder="e.g. Prep Girls Hoops Feature"></div>
-      </div>
       <div class="modal-actions">
         <button type="button" class="btn" id="btnCancelModal">Cancel</button>
         <button type="submit" class="btn primary">Save Player</button>
@@ -972,7 +968,7 @@
     'coachName','coachPhone','coachEmail',
     'currentOffers','ncaaId','playerPhoto','message',
     'aboutParagraph1','aboutParagraph2','tag1','tag2','tag3',
-    'skill1Title','skill1Body','skill2Title','skill2Body','pressLinkUrl','pressLinkLabel'];
+    'skill1Title','skill1Body','skill2Title','skill2Body'];
 
   function slugify(name){
     return String(name || '').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');

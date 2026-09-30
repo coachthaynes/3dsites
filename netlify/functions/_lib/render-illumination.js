@@ -69,7 +69,9 @@ function renderIlluminationSite(player, feed) {
   const actionPhoto = (feed && feed.portrait) || poster || "";
   const heroVideoSrc = videoSources(feed && feed.hero);
   const filmClips = (feed && feed.film) || [];
-  const vault = (feed && feed.photos) || [];
+  // Madi's photo vault tags each photo "nil" or "editorial"; Elite sites only ever
+  // show the editorial ones, NIL photos are for a different purpose and never appear here.
+  const vault = ((feed && feed.photos) || []).filter((p) => p.use !== "nil");
   const kit = (feed && feed.kit) || [];
 
   const statStrip = latestStatStrip(player);
@@ -295,13 +297,6 @@ ${vault.length ? `<section id="photos">
     </div>
   </div>
 </section>
-
-${player.pressLinkUrl ? `<section id="press">
-  <div class="wrap">
-    <div class="section-head"><div class="display" style="font-size:clamp(28px,4vw,42px);">Featured In</div><p>Recruiting sites and local coverage on ${esc(fn)}.</p></div>
-    <div class="links-grid" style="margin-bottom:0;">${linkPill(player.pressLinkUrl, player.pressLinkLabel || "Read The Feature")}</div>
-  </div>
-</section>` : ""}
 
 <section id="news" style="display:none;" data-news-section>
   <div class="wrap">
