@@ -49,6 +49,35 @@ function seasonRows(p) {
   })).filter((r) => r.ppg || r.rebounds || r.steals || r.assists || r.blocks || r.totalPoints);
 }
 
+function buildScheduleGames(player) {
+  if (!Array.isArray(player.scheduleGames)) return [];
+  return player.scheduleGames
+    .filter((g) => g && g.date && g.opp)
+    .map((g) => {
+      const game = { date: g.date, opp: g.opp, loc: g.loc || "TBD", time: g.time || "TBD" };
+      if (g.note) game.note = g.note;
+      if (g.tag) game.tag = g.tag;
+      if (g.result) game.result = g.result;
+      return game;
+    });
+}
+
+function buildWriteups(player) {
+  if (!Array.isArray(player.writeups)) return [];
+  return player.writeups
+    .filter((w) => w && w.title)
+    .map((w) => {
+      const writeup = { kind: w.kind || "Article", title: w.title, source: w.source || "", date: w.date || "" };
+      if (w.excerpt) writeup.excerpt = w.excerpt;
+      if (w.url) {
+        writeup.url = w.url;
+      } else if (w.body) {
+        writeup.body = String(w.body).split(/\r?\n\r?\n+/).map((p) => p.trim()).filter(Boolean);
+      }
+      return writeup;
+    });
+}
+
 function offerRows(p) {
   return String(p.currentOffers || "")
     .split(/\r?\n/)
@@ -161,8 +190,12 @@ function buildSiteConfig(player) {
         { name: "YouTube", desc: "Highlights and game film", url: player.youtube || "" },
       ],
     },
-    schedule: { title: "Season Schedule", note: "Times and locations can change, so check with the school before you travel.", games: [] },
-    writeups: [],
+    schedule: {
+      title: player.scheduleTitle || "Season Schedule",
+      note: "Times and locations can change, so check with the school before you travel.",
+      games: buildScheduleGames(player),
+    },
+    writeups: buildWriteups(player),
     nil: {
       intro: player.aboutParagraph2 || `${first} is open to NIL partnerships with local businesses and brands that share her values. Every opportunity is reviewed with her family.`,
       why: [

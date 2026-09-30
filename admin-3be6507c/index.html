@@ -485,6 +485,18 @@
         <div class="form-field"><label>Skill 2 Title</label><input id="f_skill2Title" placeholder="Signature"></div>
         <div class="form-field"><label>Skill 2 Body</label><input id="f_skill2Body"></div>
       </div>
+
+      <div class="section-title">Season Schedule <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);">(Illumination only)</span></div>
+      <div class="form-grid full">
+        <div class="form-field"><label>Schedule Title</label><input id="f_scheduleTitle" placeholder="Season Schedule"></div>
+      </div>
+      <div id="scheduleRows"></div>
+      <button type="button" class="btn" id="btnAddGame" style="margin-bottom:24px;">Add Game</button>
+
+      <div class="section-title">Writeups And News <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);">(Illumination only, type up what she sends you from a screenshot or link)</span></div>
+      <div id="writeupRows"></div>
+      <button type="button" class="btn" id="btnAddWriteup" style="margin-bottom:24px;">Add Writeup</button>
+
       <div class="modal-actions">
         <button type="button" class="btn" id="btnCancelModal">Cancel</button>
         <button type="submit" class="btn primary">Save Player</button>
@@ -974,7 +986,91 @@
     'coachName','coachPhone','coachEmail',
     'currentOffers','ncaaId','playerPhoto','message',
     'aboutParagraph1','aboutParagraph2','tag1','tag2','tag3',
-    'skill1Title','skill1Body','skill2Title','skill2Body'];
+    'skill1Title','skill1Body','skill2Title','skill2Body','scheduleTitle'];
+
+  /* Schedule games and writeups are lists, not simple fields, so they are
+     tracked separately and merged into the save payload by hand. */
+  var scheduleGames = [];
+  var writeups = [];
+  var LOCATIONS = ['Home','Away','TBD'];
+
+  function renderScheduleRows(){
+    var container = document.getElementById('scheduleRows');
+    if(scheduleGames.length === 0){
+      container.innerHTML = '<p class="empty-note">No games yet. Add her season schedule below.</p>';
+      return;
+    }
+    container.innerHTML = scheduleGames.map(function(g, i){
+      return '<div class="form-grid" style="border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;">' +
+        '<div class="form-field"><label>Date</label><input type="date" data-gk="date" data-gi="' + i + '" value="' + esc(g.date || '') + '"></div>' +
+        '<div class="form-field"><label>Opponent</label><input data-gk="opp" data-gi="' + i + '" value="' + esc(g.opp || '') + '"></div>' +
+        '<div class="form-field"><label>Location</label><select data-gk="loc" data-gi="' + i + '">' +
+          LOCATIONS.map(function(o){ return '<option' + (g.loc === o ? ' selected' : '') + '>' + o + '</option>'; }).join('') +
+        '</select></div>' +
+        '<div class="form-field"><label>Time</label><input data-gk="time" data-gi="' + i + '" value="' + esc(g.time || '') + '" placeholder="7:30 PM"></div>' +
+        '<div class="form-field"><label>Note</label><input data-gk="note" data-gi="' + i + '" value="' + esc(g.note || '') + '" placeholder="JV 6:00"></div>' +
+        '<div class="form-field"><label>Tag</label><input data-gk="tag" data-gi="' + i + '" value="' + esc(g.tag || '') + '" placeholder="Senior Night"></div>' +
+        '<div class="form-field"><label>Result</label><input data-gk="result" data-gi="' + i + '" value="' + esc(g.result || '') + '" placeholder="W 54 41"></div>' +
+        '<div class="form-field" style="justify-content:flex-end;"><button type="button" class="btn small danger" data-gremove="' + i + '">Remove Game</button></div>' +
+      '</div>';
+    }).join('');
+    container.querySelectorAll('[data-gk]').forEach(function(el){
+      el.addEventListener('input', function(){
+        var i = parseInt(el.getAttribute('data-gi'), 10);
+        scheduleGames[i][el.getAttribute('data-gk')] = el.value;
+      });
+    });
+    container.querySelectorAll('[data-gremove]').forEach(function(el){
+      el.addEventListener('click', function(){
+        scheduleGames.splice(parseInt(el.getAttribute('data-gremove'), 10), 1);
+        renderScheduleRows();
+      });
+    });
+  }
+  document.getElementById('btnAddGame').addEventListener('click', function(){
+    scheduleGames.push({ date: '', opp: '', loc: 'Home', time: '', note: '', tag: '', result: '' });
+    renderScheduleRows();
+  });
+
+  function renderWriteupRows(){
+    var container = document.getElementById('writeupRows');
+    if(writeups.length === 0){
+      container.innerHTML = '<p class="empty-note">No writeups yet. Add one when she sends a link or a screenshot.</p>';
+      return;
+    }
+    container.innerHTML = writeups.map(function(w, i){
+      return '<div class="form-grid full" style="border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;">' +
+        '<div class="form-grid">' +
+          '<div class="form-field"><label>Kind</label><input data-wk="kind" data-wi="' + i + '" value="' + esc(w.kind || '') + '" placeholder="Article, Scouting Report, Interview"></div>' +
+          '<div class="form-field"><label>Title</label><input data-wk="title" data-wi="' + i + '" value="' + esc(w.title || '') + '"></div>' +
+          '<div class="form-field"><label>Source</label><input data-wk="source" data-wi="' + i + '" value="' + esc(w.source || '') + '" placeholder="Prep Girls Hoops"></div>' +
+        '</div>' +
+        '<div class="form-grid">' +
+          '<div class="form-field"><label>Date</label><input type="date" data-wk="date" data-wi="' + i + '" value="' + esc(w.date || '') + '"></div>' +
+          '<div class="form-field"><label>Link <span style="font-weight:400;text-transform:none;letter-spacing:0;">(leave blank if it is only a screenshot)</span></label><input data-wk="url" data-wi="' + i + '" value="' + esc(w.url || '') + '" placeholder="https://"></div>' +
+        '</div>' +
+        '<div class="form-field"><label>Excerpt <span style="font-weight:400;text-transform:none;letter-spacing:0;">(a line or two shown on the card)</span></label><input data-wk="excerpt" data-wi="' + i + '" value="' + esc(w.excerpt || '') + '"></div>' +
+        '<div class="form-field"><label>Full Text <span style="font-weight:400;text-transform:none;letter-spacing:0;">(type up the screenshot here, blank line between paragraphs, only needed if there is no link)</span></label><textarea data-wk="body" data-wi="' + i + '" rows="3">' + esc(w.body || '') + '</textarea></div>' +
+        '<div class="form-field" style="justify-content:flex-end;"><button type="button" class="btn small danger" data-wremove="' + i + '">Remove Writeup</button></div>' +
+      '</div>';
+    }).join('');
+    container.querySelectorAll('[data-wk]').forEach(function(el){
+      el.addEventListener('input', function(){
+        var i = parseInt(el.getAttribute('data-wi'), 10);
+        writeups[i][el.getAttribute('data-wk')] = el.value;
+      });
+    });
+    container.querySelectorAll('[data-wremove]').forEach(function(el){
+      el.addEventListener('click', function(){
+        writeups.splice(parseInt(el.getAttribute('data-wremove'), 10), 1);
+        renderWriteupRows();
+      });
+    });
+  }
+  document.getElementById('btnAddWriteup').addEventListener('click', function(){
+    writeups.push({ kind: '', title: '', source: '', date: '', url: '', excerpt: '', body: '' });
+    renderWriteupRows();
+  });
 
   function slugify(name){
     return String(name || '').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
@@ -1003,6 +1099,10 @@
     document.getElementById('f_playerPhotoFile').value = '';
     document.getElementById('photoStatus').textContent = '';
     setPhotoPreview(player && player.playerPhoto);
+    scheduleGames = (player && Array.isArray(player.scheduleGames)) ? player.scheduleGames.slice() : [];
+    writeups = (player && Array.isArray(player.writeups)) ? player.writeups.slice() : [];
+    renderScheduleRows();
+    renderWriteupRows();
     modalBackdrop.classList.add('open');
   }
 
@@ -1083,6 +1183,8 @@
       var el = document.getElementById('f_' + f);
       if(el) data[f] = el.value;
     });
+    data.scheduleGames = scheduleGames.filter(function(g){ return g.date && g.opp; });
+    data.writeups = writeups.filter(function(w){ return w.title; });
     api('/admin-players', { method:'POST', body: JSON.stringify(data) }).then(function(){
       toast('Saved. Her page is live now.');
       closeModal();
