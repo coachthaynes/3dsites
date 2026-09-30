@@ -18,8 +18,8 @@ exports.handler = async (event) => {
   if (!player) {
     return { statusCode: 404, body: "Player not found" };
   }
-  if (player.tier === "premium" || player.tier === "elite") {
-    // Premium/Elite players have their own dedicated static site; this
+  if (player.tier === "premium" || player.tier === "elite" || player.tier === "illumination") {
+    // Premium/Elite/Illumination players have their own dedicated site; this
     // dynamic template is only for Essential-tier players.
     return { statusCode: 404, body: "Player not found" };
   }

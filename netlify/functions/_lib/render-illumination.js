@@ -49,10 +49,6 @@ function offerRows(p) {
     .filter(Boolean);
 }
 
-function videoSources(list) {
-  return (list || []).map((s) => `<source src="${esc(s.url)}" type="${esc(s.type)}">`).join("");
-}
-
 function linkPill(url, label) {
   if (!url) return "";
   return `<a class="link-pill" href="${esc(url)}" target="_blank" rel="noopener">${esc(label)} &nbsp; &#8599;</a>`;
@@ -67,12 +63,27 @@ function renderIlluminationSite(player, feed) {
   const gradYear = player.gradYear || "";
   const poster = (feed && feed.poster) || (feed && feed.portrait) || "";
   const actionPhoto = (feed && feed.portrait) || poster || "";
-  const heroVideoSrc = videoSources(feed && feed.hero);
-  const filmClips = (feed && feed.film) || [];
-  // This is the Illumination template (auto-built from Madi), not the hand-built
-  // Elite template, so both NIL and editorial photos from Madi's vault show here.
-  const vault = (feed && feed.photos) || [];
+  // Full site count, not the hero carousel, so up to 4 videos still play once
+  // you scroll to Highlight Film even though the hero only loops one clip.
+  const filmClips = ((feed && feed.film) || []).slice(0, 4);
+  // This same renderer now backs both packages: Illumination feeds it from
+  // Madi's vault (NIL and editorial photos both show), Elite feeds it straight
+  // from the player's own questionnaire uploads. Capped at 15 either way.
+  const vault = ((feed && feed.photos) || []).slice(0, 15);
   const kit = (feed && feed.kit) || [];
+
+  // Hero carousel: her own hero video loop (if any) first, then her portrait,
+  // poster, and a few extra action shots, so there is always something to
+  // scroll through even when a package has no dedicated hero video.
+  const heroVideoList = (feed && feed.hero) || [];
+  const heroExtraPhotos = (feed && feed.heroPhotos) || [];
+  const heroSlides = [];
+  heroVideoList.forEach((v) => { if (v && v.url) heroSlides.push({ kind: "video", url: v.url, type: v.type }); });
+  const seenImages = new Set();
+  [actionPhoto, poster, ...heroExtraPhotos].forEach((src) => {
+    if (src && !seenImages.has(src)) { seenImages.add(src); heroSlides.push({ kind: "image", url: src }); }
+  });
+  const profilePhoto = actionPhoto || poster || "";
 
   const statStrip = latestStatStrip(player);
   const rows = seasonRows(player);
@@ -122,13 +133,22 @@ function renderIlluminationSite(player, feed) {
   .btn.primary{background:var(--red);border-color:var(--red);color:var(--white);}
   .btn.primary:hover{background:var(--red-dark);border-color:var(--red-dark);}
   .btn.ghost:hover{background:var(--white);color:var(--black);}
-  .hero-photo{position:relative;overflow:hidden;background:#000;}
-  .hero-photo img, .hero-photo video{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}
-  .hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0) 24%);}
+  .hero-gallery{position:relative;overflow:hidden;background:#000;}
+  .hero-gallery-track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .hero-gallery-track::-webkit-scrollbar{display:none;}
+  .hero-slide{flex:0 0 100%;scroll-snap-align:start;position:relative;height:100%;}
+  .hero-slide img, .hero-slide video{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}
+  .hero-gallery::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0) 24%);pointer-events:none;}
+  .hero-gallery-dots{position:absolute;bottom:18px;right:18px;display:flex;gap:6px;z-index:3;}
+  .hero-gallery-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);}
+  .hero-profile-badge{position:absolute;left:18px;bottom:18px;z-index:3;display:flex;align-items:center;gap:10px;background:rgba(10,10,10,0.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:8px 14px 8px 8px;border-radius:999px;border:1px solid var(--line);}
+  .hero-profile-badge img{width:40px;height:40px;border-radius:50%;object-fit:cover;display:block;border:2px solid var(--red);}
+  .hero-profile-badge .hpb-name{font-family:'Anton',sans-serif;font-size:13px;letter-spacing:0.03em;text-transform:uppercase;color:var(--white);line-height:1.2;}
+  .hero-profile-badge .hpb-sub{font-size:10.5px;color:var(--gray);letter-spacing:0.04em;text-transform:uppercase;margin-top:2px;}
   @media (max-width:860px){
     .hero{grid-template-columns:1fr;min-height:auto;}
-    .hero-photo{height:420px;order:-1;}
-    .hero-photo::after{background:linear-gradient(180deg, rgba(10,10,10,0) 55%, rgba(10,10,10,1) 100%);}
+    .hero-gallery{height:420px;order:-1;}
+    .hero-gallery::after{background:linear-gradient(180deg, rgba(10,10,10,0) 55%, rgba(10,10,10,1) 100%);}
     .hero-text{padding:40px 24px;}
   }
   .statstrip{background:var(--panel);border-bottom:1px solid var(--line);}
@@ -208,8 +228,15 @@ function renderIlluminationSite(player, feed) {
       <a class="btn ghost" href="#links">All Links</a>
     </div>
   </div>
-  <div class="hero-photo">
-    ${heroVideoSrc ? `<video autoplay muted loop playsinline ${poster ? `poster="${esc(poster)}"` : ""}>${heroVideoSrc}</video>` : poster ? `<img src="${esc(poster)}" alt="${esc(name)}">` : ""}
+  <div class="hero-gallery">
+    <div class="hero-gallery-track">
+      ${heroSlides.map((s) => s.kind === "video"
+        ? `<div class="hero-slide"><video autoplay muted loop playsinline ${poster ? `poster="${esc(poster)}"` : ""}><source src="${esc(s.url)}" type="${esc(s.type)}"></video></div>`
+        : `<div class="hero-slide"><img src="${esc(s.url)}" alt="${esc(name)}"></div>`
+      ).join("")}
+    </div>
+    ${heroSlides.length > 1 ? `<div class="hero-gallery-dots">${heroSlides.map(() => "<span></span>").join("")}</div>` : ""}
+    ${profilePhoto ? `<div class="hero-profile-badge"><img src="${esc(profilePhoto)}" alt="${esc(name)}"><div><div class="hpb-name">${esc(fn)} ${esc(ln)}</div><div class="hpb-sub">${[player.position, gradYear ? `Class of ${gradYear}` : ""].filter(Boolean).map(esc).join(" &middot; ")}</div></div></div>` : ""}
   </div>
 </div>
 

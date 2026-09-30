@@ -41,7 +41,7 @@ exports.handler = async (event) => {
       await savePlayer({
         slug,
         playerName: (existing && existing.playerName) || item.playerName,
-        tier: (existing && existing.tier) || "elite",
+        tier: (existing && existing.tier) || "illumination",
         illuminationApproved: true,
         illuminationApprovedAt: item.decidedAt,
       });

@@ -249,26 +249,29 @@
   @media (max-width:560px){ .benefits-grid{grid-template-columns:1fr;} }
 
   /* PRICING */
-  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1080px;margin:44px auto 0;}
-  .price-card{position:relative;padding:32px 28px;text-align:left;display:flex;flex-direction:column;}
+  .pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;max-width:1360px;margin:44px auto 0;}
+  .price-card{position:relative;padding:32px 26px;text-align:left;display:flex;flex-direction:column;}
   .price-card.premium{border-color:var(--magenta);background:linear-gradient(165deg, var(--panel-2), var(--panel));box-shadow:0 20px 50px rgba(255,46,147,0.18);}
   .price-card.elite{border-color:var(--teal);background:linear-gradient(165deg, var(--panel-2), var(--panel));box-shadow:0 20px 50px rgba(0,245,212,0.16);}
+  .price-card.illumination{border-color:var(--magenta);background:linear-gradient(165deg, var(--panel-2), var(--panel));box-shadow:0 20px 50px rgba(255,46,147,0.22);}
   .price-badge{
     position:absolute;top:-14px;left:28px;background:var(--teal);color:var(--violet-deep);
     font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
     font-weight:700;padding:6px 14px;border-radius:999px;
   }
-  .price-card.elite .price-badge{background:var(--magenta);color:var(--white);}
-  .price-tier{font-family:'Fredoka',sans-serif;font-size:21px;font-weight:600;color:var(--white);}
+  .price-card.elite .price-badge{background:var(--teal);color:var(--violet-deep);}
+  .price-card.illumination .price-badge{background:var(--magenta);color:var(--white);}
+  .price-tier{font-family:'Fredoka',sans-serif;font-size:20px;font-weight:600;color:var(--white);}
   .price-tier-sub{font-size:12.5px;color:var(--dim);margin-top:2px;}
-  .price-amount{font-family:'IBM Plex Mono',monospace;font-size:38px;font-weight:700;color:var(--white);margin-top:14px;display:flex;align-items:baseline;gap:6px;}
+  .price-amount{font-family:'IBM Plex Mono',monospace;font-size:34px;font-weight:700;color:var(--white);margin-top:14px;display:flex;align-items:baseline;gap:6px;}
   .price-amount .period{font-size:12.5px;color:var(--dim);font-family:'Poppins',sans-serif;font-weight:500;}
   .price-list{list-style:none;margin:22px 0 26px;padding:0;flex:1;}
-  .price-list li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:14px;color:var(--dim);}
+  .price-list li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:13.5px;color:var(--dim);}
   .price-list li .check{width:17px;height:17px;flex-shrink:0;margin-top:2px;}
   .price-list li strong{color:var(--white);font-weight:600;}
   .pricing-note{max-width:720px;margin:30px auto 0;text-align:center;color:var(--dim);font-size:13px;}
-  @media (max-width:980px){ .pricing-grid{grid-template-columns:1fr;max-width:460px;} }
+  @media (max-width:1180px){ .pricing-grid{grid-template-columns:repeat(2,1fr);max-width:720px;} }
+  @media (max-width:640px){ .pricing-grid{grid-template-columns:1fr;max-width:460px;} }
 
   /* INQUIRY MODAL */
   .modal-overlay{
@@ -544,21 +547,34 @@
         <a href="https://aiyanahaynes.elevateherhoopsreport.com" target="_blank" rel="noopener" style="display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--dim);text-decoration:underline;">See a live example &#8599;</a>
       </div>
       <div class="card price-card elite" data-reveal data-tilt>
+        <div class="price-badge">Bold And Built Fast</div>
+        <div class="price-tier">Elite Recruiting Site</div>
+        <div class="price-tier-sub">Her own standalone site, her school colors</div>
+        <div class="price-amount">$350<span class="period">one time</span></div>
+        <ul class="price-list">
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Dedicated Elite website</strong> in her real school colors</span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span>Built from <strong>her own photos and video</strong>, up to 15 photos and 4 videos</span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Scrollable hero gallery</strong> with her profile front and center</span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Clickable links and embedded video</strong> so coaches see everything in one place</span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Free commitment graphic</strong> when the time comes</span></li>
+        </ul>
+        <a class="btn outline" style="border-color:var(--teal);color:var(--teal);width:100%;text-align:center;margin-top:22px;" href="elite-questionnaire.html">Start Her Elite Profile</a>
+      </div>
+      <div class="card price-card illumination" data-reveal data-tilt>
         <div class="price-badge">Limited Special</div>
-        <div class="price-tier">Elite Illumination Experience</div>
-        <div class="price-tier-sub">The complete recruiting presence</div>
+        <div class="price-tier">Illumination Experience</div>
+        <div class="price-tier-sub">Designed for her by our visual team</div>
         <div class="price-amount">$850<span class="period">one time</span></div>
         <ul class="price-list">
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Everything in Premium Showcase</strong></span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Full game and highlight video footage</strong></span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Player photo shoot</strong> for premium web graphics</span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Everything in the Elite Recruiting Site</strong></span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Professionally designed</strong> by our visual team, not self uploaded</span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>NIL ready photo treatment</strong> alongside her editorial shots</span></li>
+          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Full game and highlight video</strong> professionally edited</span></li>
           <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Weekly stat and accolade graphic</strong> for that week's games</span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Free commitment graphic</strong> when the time comes</span></li>
           <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Social media and marketing photos</strong></span></li>
         </ul>
         <p style="font-size:11.5px;color:var(--dim);font-style:italic;margin:-4px 0 18px;">Great to have on hand if a local business or sponsor wants to talk about a partnership.</p>
-        <a class="btn outline" style="border-color:var(--teal);color:var(--teal);width:100%;text-align:center;margin-top:22px;" href="elite-questionnaire.html">Start Her Elite Profile</a>
-        <a href="https://kennedyjeffress.elevateherhoopsreport.com" target="_blank" rel="noopener" style="display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--dim);text-decoration:underline;">See a live example &#8599;</a>
+        <a class="btn primary" style="width:100%;text-align:center;margin-top:22px;" href="illumination-questionnaire.html">Start Her Illumination Profile</a>
       </div>
     </div>
     <p class="pricing-note">Every request starts with a conversation. We talk with you about your daughter's goals before any payment is ever requested.</p>
@@ -581,7 +597,8 @@
         <select name="package" id="pkgSelect">
           <option>Essential Scout Package ($25)</option>
           <option>Premium Profile Showcase ($350)</option>
-          <option>Elite Illumination Experience ($850)</option>
+          <option>Elite Recruiting Site ($350)</option>
+          <option>Illumination Experience ($850)</option>
           <option>Not sure yet</option>
         </select>
       </div>

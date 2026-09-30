@@ -22,7 +22,7 @@ exports.handler = async (event) => {
   }
 
   const player = await getPlayer(slug);
-  if (!player || player.tier !== "elite" || !player.illuminationApproved) {
+  if (!player || player.tier !== "illumination" || !player.illuminationApproved) {
     return {
       statusCode: 404,
       headers: { "Content-Type": "text/html" },

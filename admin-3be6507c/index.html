@@ -349,6 +349,7 @@
             <option value="essential">Essential</option>
             <option value="premium">Premium</option>
             <option value="elite">Elite</option>
+            <option value="illumination">Illumination</option>
           </select>
         </div>
       </div>
@@ -596,9 +597,9 @@
     var sel = document.getElementById('articlePlayerSelect');
     if(!sel) return;
     var current = sel.value;
-    var eligible = playersCache.filter(function(p){ return p.tier === 'premium' || p.tier === 'elite'; });
+    var eligible = playersCache.filter(function(p){ return p.tier === 'premium' || p.tier === 'elite' || p.tier === 'illumination'; });
     if(eligible.length === 0){
-      sel.innerHTML = '<option value="" disabled selected>No Premium or Elite players yet</option>';
+      sel.innerHTML = '<option value="" disabled selected>No Premium, Elite, or Illumination players yet</option>';
     } else {
       sel.innerHTML = eligible.map(function(p){
         return '<option value="' + esc(p.slug) + '">' + esc(p.playerName || p.slug) + ' (' + esc(p.tier) + ')</option>';
@@ -683,9 +684,14 @@
       ['commitmentGraphic', 'Commitment graphic delivered (when she commits)'],
     ],
     elite: [
-      ['premiumWebsiteBuilt', 'Premium player website built'],
+      ['eliteWebsiteBuilt', 'Elite player website built'],
       ['mediaReceived', "Her own videos and photos received"],
-      ['videoEmbedded', 'Video embedded and links added'],
+      ['videoEmbedded', 'Video and photos embedded'],
+      ['weeklyGraphicLastSent', 'Weekly stat / accolade graphic sent this week', 'date'],
+      ['commitmentGraphic', 'Commitment graphic delivered (when she commits)'],
+    ],
+    illumination: [
+      ['madiSiteBuilt', 'Illumination site built from the Madi Visual Dashboard'],
       ['fullGameFootage', 'Full game / highlight video footage delivered'],
       ['photoShoot', 'Player photo shoot completed'],
       ['weeklyGraphicLastSent', 'Weekly stat / accolade graphic sent this week', 'date'],
@@ -697,9 +703,9 @@
   function renderFulfillment(){
     var container = document.getElementById('fulfillmentList');
     if(!container) return;
-    var paying = playersCache.filter(function(p){ return p.tier === 'premium' || p.tier === 'elite'; });
+    var paying = playersCache.filter(function(p){ return p.tier === 'premium' || p.tier === 'elite' || p.tier === 'illumination'; });
     if(paying.length === 0){
-      container.innerHTML = '<div class="card"><p>No Premium or Elite players yet. Set a player\'s Package Tier to Premium or Elite in her edit form to track her here.</p></div>';
+      container.innerHTML = '<div class="card"><p>No Premium, Elite, or Illumination players yet. Set a player\'s Package Tier in her edit form to track her here.</p></div>';
       return;
     }
     container.innerHTML = paying.map(function(p){
@@ -750,12 +756,12 @@
   function renderIllumination(){
     var container = document.getElementById('illuminationList');
     if(!container) return;
-    var elite = playersCache.filter(function(p){ return p.tier === 'elite'; });
-    if(elite.length === 0){
-      container.innerHTML = '<div class="card"><p>No Elite players yet. Set a player\'s Package Tier to Elite in her edit form to manage her graphics and flyers here.</p></div>';
+    var illumination = playersCache.filter(function(p){ return p.tier === 'illumination'; });
+    if(illumination.length === 0){
+      container.innerHTML = '<div class="card"><p>No Illumination players yet. Set a player\'s Package Tier to Illumination in her edit form to manage her graphics and flyers here.</p></div>';
       return;
     }
-    container.innerHTML = elite.map(function(p){
+    container.innerHTML = illumination.map(function(p){
       var liveNote = p.illuminationApproved
         ? '<p style="margin-top:6px;"><span class="tool-status" style="display:inline;">Live</span> <a href="/illumination/' + esc(p.slug) + '" target="_blank" rel="noopener">/illumination/' + esc(p.slug) + ' &#8599;</a></p>'
         : '<p style="margin-top:6px;color:var(--dim);font-size:12.5px;">Not approved yet, approve her design above once Madi sends one.</p>';

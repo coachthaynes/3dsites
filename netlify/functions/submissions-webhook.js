@@ -10,16 +10,20 @@ function slugify(name) {
 
 // Netlify sends file upload fields as {filename, type, size, url} instead
 // of a plain string, so any field shaped like that needs unwrapping to
-// just its url before it's usable as an <img>/<video> src.
+// just its url before it's usable as an <img>/<video> src. A `multiple`
+// file input comes back as an array of those objects, one per file.
+function unwrapFile(value) {
+  if (value && typeof value === "object" && typeof value.url === "string") {
+    return value.url;
+  }
+  return value;
+}
+
 function unwrapFileFields(data) {
   const out = {};
   for (const key of Object.keys(data)) {
     const value = data[key];
-    if (value && typeof value === "object" && typeof value.url === "string") {
-      out[key] = value.url;
-    } else {
-      out[key] = value;
-    }
+    out[key] = Array.isArray(value) ? value.map(unwrapFile) : unwrapFile(value);
   }
   return out;
 }
