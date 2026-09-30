@@ -222,10 +222,19 @@
       <p>Graphics and flyers for each Elite player, ready to hand off to a scheduler once that's connected. Uploads here don't post anywhere on their own yet.</p>
     </div>
     <div class="tool-card" style="margin-bottom:20px;">
-      <span class="tool-status" id="madiStatus">Not Connected</span>
+      <span class="tool-status">Webhook Ready</span>
       <h4>Madi Visual Dashboard</h4>
-      <p>Once Madi finishes a player's design there, it should hand off here so her Illumination site can be built and you can approve it before it goes live. Needs Madi's dashboard URL and a way for it to notify this site (a webhook it can call, or an API key this site can poll) before this can be wired up for real.</p>
-      <a class="btn" id="madiLink" href="#" target="_blank" rel="noopener" style="display:none;">Open Madi Dashboard</a>
+      <p>When a player's design is ready, have Madi's dashboard send a POST to the webhook below. It'll show up in the queue underneath for you to approve or dismiss, nothing goes live on its own.</p>
+      <p style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim);background:var(--violet-deep);border-radius:8px;padding:10px 12px;margin-top:10px;word-break:break-all;">
+        POST https://elevateherhoopsreport.com/.netlify/functions/madi-webhook<br>
+        Header: X-Madi-Secret: &lt;MADI_WEBHOOK_SECRET&gt;<br>
+        Body: { "slug": "player-slug", "playerName": "Full Name", "previewUrl": "https://madivisuals.netlify.app/..." }
+      </p>
+      <a class="btn" href="https://madivisuals.netlify.app/" target="_blank" rel="noopener" style="margin-top:12px;">Open Madi Dashboard</a>
+    </div>
+    <div class="card" id="illuminationQueueCard" style="display:none;">
+      <h3>Pending From Madi</h3>
+      <div id="illuminationQueueList"></div>
     </div>
     <div id="illuminationList"></div>
   </section>
@@ -806,6 +815,45 @@
     });
   }
 
+  function loadIlluminationQueue(){
+    api('/admin-illumination-queue').then(function(res){
+      renderIlluminationQueue((res.items || []).filter(function(i){ return i.status === 'pending'; }));
+    }).catch(function(e){ toast('Error loading Madi queue: ' + e.message); });
+  }
+
+  function renderIlluminationQueue(pending){
+    var card = document.getElementById('illuminationQueueCard');
+    var list = document.getElementById('illuminationQueueList');
+    if(!card || !list) return;
+    if(pending.length === 0){
+      card.style.display = 'none';
+      list.innerHTML = '';
+      return;
+    }
+    card.style.display = 'block';
+    list.innerHTML = pending.map(function(item){
+      return '<div class="row-actions" style="justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:12px 0;">' +
+        '<div><strong>' + esc(item.playerName || item.slug) + '</strong><br>' +
+          '<a href="' + esc(item.previewUrl) + '" target="_blank" rel="noopener" style="font-size:12.5px;">View Madi design &#8599;</a></div>' +
+        '<div class="row-actions">' +
+          '<button class="btn" data-madi-slug="' + esc(item.slug) + '" data-madi-action="approve">Approve</button>' +
+          '<button class="btn" data-madi-slug="' + esc(item.slug) + '" data-madi-action="dismiss">Dismiss</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    list.querySelectorAll('[data-madi-action]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var slug = btn.getAttribute('data-madi-slug');
+        var action = btn.getAttribute('data-madi-action');
+        if(action === 'approve' && !window.confirm('Approve this design? It will be marked ready to build into her live Illumination site.')) return;
+        api('/admin-illumination-queue', { method:'POST', body: JSON.stringify({ slug: slug, action: action }) }).then(function(){
+          toast(action === 'approve' ? 'Approved' : 'Dismissed');
+          loadIlluminationQueue();
+        }).catch(function(e){ toast('Error: ' + e.message); });
+      });
+    });
+  }
+
   function renderOverview(){
     document.getElementById('statPlayers').textContent = playersCache.length;
     document.getElementById('statPublished').textContent = playersCache.filter(function(p){ return p.status !== 'draft'; }).length;
@@ -1056,6 +1104,7 @@
   loadPlayers();
   loadSubmissions();
   loadArticles();
+  loadIlluminationQueue();
 })();
 </script>
 
