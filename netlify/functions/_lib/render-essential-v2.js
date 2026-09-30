@@ -139,6 +139,12 @@ const CSS = `
   .film-link .dot{width:8px;height:8px;border-radius:50%;background:var(--magenta);flex-shrink:0;}
 
   .card{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:26px;}
+  .request-form{margin-top:16px;display:flex;flex-direction:column;gap:12px;}
+  .request-form label{display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--dim);margin-bottom:6px;}
+  .request-form input,.request-form textarea{width:100%;background:var(--violet-deep);border:1px solid var(--line);border-radius:10px;padding:11px 12px;color:var(--white);font-family:'Poppins',sans-serif;font-size:14px;}
+  .request-form input:focus,.request-form textarea:focus{outline:none;border-color:var(--teal);}
+  .request-form textarea{min-height:90px;resize:vertical;}
+  .request-form .hp{position:absolute;left:-9999px;}
   .card h4{margin:0 0 14px;font-family:'Fredoka',sans-serif;font-size:15px;}
   .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
   @media (max-width:700px){ .info-grid{grid-template-columns:1fr;} }
@@ -236,7 +242,6 @@ function renderEssentialPlayerV2(p, articles) {
   ].filter(Boolean).join("\n");
 
   const hasOffers = p.currentOffers || p.ncaaId;
-  const hasContact = p.playerPhone || p.playerEmail || p.guardianName || p.guardianPhone || p.guardianEmail;
 
   const filmLinks = [
     filmLink("MaxPreps", p.maxpreps),
@@ -263,27 +268,31 @@ function renderEssentialPlayerV2(p, articles) {
     </div>`
     : `<div class="card"><p style="color:var(--dim);margin:0;font-size:14.5px;">Check back soon for her accolades and awards.</p></div>`;
 
-  const contactCard = hasContact
-    ? `<div class="card">
-      <h4>Player</h4>
-      ${p.playerPhone ? `<div class="contact-row">Phone <span>${esc(p.playerPhone)}</span></div>` : ""}
-      ${p.playerEmail ? `<div class="contact-row">Email <span>${esc(p.playerEmail)}</span></div>` : ""}
-      ${p.guardianName ? `<div class="rule" style="margin:16px 0;"></div><h4>Parent / Guardian, ${esc(p.guardianName)}</h4>` : ""}
-      ${p.guardianPhone ? `<div class="contact-row">Phone <span>${esc(p.guardianPhone)}</span></div>` : ""}
-      ${p.guardianEmail ? `<div class="contact-row">Email <span>${esc(p.guardianEmail)}</span></div>` : ""}
-    </div>`
-    : "";
-
-  const coachCard = `<div class="card">
-      <h4>${esc(p.coachName || "Tenise Haynes")}</h4>
-      ${p.coachPhone ? `<div class="contact-row">Phone <span>${esc(p.coachPhone)}</span></div>` : ""}
-      ${p.coachEmail ? `<div class="contact-row">Email <span>${esc(p.coachEmail)}</span></div>` : ""}
+  const contactCard = `<div class="card">
+      <h4>Contact</h4>
+      <p style="color:var(--dim);font-size:13.5px;line-height:1.6;margin-bottom:6px;">To protect ${esc(name.split(" ")[0] || name)}'s privacy, contact details are shared by request only. Tell us who you are and we will send the information directly to you once approved.</p>
+      ${p.playerName ? `<div class="contact-row">Player <span>${esc(name)}, phone and email on request</span></div>` : ""}
+      ${p.guardianName ? `<div class="contact-row">Parent / Guardian <span>${esc(p.guardianName)}, phone and email on request</span></div>` : ""}
+      <div class="contact-row">${esc(p.coachName || "Tenise Haynes")} <span>Phone and email on request</span></div>
+      <form class="request-form" name="essential-contact-request" method="POST" data-netlify="true" netlify-honeypot="website" id="contactForm">
+        <input type="hidden" name="form-name" value="essential-contact-request">
+        <input type="hidden" name="subject" value="Contact request for ${esc(name)}">
+        <p class="hp"><label>Leave this empty <input name="website"></label></p>
+        <div><label for="reqName">Your Name</label><input name="name" id="reqName" required></div>
+        <div><label for="reqWho">Who You Are</label><input name="organization" id="reqWho" placeholder="College coach, media, business"></div>
+        <div><label for="reqEmail">Email</label><input type="email" name="email" id="reqEmail" required></div>
+        <div><label for="reqPhone">Phone</label><input type="tel" name="phone" id="reqPhone"></div>
+        <div><label for="reqReason">Reason For Your Request</label><textarea name="reason" id="reqReason" required placeholder="Recruiting interest, interview request, partnership idea"></textarea></div>
+        <button type="submit" class="btn primary" style="width:100%;border:none;">Send Request</button>
+        <p id="contactStatus" style="margin-top:2px;font-size:12.5px;color:var(--teal);min-height:1.4em;"></p>
+      </form>
     </div>`;
+
+  const coachCard = "";
 
   const linkPills = [
     filmLinks,
     `<a class="film-link" href="players-directory.html"><span class="dot"></span>Elevate Her Hoops &#8599;</a>`,
-    p.coachEmail ? `<a class="film-link" href="mailto:${esc(p.coachEmail)}"><span class="dot"></span>Email Coach &#8599;</a>` : "",
   ].filter(Boolean).join("\n");
 
   const recruitingCard = hasOffers
@@ -471,6 +480,33 @@ ${(articles || []).length ? `<section id="news">
     </div>
   </div>
 </footer>
+
+<script>
+(function(){
+  var contactForm = document.getElementById('contactForm');
+  var contactStatus = document.getElementById('contactStatus');
+  if(!contactForm) return;
+  contactForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = new FormData(contactForm);
+    contactStatus.style.color = 'var(--teal)';
+    contactStatus.textContent = 'Sending...';
+    fetch('/', { method: 'POST', body: new URLSearchParams(data).toString(), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+      .then(function(res){
+        if(!res.ok) throw new Error('failed');
+        contactForm.reset();
+        contactStatus.textContent = 'Request received. We will review it and email you directly.';
+      })
+      .catch(function(){
+        var skip = ['form-name', 'subject', 'website'];
+        var lines = [];
+        data.forEach(function(v, k){ if(skip.indexOf(k) === -1) lines.push(k + ': ' + v); });
+        var subject = data.get('subject') || 'Contact request';
+        location.href = 'mailto:coachthaynes@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\\n'));
+      });
+  });
+})();
+</script>
 
 </body>
 </html>

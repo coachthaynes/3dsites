@@ -100,6 +100,12 @@ module.exports = `
 
   .contact-card{border:1px solid var(--line);background:var(--panel);padding:26px 28px;max-width:520px;margin:0 auto;}
   .contact-card h4{font-family:'Anton',sans-serif;font-size:16px;letter-spacing:0.04em;margin-bottom:16px;}
+  .request-form{margin-top:16px;display:flex;flex-direction:column;gap:12px;text-align:left;}
+  .request-form label{display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}
+  .request-form input,.request-form textarea{width:100%;background:var(--black);border:1px solid var(--line);border-radius:8px;padding:11px 12px;color:var(--white);font-family:'Inter',sans-serif;font-size:14px;}
+  .request-form input:focus,.request-form textarea:focus{outline:none;border-color:var(--red);}
+  .request-form textarea{min-height:90px;resize:vertical;}
+  .request-form .hp{position:absolute;left:-9999px;}
   .contact-row{font-size:14px;color:#d5d5d5;margin-bottom:8px;}
   .contact-row span{color:var(--gray);}
 

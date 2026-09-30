@@ -78,7 +78,6 @@ function renderEssentialPlayer(p, articles) {
   ].filter(Boolean).join("\n");
 
   const hasOffers = p.currentOffers || p.ncaaId;
-  const hasContact = p.playerPhone || p.playerEmail || p.guardianName || p.guardianPhone || p.guardianEmail;
 
   const links = [
     linkPill("MaxPreps", p.maxpreps),
@@ -89,7 +88,6 @@ function renderEssentialPlayer(p, articles) {
     linkPill("X / Twitter", p.twitter),
     linkPill("YouTube", p.youtube),
     `<a class="link-pill" href="players-directory.html">Elevate Her Hoops &nbsp; &#8599;</a>`,
-    p.coachEmail ? linkPill("Email Coach", `mailto:${p.coachEmail}`) : "",
   ].filter(Boolean).join("\n");
 
   const heroCta = p.maxpreps
@@ -132,22 +130,27 @@ function renderEssentialPlayer(p, articles) {
     </div>`
     : "";
 
-  const contactCard = hasContact
-    ? `<div class="contact-card">
-      <h4>Player</h4>
-      ${p.playerPhone ? `<div class="contact-row"><span>Phone </span>${esc(p.playerPhone)}</div>` : ""}
-      ${p.playerEmail ? `<div class="contact-row"><span>Email </span>${esc(p.playerEmail)}</div>` : ""}
-      ${p.guardianName ? `<div class="rule" style="margin:16px 0;"></div><h4>Parent / Guardian, ${esc(p.guardianName)}</h4>` : ""}
-      ${p.guardianPhone ? `<div class="contact-row"><span>Phone </span>${esc(p.guardianPhone)}</div>` : ""}
-      ${p.guardianEmail ? `<div class="contact-row"><span>Email </span>${esc(p.guardianEmail)}</div>` : ""}
-    </div>`
-    : "";
-
-  const coachCard = `<div class="contact-card">
-      <h4>${esc(p.coachName || "Tenise Haynes")}</h4>
-      ${p.coachPhone ? `<div class="contact-row"><span>Phone </span>${esc(p.coachPhone)}</div>` : ""}
-      ${p.coachEmail ? `<div class="contact-row"><span>Email </span>${esc(p.coachEmail)}</div>` : ""}
+  const contactCard = `<div class="contact-card">
+      <h4>Contact</h4>
+      <p style="color:var(--gray);font-size:13.5px;line-height:1.6;margin-bottom:6px;">To protect ${esc(name.split(" ")[0] || name)}'s privacy, contact details are shared by request only. Tell us who you are and we will send the information directly to you once approved.</p>
+      ${p.playerName ? `<div class="contact-row"><span>Player </span>${esc(name)}, phone and email on request</div>` : ""}
+      ${p.guardianName ? `<div class="contact-row"><span>Parent / Guardian </span>${esc(p.guardianName)}, phone and email on request</div>` : ""}
+      <div class="contact-row"><span>${esc(p.coachName || "Tenise Haynes")} </span>Phone and email on request</div>
+      <form class="request-form" name="essential-contact-request" method="POST" data-netlify="true" netlify-honeypot="website" id="contactForm">
+        <input type="hidden" name="form-name" value="essential-contact-request">
+        <input type="hidden" name="subject" value="Contact request for ${esc(name)}">
+        <p class="hp"><label>Leave this empty <input name="website"></label></p>
+        <div><label for="reqName">Your Name</label><input name="name" id="reqName" required></div>
+        <div><label for="reqWho">Who You Are</label><input name="organization" id="reqWho" placeholder="College coach, media, business"></div>
+        <div><label for="reqEmail">Email</label><input type="email" name="email" id="reqEmail" required></div>
+        <div><label for="reqPhone">Phone</label><input type="tel" name="phone" id="reqPhone"></div>
+        <div><label for="reqReason">Reason For Your Request</label><textarea name="reason" id="reqReason" required placeholder="Recruiting interest, interview request, partnership idea"></textarea></div>
+        <button type="submit" class="btn primary" style="width:100%;border:none;">Send Request</button>
+        <p id="contactStatus" style="margin-top:2px;font-size:12.5px;color:var(--red);min-height:1.4em;"></p>
+      </form>
     </div>`;
+
+  const coachCard = "";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -242,6 +245,33 @@ ${(articles || []).length ? `<section id="news">
     </div>
   </div>
 </footer>
+
+<script>
+(function(){
+  var contactForm = document.getElementById('contactForm');
+  var contactStatus = document.getElementById('contactStatus');
+  if(!contactForm) return;
+  contactForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = new FormData(contactForm);
+    contactStatus.style.color = 'var(--red)';
+    contactStatus.textContent = 'Sending...';
+    fetch('/', { method: 'POST', body: new URLSearchParams(data).toString(), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+      .then(function(res){
+        if(!res.ok) throw new Error('failed');
+        contactForm.reset();
+        contactStatus.textContent = 'Request received. We will review it and email you directly.';
+      })
+      .catch(function(){
+        var skip = ['form-name', 'subject', 'website'];
+        var lines = [];
+        data.forEach(function(v, k){ if(skip.indexOf(k) === -1) lines.push(k + ': ' + v); });
+        var subject = data.get('subject') || 'Contact request';
+        location.href = 'mailto:coachthaynes@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\\n'));
+      });
+  });
+})();
+</script>
 
 </body>
 </html>
