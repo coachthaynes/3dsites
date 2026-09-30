@@ -5,6 +5,18 @@
   directory = "netlify/functions"
 
 [[redirects]]
+  from = "https://aiyanahaynes.elevateherhoopsreport.com/*"
+  to = "/aiyana-haynes.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://kennedyjeffress.elevateherhoopsreport.com/*"
+  to = "/kennedy-jeffress.html"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/players-directory.html"
   to = "/.netlify/functions/directory"
   status = 200
