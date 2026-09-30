@@ -1,20 +1,6 @@
 const { getPlayer } = require("./_lib/blobs");
 const { renderIlluminationSite } = require("./_lib/render-illumination");
 
-const MADI_BASE = "https://madivisuals.netlify.app";
-
-async function fetchMadiFeed(slug) {
-  try {
-    const res = await fetch(`${MADI_BASE}/api/sites/${encodeURIComponent(slug)}`, {
-      signal: AbortSignal.timeout(6000),
-    });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch (e) {
-    return null; // Madi unreachable or player not set up there yet - render with what we have
-  }
-}
-
 exports.handler = async (event) => {
   const slug = event.queryStringParameters && event.queryStringParameters.slug;
   if (!slug) {
@@ -30,8 +16,9 @@ exports.handler = async (event) => {
     };
   }
 
-  const feed = await fetchMadiFeed(slug);
-  const html = renderIlluminationSite(player, feed);
+  // Media (hero video, portrait, photos) loads client side straight from the
+  // Madi Visuals dashboard, so no server side fetch is needed here.
+  const html = renderIlluminationSite(player);
 
   return {
     statusCode: 200,
