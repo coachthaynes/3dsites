@@ -97,6 +97,17 @@
   .tool-card .tool-status{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;display:block;}
 
   .empty-note{color:var(--dim);font-size:13.5px;padding:20px;text-align:center;}
+
+  .graphics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:14px;}
+  .graphic-tile{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--violet-deep);position:relative;}
+  .graphic-tile img{display:block;width:100%;height:96px;object-fit:cover;background:var(--panel-2);}
+  .graphic-tile .pdf-tile{display:flex;align-items:center;justify-content:center;height:96px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);}
+  .graphic-tile .graphic-name{font-size:10.5px;color:var(--dim);padding:6px 8px;word-break:break-all;}
+  .graphic-tile .graphic-remove{
+    position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:none;
+    background:rgba(10,4,24,0.72);color:var(--white);cursor:pointer;font-size:12px;line-height:1;
+  }
+  .graphic-tile .graphic-remove:hover{background:var(--magenta);}
   #toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid var(--teal);color:var(--white);padding:12px 18px;border-radius:12px;font-size:13.5px;display:none;z-index:60;}
 </style>
 </head>
@@ -114,6 +125,7 @@
     <button class="tab-btn" data-tab="players">Players</button>
     <button class="tab-btn" data-tab="articles">Articles</button>
     <button class="tab-btn" data-tab="fulfillment">Fulfillment</button>
+    <button class="tab-btn" data-tab="illumination">Illumination</button>
     <button class="tab-btn" data-tab="forms">Forms</button>
     <button class="tab-btn" data-tab="marketing">Marketing</button>
   </div>
@@ -202,6 +214,20 @@
       <p>What's actually promised on each paid package, so nothing gets missed. Pulled straight from the pricing page.</p>
     </div>
     <div id="fulfillmentList"></div>
+  </section>
+
+  <section class="panel" id="panel-illumination">
+    <div class="card">
+      <h3>Illumination packages</h3>
+      <p>Graphics and flyers for each Elite player, ready to hand off to a scheduler once that's connected. Uploads here don't post anywhere on their own yet.</p>
+    </div>
+    <div class="tool-card" style="margin-bottom:20px;">
+      <span class="tool-status" id="madiStatus">Not Connected</span>
+      <h4>Madi Visual Dashboard</h4>
+      <p>Once Madi finishes a player's design there, it should hand off here so her Illumination site can be built and you can approve it before it goes live. Needs Madi's dashboard URL and a way for it to notify this site (a webhook it can call, or an API key this site can poll) before this can be wired up for real.</p>
+      <a class="btn" id="madiLink" href="#" target="_blank" rel="noopener" style="display:none;">Open Madi Dashboard</a>
+    </div>
+    <div id="illuminationList"></div>
   </section>
 
   <section class="panel" id="panel-forms">
@@ -518,6 +544,7 @@
       renderArticlePlayerSelect();
       renderFulfillment();
       renderArticles();
+      renderIllumination();
     }).catch(function(e){ toast('Error loading players: ' + e.message); });
   }
 
@@ -689,6 +716,94 @@
       toast('Saved');
       loadPlayers();
     }).catch(function(e){ toast('Error: ' + e.message); });
+  }
+
+  var graphicsCache = {};
+
+  function renderIllumination(){
+    var container = document.getElementById('illuminationList');
+    if(!container) return;
+    var elite = playersCache.filter(function(p){ return p.tier === 'elite'; });
+    if(elite.length === 0){
+      container.innerHTML = '<div class="card"><p>No Elite players yet. Set a player\'s Package Tier to Elite in her edit form to manage her graphics and flyers here.</p></div>';
+      return;
+    }
+    container.innerHTML = elite.map(function(p){
+      return '<div class="card">' +
+        '<h3>' + esc(p.playerName || p.slug) + '</h3>' +
+        '<div class="row-actions" style="margin-top:10px;">' +
+          '<label class="btn" style="cursor:pointer;">Add Graphic Or Flyer' +
+            '<input type="file" accept="image/*,application/pdf" data-graphic-slug="' + esc(p.slug) + '" style="display:none;">' +
+          '</label>' +
+        '</div>' +
+        '<div class="graphics-grid" id="graphics-' + esc(p.slug) + '"><span class="empty-note">Loading...</span></div>' +
+      '</div>';
+    }).join('');
+
+    container.querySelectorAll('input[type="file"][data-graphic-slug]').forEach(function(input){
+      input.addEventListener('change', function(e){
+        var slug = input.getAttribute('data-graphic-slug');
+        var file = e.target.files && e.target.files[0];
+        if(!file) return;
+        var reader = new FileReader();
+        reader.onload = function(){
+          var base64 = reader.result.split(',')[1];
+          api('/admin-graphics', {
+            method: 'POST',
+            body: JSON.stringify({ slug: slug, filename: file.name, contentType: file.type, dataBase64: base64 })
+          }).then(function(){
+            toast('Uploaded');
+            input.value = '';
+            loadGraphics(slug);
+          }).catch(function(err){
+            toast('Error uploading: ' + err.message);
+            input.value = '';
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    elite.forEach(function(p){ loadGraphics(p.slug); });
+  }
+
+  function loadGraphics(slug){
+    api('/admin-graphics?slug=' + encodeURIComponent(slug)).then(function(res){
+      graphicsCache[slug] = res.files || [];
+      renderGraphicsGrid(slug);
+    }).catch(function(e){ toast('Error loading graphics: ' + e.message); });
+  }
+
+  function renderGraphicsGrid(slug){
+    var grid = document.getElementById('graphics-' + slug);
+    if(!grid) return;
+    var files = graphicsCache[slug] || [];
+    if(files.length === 0){
+      grid.innerHTML = '<span class="empty-note">No graphics uploaded yet.</span>';
+      return;
+    }
+    grid.innerHTML = files.map(function(f){
+      var url = '/player-graphics/' + f.key;
+      var preview = /^image\//.test(f.contentType || '')
+        ? '<img src="' + esc(url) + '" alt="">'
+        : '<div class="pdf-tile">PDF</div>';
+      return '<div class="graphic-tile">' +
+        '<a href="' + esc(url) + '" target="_blank" rel="noopener">' + preview + '</a>' +
+        '<div class="graphic-name">' + esc(f.filename) + '</div>' +
+        '<button class="graphic-remove" data-graphic-key="' + esc(f.key) + '" data-graphic-slug="' + esc(slug) + '" title="Remove">&times;</button>' +
+      '</div>';
+    }).join('');
+    grid.querySelectorAll('.graphic-remove').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(!window.confirm('Remove this file?')) return;
+        var key = btn.getAttribute('data-graphic-key');
+        var slugForKey = btn.getAttribute('data-graphic-slug');
+        api('/admin-graphics?key=' + encodeURIComponent(key), { method: 'DELETE' }).then(function(){
+          toast('Removed');
+          loadGraphics(slugForKey);
+        }).catch(function(e){ toast('Error removing: ' + e.message); });
+      });
+    });
   }
 
   function renderOverview(){

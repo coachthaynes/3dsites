@@ -77,6 +77,12 @@
   force = true
 
 [[redirects]]
+  from = "/player-graphics/*"
+  to = "/.netlify/functions/graphics?key=:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/edit-player"
   to = "/.netlify/functions/player-edit"
   status = 200

@@ -28,6 +28,10 @@ function photosStore() {
   return makeStore("photos");
 }
 
+function graphicsStore() {
+  return makeStore("graphics");
+}
+
 function viewsStore() {
   return makeStore("views");
 }
@@ -135,6 +139,7 @@ module.exports = {
   playersStore,
   submissionsStore,
   photosStore,
+  graphicsStore,
   viewsStore,
   incrementViews,
   getViews,
