@@ -249,9 +249,8 @@
   @media (max-width:560px){ .benefits-grid{grid-template-columns:1fr;} }
 
   /* PRICING */
-  .pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;max-width:1360px;margin:44px auto 0;}
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1080px;margin:44px auto 0;}
   .price-card{position:relative;padding:32px 26px;text-align:left;display:flex;flex-direction:column;}
-  .price-card.premium{border-color:var(--magenta);background:linear-gradient(165deg, var(--panel-2), var(--panel));box-shadow:0 20px 50px rgba(255,46,147,0.18);}
   .price-card.elite{border-color:var(--teal);background:linear-gradient(165deg, var(--panel-2), var(--panel));box-shadow:0 20px 50px rgba(0,245,212,0.16);}
   .price-card.illumination{border-color:var(--magenta);background:linear-gradient(165deg, var(--panel-2), var(--panel));box-shadow:0 20px 50px rgba(255,46,147,0.22);}
   .price-badge{
@@ -270,8 +269,7 @@
   .price-list li .check{width:17px;height:17px;flex-shrink:0;margin-top:2px;}
   .price-list li strong{color:var(--white);font-weight:600;}
   .pricing-note{max-width:720px;margin:30px auto 0;text-align:center;color:var(--dim);font-size:13px;}
-  @media (max-width:1180px){ .pricing-grid{grid-template-columns:repeat(2,1fr);max-width:720px;} }
-  @media (max-width:640px){ .pricing-grid{grid-template-columns:1fr;max-width:460px;} }
+  @media (max-width:980px){ .pricing-grid{grid-template-columns:1fr;max-width:460px;} }
 
   /* INQUIRY MODAL */
   .modal-overlay{
@@ -477,9 +475,9 @@
     </div>
     <div class="benefits-grid">
       <div class="card benefit-card" data-reveal data-tilt>
-        <span class="num">Premium And Elite</span>
+        <span class="num">Elite And Illumination</span>
         <h3>Weekly Game Graphics</h3>
-        <p>During the season, Premium and Elite packages get a graphic built around that week's stats and accolades, ready to share right after the final buzzer.</p>
+        <p>During the season, Elite and Illumination packages get a graphic built around that week's stats and accolades, ready to share right after the final buzzer.</p>
       </div>
       <div class="card benefit-card" data-reveal data-tilt>
         <span class="num">Included With Every Package</span>
@@ -489,8 +487,8 @@
       <div class="card benefit-card" data-reveal data-tilt>
         <span class="num">Full Media Presence</span>
         <h3>A Website, Photos, And Film</h3>
-        <p>Premium and Elite packages get a complete media package built around your daughter. A player website, professional photography, and a highlight video that show exactly who she is on the court.</p>
-        <span class="badge-premium">Premium And Elite</span>
+        <p>Elite and Illumination packages get a complete media package built around your daughter. A player website, her own photos, and a highlight video that show exactly who she is on the court.</p>
+        <span class="badge-premium">Elite And Illumination</span>
       </div>
       <div class="card benefit-card" data-reveal data-tilt>
         <span class="num">No Subscription Required</span>
@@ -530,24 +528,8 @@
         <a class="btn outline" href="player-questionnaire.html" style="width:100%;text-align:center;margin-top:22px;">Fill Out Her Free Profile</a>
         <a href="essential-mockup.html" style="display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--dim);text-decoration:underline;">See a sample profile &#8599;</a>
       </div>
-      <div class="card price-card premium" data-reveal data-tilt>
-        <div class="price-badge">Most Popular</div>
-        <div class="price-tier">Premium Profile Showcase</div>
-        <div class="price-tier-sub">Media that does the talking</div>
-        <div class="price-amount">$350<span class="period">one time</span></div>
-        <ul class="price-list">
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Everything in Essential Scout</strong></span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Premium player website</strong></span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span>Built with <strong>her own videos and photos</strong></span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Clickable links and embedded video</strong> so coaches see everything in one place</span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Weekly stat and accolade graphic</strong> for that week's games</span></li>
-          <li><span class="check"><svg class="logo-icon" viewBox="0 0 24 24"><use href="#checkIcon"></use></svg></span><span><strong>Free commitment graphic</strong> when the time comes</span></li>
-        </ul>
-        <a class="btn primary" href="premium-questionnaire.html" style="width:100%;text-align:center;margin-top:22px;">Start Her Premium Profile</a>
-        <a href="https://aiyanahaynes.elevateherhoopsreport.com" target="_blank" rel="noopener" style="display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--dim);text-decoration:underline;">See a live example &#8599;</a>
-      </div>
       <div class="card price-card elite" data-reveal data-tilt>
-        <div class="price-badge">Bold And Built Fast</div>
+        <div class="price-badge">Most Popular</div>
         <div class="price-tier">Elite Recruiting Site</div>
         <div class="price-tier-sub">Her own standalone site, her school colors</div>
         <div class="price-amount">$350<span class="period">one time</span></div>
@@ -575,6 +557,7 @@
         </ul>
         <p style="font-size:11.5px;color:var(--dim);font-style:italic;margin:-4px 0 18px;">Great to have on hand if a local business or sponsor wants to talk about a partnership.</p>
         <a class="btn primary" style="width:100%;text-align:center;margin-top:22px;" href="illumination-questionnaire.html">Start Her Illumination Profile</a>
+        <a href="https://aiyanahaynes.elevateherhoopsreport.com" target="_blank" rel="noopener" style="display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--dim);text-decoration:underline;">See a live example &#8599;</a>
       </div>
     </div>
     <p class="pricing-note">Every request starts with a conversation. We talk with you about your daughter's goals before any payment is ever requested.</p>
@@ -596,7 +579,6 @@
         <label for="pkgSelect">Package</label>
         <select name="package" id="pkgSelect">
           <option>Essential Scout Package ($25)</option>
-          <option>Premium Profile Showcase ($350)</option>
           <option>Elite Recruiting Site ($350)</option>
           <option>Illumination Experience ($850)</option>
           <option>Not sure yet</option>

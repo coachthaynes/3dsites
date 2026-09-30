@@ -142,20 +142,19 @@
     </div>
     <div class="card">
       <h3>What this dashboard does</h3>
-      <p>The Essential tier player pages (the free Middleburg roster) are generated live from the data below &mdash; edit a player here and her page updates immediately, no rebuild needed. Aiyana and Kennedy's Premium pages are hand built and are not connected to this dashboard.</p>
-      <p>New Essential Scout questionnaire submissions automatically create or update a player's page. Package inquiry and questionnaire form submissions both show up under the Forms tab.</p>
+      <p>Essential and Elite player pages are generated live from the data below &mdash; edit a player here and her page updates immediately, no rebuild needed. Illumination pages pull her data from here too, plus her live media from the Madi Visual Dashboard.</p>
+      <p>New questionnaire submissions automatically create or update a player's page, already tagged with the right Package Tier. Package inquiry and questionnaire form submissions both show up under the Forms tab.</p>
     </div>
     <div class="card">
       <h3>Templates &amp; Tiers Key</h3>
-      <p>Quick reference for which players use which page design and how to tell them apart.</p>
+      <p>Quick reference for which players use which page design and how to tell them apart. There are three tiers now, nothing else.</p>
       <ul style="margin:10px 0 0;padding-left:18px;line-height:1.8;font-size:13.5px;color:var(--dim);">
-        <li><strong style="color:var(--white);">Essential</strong> (free) &mdash; auto generated from the questionnaire. New signups now get the violet/teal &quot;Jordan Reese&quot; design (<a href="../essential-mockup.html" target="_blank" rel="noopener">see the sample</a>); anyone who joined before that design existed keeps the original red/black look, unchanged.</li>
-        <li><strong style="color:var(--white);">Premium</strong> ($350) &mdash; hand built to match <a href="../aiyana-haynes.html" target="_blank" rel="noopener">Aiyana Haynes's site</a>. Currently: Aiyana. Not connected to this dashboard's Player editor.</li>
-        <li><strong style="color:var(--white);">Elite</strong> ($850) &mdash; hand built to match <a href="../kennedy-jeffress.html" target="_blank" rel="noopener">Kennedy Jeffress's site</a>. Currently: Kennedy. Not connected to this dashboard's Player editor.</li>
+        <li><strong style="color:var(--white);">Essential</strong> (free) &mdash; auto generated from the free questionnaire, violet/teal design (<a href="../essential-mockup.html" target="_blank" rel="noopener">see the sample</a>).</li>
+        <li><strong style="color:var(--white);">Elite</strong> ($350) &mdash; auto generated from her own uploaded photos and video, dark red/black design in her school colors.</li>
+        <li><strong style="color:var(--white);">Illumination</strong> ($850) &mdash; same dark red/black design as Elite, built by the Madi Visual Dashboard team instead of self uploaded, plus NIL content.</li>
       </ul>
-      <p style="margin-top:10px;font-size:12px;">A player's tier is set on the Players tab and controls the Articles and Fulfillment tabs, an Essential player's tier is left blank.</p>
-      <p style="margin-top:10px;font-size:12px;">Unlike Essential, Premium and Elite sites should keep using that player's own school colors as their accent color (the red on Aiyana's and Kennedy's sites is Middleburg's color), carry this over whenever a new Premium or Elite site is hand built for a player at a different school.</p>
-      <p style="margin-top:10px;font-size:12px;">Starting a new Premium or Elite site: there's a fill in the blanks starting point at <code>templates/premium-elite-site-template.html</code> in the repo, built from Aiyana's and Kennedy's pages so the design stays consistent.</p>
+      <p style="margin-top:10px;font-size:12px;">A player's tier is set on the Players tab and controls the Articles, Fulfillment, and Illumination tabs.</p>
+      <p style="margin-top:10px;font-size:12px;">Aiyana Haynes and Kennedy Jeffress are Illumination tier but hand built as standalone pages rather than run through this dashboard's Elite/Illumination pipeline. Their player records have a Live URL set so the View button on the Players tab opens their real page.</p>
     </div>
     <div class="card">
       <h3>Test the auto update pipeline</h3>
@@ -184,7 +183,7 @@
     <div class="card">
       <h3>Generate a recap article</h3>
       <p>Writes an original recap article from a player's on-file stats. Optionally tries pulling a bit more from her MaxPreps page first, that part is experimental and falls back to her saved stats if it doesn't find anything usable.</p>
-      <p style="color:var(--dim);font-size:13px;">Only available for Premium and Elite players, since that's what their package promises. Right now that's Aiyana and Kennedy.</p>
+      <p style="color:var(--dim);font-size:13px;">Only available for Elite and Illumination players, since that's what their package promises.</p>
       <div class="form-grid" style="margin-top:12px;">
         <div class="form-field">
           <label>Player</label>
@@ -210,7 +209,7 @@
 
   <section class="panel" id="panel-fulfillment">
     <div class="card">
-      <h3>Premium &amp; Elite fulfillment</h3>
+      <h3>Elite &amp; Illumination fulfillment</h3>
       <p>What's actually promised on each paid package, so nothing gets missed. Pulled straight from the pricing page.</p>
     </div>
     <div id="fulfillmentList"></div>
@@ -347,7 +346,6 @@
         <div class="form-field"><label>Package Tier</label>
           <select id="f_tier">
             <option value="essential">Essential</option>
-            <option value="premium">Premium</option>
             <option value="elite">Elite</option>
             <option value="illumination">Illumination</option>
           </select>
@@ -616,9 +614,9 @@
     var sel = document.getElementById('articlePlayerSelect');
     if(!sel) return;
     var current = sel.value;
-    var eligible = playersCache.filter(function(p){ return p.tier === 'premium' || p.tier === 'elite' || p.tier === 'illumination'; });
+    var eligible = playersCache.filter(function(p){ return p.tier === 'elite' || p.tier === 'illumination'; });
     if(eligible.length === 0){
-      sel.innerHTML = '<option value="" disabled selected>No Premium, Elite, or Illumination players yet</option>';
+      sel.innerHTML = '<option value="" disabled selected>No Elite or Illumination players yet</option>';
     } else {
       sel.innerHTML = eligible.map(function(p){
         return '<option value="' + esc(p.slug) + '">' + esc(p.playerName || p.slug) + ' (' + esc(p.tier) + ')</option>';
@@ -695,13 +693,6 @@
   });
 
   var FULFILLMENT_ITEMS = {
-    premium: [
-      ['premiumWebsiteBuilt', 'Premium player website built'],
-      ['mediaReceived', "Her own videos and photos received"],
-      ['videoEmbedded', 'Video embedded and links added'],
-      ['weeklyGraphicLastSent', 'Weekly stat / accolade graphic sent this week', 'date'],
-      ['commitmentGraphic', 'Commitment graphic delivered (when she commits)'],
-    ],
     elite: [
       ['eliteWebsiteBuilt', 'Elite player website built'],
       ['mediaReceived', "Her own videos and photos received"],
@@ -722,9 +713,9 @@
   function renderFulfillment(){
     var container = document.getElementById('fulfillmentList');
     if(!container) return;
-    var paying = playersCache.filter(function(p){ return p.tier === 'premium' || p.tier === 'elite' || p.tier === 'illumination'; });
+    var paying = playersCache.filter(function(p){ return p.tier === 'elite' || p.tier === 'illumination'; });
     if(paying.length === 0){
-      container.innerHTML = '<div class="card"><p>No Premium, Elite, or Illumination players yet. Set a player\'s Package Tier in her edit form to track her here.</p></div>';
+      container.innerHTML = '<div class="card"><p>No Elite or Illumination players yet. Set a player\'s Package Tier in her edit form to track her here.</p></div>';
       return;
     }
     container.innerHTML = paying.map(function(p){
@@ -920,7 +911,6 @@
       var viewHref = p.liveUrl ? p.liveUrl
         : p.tier === 'elite' ? '/elite/' + esc(p.slug)
         : p.tier === 'illumination' ? '/illumination/' + esc(p.slug)
-        : p.tier === 'premium' ? '/' + esc(p.slug) + '.html'
         : '/players/' + esc(p.slug);
       return '<tr>' +
         '<td><strong>' + esc(p.playerName || '(unnamed)') + '</strong></td>' +

@@ -4,13 +4,14 @@
 <body>
 <!--
   Netlify's form detection only scans static HTML in the published build.
-  The Elite, Illumination, and Premium player pages are rendered dynamically
-  (by a Netlify Function, or from a template only ever read at request time),
-  so Netlify never sees their forms at build time unless a copy also exists
-  in a real static file. This page exists only for that scan, it is never
-  meant to be visited. Field names below must exactly match the real forms
-  in netlify/functions/_lib/render-elite.js, render-illumination.js (via
-  illumination-index-template.html), and templates/premium-elite-site-template.html.
+  The Essential, Elite, and Illumination player pages are all rendered
+  dynamically (by a Netlify Function, or from a template only ever read at
+  request time), so Netlify never sees their forms at build time unless a
+  copy also exists in a real static file. This page exists only for that
+  scan, it is never meant to be visited. Field names below must exactly
+  match the real forms in netlify/functions/_lib/render-essential-v2.js,
+  render-elite.js, and render-illumination.js (via
+  illumination-index-template.html).
 -->
 <div style="display:none">
 
@@ -25,16 +26,6 @@
   </form>
 
   <form name="essential-contact-request" method="POST" data-netlify="true" netlify-honeypot="website">
-    <input name="website">
-    <input name="subject">
-    <input name="name">
-    <input name="organization">
-    <input type="email" name="email">
-    <input type="tel" name="phone">
-    <textarea name="reason"></textarea>
-  </form>
-
-  <form name="premium-contact-request" method="POST" data-netlify="true" netlify-honeypot="website">
     <input name="website">
     <input name="subject">
     <input name="name">

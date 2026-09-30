@@ -96,7 +96,7 @@ ${links}
 
 function renderDirectory(players) {
   const published = (players || []).filter(
-    (p) => p.status !== "draft" && p.playerName && p.tier !== "premium" && p.tier !== "elite" && p.tier !== "illumination"
+    (p) => p.status !== "draft" && p.playerName && p.tier !== "elite" && p.tier !== "illumination"
   );
 
   const playersBySchool = {};

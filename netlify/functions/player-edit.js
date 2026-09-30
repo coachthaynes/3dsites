@@ -208,8 +208,8 @@ exports.handler = async (event) => {
 
   <div class="upsell-card">
     <div class="upsell-title">Want More From Your Page?</div>
-    <p>Premium Profile Showcase adds a full custom player website, professional photography, and a highlight video built around your season. Ask your coach about upgrading.</p>
-    <a class="upsell-btn" href="/index.html#pricing" target="_blank" rel="noopener">See Premium Details &#8599;</a>
+    <p>An Elite or Illumination site adds a full custom player website, her own photos and video, and a page built around her season. Ask your coach about upgrading.</p>
+    <a class="upsell-btn" href="/index.html#pricing" target="_blank" rel="noopener">See The Packages &#8599;</a>
   </div>
 
   <div class="stat-card">

@@ -1,5 +1,4 @@
 const { getPlayer, incrementViews, listArticles } = require("./_lib/blobs");
-const { renderEssentialPlayer } = require("./_lib/render-essential");
 const { renderEssentialPlayerV2 } = require("./_lib/render-essential-v2");
 
 function slugFromPath(path) {
@@ -18,8 +17,8 @@ exports.handler = async (event) => {
   if (!player) {
     return { statusCode: 404, body: "Player not found" };
   }
-  if (player.tier === "premium" || player.tier === "elite" || player.tier === "illumination") {
-    // Premium/Elite/Illumination players have their own dedicated site; this
+  if (player.tier === "elite" || player.tier === "illumination") {
+    // Elite/Illumination players have their own dedicated site; this
     // dynamic template is only for Essential-tier players.
     return { statusCode: 404, body: "Player not found" };
   }
@@ -34,9 +33,7 @@ exports.handler = async (event) => {
   } catch (e) {
     // never fail the page load over the news feed
   }
-  const html = player.templateVersion === "v2"
-    ? renderEssentialPlayerV2(player, articles)
-    : renderEssentialPlayer(player, articles);
+  const html = renderEssentialPlayerV2(player, articles);
   return {
     statusCode: 200,
     headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=0, must-revalidate" },

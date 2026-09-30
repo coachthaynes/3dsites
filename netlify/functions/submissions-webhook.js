@@ -60,9 +60,9 @@ exports.handler = async (event) => {
   });
 
   // any of the player questionnaires also auto-creates/updates a
-  // live player record; premium/elite/illumination forms carry their own
+  // live player record; elite/illumination forms carry their own
   // hidden tier field so those land in the right tier straight away.
-  const QUESTIONNAIRE_FORMS = ["player-questionnaire", "premium-questionnaire", "elite-questionnaire", "illumination-questionnaire"];
+  const QUESTIONNAIRE_FORMS = ["player-questionnaire", "elite-questionnaire", "illumination-questionnaire"];
   if (QUESTIONNAIRE_FORMS.includes(formName) && data.playerName) {
     const slug = slugify(data.playerName);
     await savePlayer(Object.assign({}, unwrapFileFields(data), { id: slug, slug, status: "published" }));
