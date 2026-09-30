@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Form Registry</title></head>
+<body>
+<!--
+  Netlify's form detection only scans static HTML in the published build.
+  The Elite, Illumination, and Premium player pages are rendered dynamically
+  (by a Netlify Function, or from a template only ever read at request time),
+  so Netlify never sees their forms at build time unless a copy also exists
+  in a real static file. This page exists only for that scan, it is never
+  meant to be visited. Field names below must exactly match the real forms
+  in netlify/functions/_lib/render-elite.js, render-illumination.js (via
+  illumination-index-template.html), and templates/premium-elite-site-template.html.
+-->
+<div style="display:none">
+
+  <form name="elite-contact-request" method="POST" data-netlify="true" netlify-honeypot="website">
+    <input name="website">
+    <input name="subject">
+    <input name="name">
+    <input name="organization">
+    <input type="email" name="email">
+    <input type="tel" name="phone">
+    <textarea name="reason"></textarea>
+  </form>
+
+  <form name="premium-contact-request" method="POST" data-netlify="true" netlify-honeypot="website">
+    <input name="website">
+    <input name="subject">
+    <input name="name">
+    <input name="organization">
+    <input type="email" name="email">
+    <input type="tel" name="phone">
+    <textarea name="reason"></textarea>
+  </form>
+
+  <form name="contact-request" method="POST" data-netlify="true" netlify-honeypot="website">
+    <input name="website">
+    <input name="subject">
+    <input name="name">
+    <input name="organization">
+    <input type="email" name="email">
+    <input type="tel" name="phone">
+    <select name="role"><option>College coach or recruiter</option></select>
+    <select name="requested"><option>Head coach</option></select>
+    <textarea name="reason"></textarea>
+  </form>
+
+  <form name="nil-inquiry" method="POST" data-netlify="true" netlify-honeypot="company-url">
+    <input name="company-url">
+    <input name="name">
+    <input name="business">
+    <input type="email" name="email">
+    <input type="tel" name="phone">
+    <select name="type"><option>Social content</option></select>
+    <select name="budget"><option>Product or trade</option></select>
+    <textarea name="message"></textarea>
+  </form>
+
+</div>
+</body>
+</html>

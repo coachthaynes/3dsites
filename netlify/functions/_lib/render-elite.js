@@ -187,6 +187,12 @@ function renderEliteSite(player, feed) {
   .offer-list li:first-child{padding-top:0;}
   .contact-card{border:1px solid var(--line);background:var(--panel);padding:26px 28px;}
   .contact-card h4{font-family:'Anton',sans-serif;font-size:16px;letter-spacing:0.04em;margin-bottom:16px;}
+  .request-form{margin-top:18px;display:flex;flex-direction:column;gap:12px;}
+  .request-form label{display:block;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}
+  .request-form input,.request-form textarea{width:100%;background:var(--black);border:1px solid var(--line);border-radius:8px;padding:11px 12px;color:var(--white);font-family:'Inter',sans-serif;font-size:14px;}
+  .request-form input:focus,.request-form textarea:focus{outline:none;border-color:var(--red);}
+  .request-form textarea{min-height:90px;resize:vertical;}
+  .request-form .hp{position:absolute;left:-9999px;}
   .contact-row{font-size:14px;color:#d5d5d5;margin-bottom:8px;}
   .contact-row span{color:var(--gray);}
   @media (max-width:860px){ .recruit-grid{grid-template-columns:1fr;} }
@@ -313,11 +319,21 @@ ${vault.length ? `<section id="photos">
       </div>
       <div class="contact-card">
         <h4>Contact</h4>
-        ${player.playerPhone ? `<div class="contact-row"><span>Player Phone </span>${esc(player.playerPhone)}</div>` : ""}
-        ${player.playerEmail ? `<div class="contact-row"><span>Player Email </span>${esc(player.playerEmail)}</div>` : ""}
-        ${player.coachName ? `<div class="rule" style="margin:16px 0;"></div><h4>Coach / Parent, ${esc(player.coachName)}</h4>` : ""}
-        ${player.coachPhone ? `<div class="contact-row"><span>Phone </span>${esc(player.coachPhone)}</div>` : ""}
-        ${player.coachEmail ? `<div class="contact-row"><span>Email </span>${esc(player.coachEmail)}</div>` : ""}
+        <p style="color:var(--gray);font-size:13.5px;line-height:1.6;margin-bottom:6px;">To protect ${esc(fn)}'s privacy, contact details are shared by request only. Tell us who you are and we will send the information directly to you once approved.</p>
+        ${player.playerName ? `<div class="contact-row"><span>Player </span>${esc(name)}, phone and email on request</div>` : ""}
+        ${player.coachName ? `<div class="contact-row"><span>Coach / Parent </span>${esc(player.coachName)}, phone and email on request</div>` : ""}
+        <form class="request-form" name="elite-contact-request" method="POST" data-netlify="true" netlify-honeypot="website" id="contactForm">
+          <input type="hidden" name="form-name" value="elite-contact-request">
+          <input type="hidden" name="subject" value="Contact request for ${esc(name)}">
+          <p class="hp"><label>Leave this empty <input name="website"></label></p>
+          <div><label for="reqName">Your Name</label><input name="name" id="reqName" required></div>
+          <div><label for="reqWho">Who You Are</label><input name="organization" id="reqWho" placeholder="College coach, media, business"></div>
+          <div><label for="reqEmail">Email</label><input type="email" name="email" id="reqEmail" required></div>
+          <div><label for="reqPhone">Phone</label><input type="tel" name="phone" id="reqPhone"></div>
+          <div><label for="reqReason">Reason For Your Request</label><textarea name="reason" id="reqReason" required placeholder="Recruiting interest, interview request, partnership idea"></textarea></div>
+          <button type="submit" class="btn primary" style="width:100%;border:none;">Send Request</button>
+          <p id="contactStatus" style="margin-top:2px;font-size:12.5px;color:var(--red);min-height:1.4em;"></p>
+        </form>
       </div>
     </div>
   </div>
@@ -349,6 +365,30 @@ ${vault.length ? `<section id="photos">
       section.style.display = '';
     })
     .catch(function(){});
+
+  var contactForm = document.getElementById('contactForm');
+  var contactStatus = document.getElementById('contactStatus');
+  if(contactForm){
+    contactForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var data = new FormData(contactForm);
+      contactStatus.style.color = 'var(--red)';
+      contactStatus.textContent = 'Sending...';
+      fetch('/', { method: 'POST', body: new URLSearchParams(data).toString(), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+        .then(function(res){
+          if(!res.ok) throw new Error('failed');
+          contactForm.reset();
+          contactStatus.textContent = 'Request received. We will review it and email you directly.';
+        })
+        .catch(function(){
+          var skip = ['form-name', 'subject', 'website'];
+          var lines = [];
+          data.forEach(function(v, k){ if(skip.indexOf(k) === -1) lines.push(k + ': ' + v); });
+          var subject = data.get('subject') || 'Contact request';
+          location.href = 'mailto:coachthaynes@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\\n'));
+        });
+    });
+  }
 })();
 </script>
 
@@ -364,7 +404,6 @@ ${vault.length ? `<section id="photos">
       ${linkPill(player.maxpreps, "MaxPreps")}
       ${linkPill(player.prepgirlshoops, "Prep Girls Hoops")}
       ${kit.map((k) => linkPill(k.download || k.url, k.title || "Marketing Kit")).join("")}
-      ${player.playerEmail ? `<a class="link-pill" href="mailto:${esc(player.playerEmail)}">Email ${esc(fn)} &nbsp; &#8599;</a>` : ""}
       <a class="link-pill" href="/players-directory.html">Elevate Her Hoops &nbsp; &#8599;</a>
     </div>
     <div class="rule" style="margin-bottom:24px;"></div>
