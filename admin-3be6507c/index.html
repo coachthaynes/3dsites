@@ -491,7 +491,11 @@
         <div class="form-field"><label>Schedule Title</label><input id="f_scheduleTitle" placeholder="Season Schedule"></div>
       </div>
       <div id="scheduleRows"></div>
-      <button type="button" class="btn" id="btnAddGame" style="margin-bottom:24px;">Add Game</button>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:24px;flex-wrap:wrap;">
+        <button type="button" class="btn" id="btnAddGame">Add Game</button>
+        <button type="button" class="btn" id="btnPullMaxPreps">Try Pull From MaxPreps</button>
+        <span id="maxPrepsPullStatus" style="font-size:12.5px;color:var(--dim);"></span>
+      </div>
 
       <div class="section-title">Writeups And News <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);">(Illumination only, type up what she sends you from a screenshot or link)</span></div>
       <div id="writeupRows"></div>
@@ -1030,6 +1034,22 @@
   document.getElementById('btnAddGame').addEventListener('click', function(){
     scheduleGames.push({ date: '', opp: '', loc: 'Home', time: '', note: '', tag: '', result: '' });
     renderScheduleRows();
+  });
+  document.getElementById('btnPullMaxPreps').addEventListener('click', function(){
+    var url = document.getElementById('f_maxpreps').value.trim();
+    var status = document.getElementById('maxPrepsPullStatus');
+    if(!url){ status.textContent = 'Add her MaxPreps link above first.'; return; }
+    status.textContent = 'Trying MaxPreps, this can take a few seconds and often finds nothing...';
+    api('/admin-maxpreps-schedule', { method: 'POST', body: JSON.stringify({ maxprepsUrl: url }) }).then(function(res){
+      var games = res.games || [];
+      if(games.length === 0){
+        status.textContent = 'Could not read a schedule from that page. Add her games by hand below.';
+        return;
+      }
+      scheduleGames = scheduleGames.concat(games);
+      renderScheduleRows();
+      status.textContent = 'Added ' + games.length + ' game' + (games.length === 1 ? '' : 's') + '. Check every row before saving, this is a best effort guess.';
+    }).catch(function(e){ status.textContent = 'Error: ' + e.message; });
   });
 
   function renderWriteupRows(){
