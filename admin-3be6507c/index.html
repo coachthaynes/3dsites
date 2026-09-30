@@ -224,7 +224,7 @@
     <div class="tool-card" style="margin-bottom:20px;">
       <span class="tool-status">Webhook Ready</span>
       <h4>Madi Visual Dashboard</h4>
-      <p>When a player's design is ready, have Madi's dashboard send a POST to the webhook below. It'll show up in the queue underneath for you to approve or dismiss, nothing goes live on its own.</p>
+      <p>When a player's design is ready, have Madi's dashboard send a POST to the webhook below. It'll show up in the queue underneath for you to approve or dismiss. Approving is what actually builds and publishes her Illumination site, nothing goes live before that.</p>
       <p style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim);background:var(--violet-deep);border-radius:8px;padding:10px 12px;margin-top:10px;word-break:break-all;">
         POST https://elevateherhoopsreport.com/.netlify/functions/madi-webhook<br>
         Header: X-Madi-Secret: &lt;MADI_WEBHOOK_SECRET&gt;<br>
@@ -465,6 +465,28 @@
       <div class="section-title">Accolades and Awards</div>
       <div class="form-grid full">
         <div class="form-field"><label>Accolades and Awards</label><textarea id="f_message" rows="3"></textarea></div>
+      </div>
+      <div class="section-title">Illumination Extras <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);">(Elite only, makes her auto-built site feel hand written)</span></div>
+      <div class="form-grid full">
+        <div class="form-field"><label>About Paragraph 1</label><textarea id="f_aboutParagraph1" rows="2"></textarea></div>
+        <div class="form-field"><label>About Paragraph 2</label><textarea id="f_aboutParagraph2" rows="2"></textarea></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-field"><label>Tag 1</label><input id="f_tag1" placeholder="e.g. Three And D"></div>
+        <div class="form-field"><label>Tag 2</label><input id="f_tag2"></div>
+        <div class="form-field"><label>Tag 3</label><input id="f_tag3"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-field"><label>Skill 1 Title</label><input id="f_skill1Title" placeholder="Identity"></div>
+        <div class="form-field"><label>Skill 1 Body</label><input id="f_skill1Body"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-field"><label>Skill 2 Title</label><input id="f_skill2Title" placeholder="Signature"></div>
+        <div class="form-field"><label>Skill 2 Body</label><input id="f_skill2Body"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-field"><label>Press Link URL <span style="font-weight:400;text-transform:none;letter-spacing:0;">(verified write up about her, not a guess)</span></label><input id="f_pressLinkUrl" placeholder="https://"></div>
+        <div class="form-field"><label>Press Link Label</label><input id="f_pressLinkLabel" placeholder="e.g. Prep Girls Hoops Feature"></div>
       </div>
       <div class="modal-actions">
         <button type="button" class="btn" id="btnCancelModal">Cancel</button>
@@ -738,8 +760,12 @@
       return;
     }
     container.innerHTML = elite.map(function(p){
+      var liveNote = p.illuminationApproved
+        ? '<p style="margin-top:6px;"><span class="tool-status" style="display:inline;">Live</span> <a href="/illumination/' + esc(p.slug) + '" target="_blank" rel="noopener">/illumination/' + esc(p.slug) + ' &#8599;</a></p>'
+        : '<p style="margin-top:6px;color:var(--dim);font-size:12.5px;">Not approved yet, approve her design above once Madi sends one.</p>';
       return '<div class="card">' +
         '<h3>' + esc(p.playerName || p.slug) + '</h3>' +
+        liveNote +
         '<div class="row-actions" style="margin-top:10px;">' +
           '<label class="btn" style="cursor:pointer;">Add Graphic Or Flyer' +
             '<input type="file" accept="image/*,application/pdf" data-graphic-slug="' + esc(p.slug) + '" style="display:none;">' +
@@ -847,8 +873,9 @@
         var action = btn.getAttribute('data-madi-action');
         if(action === 'approve' && !window.confirm('Approve this design? It will be marked ready to build into her live Illumination site.')) return;
         api('/admin-illumination-queue', { method:'POST', body: JSON.stringify({ slug: slug, action: action }) }).then(function(){
-          toast(action === 'approve' ? 'Approved' : 'Dismissed');
+          toast(action === 'approve' ? 'Approved, her Illumination site is live' : 'Dismissed');
           loadIlluminationQueue();
+          if(action === 'approve') loadPlayers();
         }).catch(function(e){ toast('Error: ' + e.message); });
       });
     });
@@ -943,7 +970,9 @@
     'statSeniorPPG','statSeniorRebounds','statSeniorSteals','statSeniorBlocks','statSeniorAssists','statSeniorTotalPoints',
     'maxpreps','hudl','fieldlevel','prepgirlshoops','instagram','twitter','youtube',
     'coachName','coachPhone','coachEmail',
-    'currentOffers','ncaaId','playerPhoto','message'];
+    'currentOffers','ncaaId','playerPhoto','message',
+    'aboutParagraph1','aboutParagraph2','tag1','tag2','tag3',
+    'skill1Title','skill1Body','skill2Title','skill2Body','pressLinkUrl','pressLinkLabel'];
 
   function slugify(name){
     return String(name || '').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');

@@ -65,6 +65,12 @@
   force = true
 
 [[redirects]]
+  from = "/illumination/*"
+  to = "/.netlify/functions/illumination?slug=:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/players/*"
   to = "/.netlify/functions/player?slug=:splat"
   status = 200
