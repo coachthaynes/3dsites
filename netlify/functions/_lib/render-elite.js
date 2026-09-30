@@ -54,7 +54,7 @@ function linkPill(url, label) {
   return `<a class="link-pill" href="${esc(url)}" target="_blank" rel="noopener">${esc(label)} &nbsp; &#8599;</a>`;
 }
 
-function renderIlluminationSite(player, feed) {
+function renderEliteSite(player, feed) {
   const colors = getSchoolColors(player.highSchool);
   const name = player.playerName || "";
   const fn = firstName(name);
@@ -66,7 +66,7 @@ function renderIlluminationSite(player, feed) {
   // Full site count, not the hero carousel, so up to 4 videos still play once
   // you scroll to Highlight Film even though the hero only loops one clip.
   const filmClips = ((feed && feed.film) || []).slice(0, 4);
-  // Madi's vault: both NIL and editorial photos show here, capped at 15.
+  // Her own uploaded photos, self serve, capped at 15.
   const vault = ((feed && feed.photos) || []).slice(0, 15);
   const kit = (feed && feed.kit) || [];
 
@@ -379,4 +379,4 @@ ${vault.length ? `<section id="photos">
 `;
 }
 
-module.exports = { renderIlluminationSite };
+module.exports = { renderEliteSite };

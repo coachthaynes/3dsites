@@ -1,5 +1,5 @@
 const { getPlayer } = require("./_lib/blobs");
-const { renderIlluminationSite } = require("./_lib/render-illumination");
+const { renderEliteSite } = require("./_lib/render-elite");
 
 function toUrlList(value) {
   if (!value) return [];
@@ -45,7 +45,7 @@ exports.handler = async (event) => {
     film: videos.map((url) => ({ url, type: guessVideoType(url) })),
   };
 
-  const html = renderIlluminationSite(player, feed);
+  const html = renderEliteSite(player, feed);
 
   return {
     statusCode: 200,
