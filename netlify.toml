@@ -5,14 +5,26 @@
   directory = "netlify/functions"
 
 [[redirects]]
+  from = "https://aiyanahaynes.elevateherhoopsreport.com/media/*"
+  to = "/aiyana-haynes/media/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "https://aiyanahaynes.elevateherhoopsreport.com/*"
-  to = "/aiyana-haynes.html"
+  to = "/aiyana-haynes/index.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://kennedyjeffress.elevateherhoopsreport.com/media/*"
+  to = "/kennedy-jeffress/media/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "https://kennedyjeffress.elevateherhoopsreport.com/*"
-  to = "/kennedy-jeffress.html"
+  to = "/kennedy-jeffress/index.html"
   status = 200
   force = true
 
