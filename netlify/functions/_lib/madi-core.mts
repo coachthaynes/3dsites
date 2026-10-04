@@ -41,8 +41,8 @@ export interface Asset {
 const SITE_ID = process.env.BLOBS_SITE_ID || process.env.SITE_ID;
 const TOKEN = process.env.BLOBS_TOKEN;
 function store(name: string) {
-  if (SITE_ID && TOKEN) return getStore({ name, siteID: SITE_ID, token: TOKEN });
-  return getStore(name);
+  if (SITE_ID && TOKEN) return getStore({ name, siteID: SITE_ID, token: TOKEN, consistency: "strong" });
+  return getStore({ name, consistency: "strong" });
 }
 export const catalog = () => store("madi-catalog");
 export const media = () => store("madi-media");

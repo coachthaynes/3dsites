@@ -10,10 +10,12 @@ function makeStore(name) {
   // automatically for functions built through its own build pipeline.
   // This site's deploys don't go through that path, so it never shows
   // up; fall back to explicit manual configuration when available.
+  // consistency: "strong" avoids reads (list/get right after a save)
+  // missing a write that only just happened.
   if (SITE_ID && TOKEN) {
-    return getStore({ name, siteID: SITE_ID, token: TOKEN });
+    return getStore({ name, siteID: SITE_ID, token: TOKEN, consistency: "strong" });
   }
-  return getStore(name);
+  return getStore({ name, consistency: "strong" });
 }
 
 function playersStore() {
