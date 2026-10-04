@@ -153,7 +153,7 @@ function buildSiteConfig(player) {
       program: school ? `${school} Basketball` : "Her Program",
     },
     theme: { accent: colors.accent, accent2: lighten(colors.accent, 0.35), glow: toRgba(colors.accent, 0.4) },
-    media: { dashboard: "https://madivisuals.netlify.app", slug: player.slug },
+    media: { dashboard: "https://elevateherhoopsreport.com", slug: player.slug },
     bio: player.aboutParagraph1 || `${first} plays ${player.position || "basketball"} for ${school}, class of ${gradYear}.`,
     stats: latestStats,
     testingNote: "Testing numbers post here as soon as they are recorded.",

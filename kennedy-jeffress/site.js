@@ -20,7 +20,7 @@ window.SITE = {
   theme: { accent: "#e31b23", accent2: "#ff5a61", glow: "rgba(227, 27, 35, 0.4)" },
 
   media: {
-    dashboard: "https://madivisuals.netlify.app",
+    dashboard: "https://elevateherhoopsreport.com",
     slug: "kennedy-jeffress"
   },
 

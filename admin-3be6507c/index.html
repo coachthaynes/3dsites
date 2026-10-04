@@ -221,15 +221,10 @@
       <p>Graphics and flyers for each Elite player, ready to hand off to a scheduler once that's connected. Uploads here don't post anywhere on their own yet.</p>
     </div>
     <div class="tool-card" style="margin-bottom:20px;">
-      <span class="tool-status">Webhook Ready</span>
-      <h4>Madi Visual Dashboard</h4>
-      <p>When a player's design is ready, have Madi's dashboard send a POST to the webhook below. It'll show up in the queue underneath for you to approve or dismiss. Approving is what actually builds and publishes her Illumination site, nothing goes live before that.</p>
-      <p style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim);background:var(--violet-deep);border-radius:8px;padding:10px 12px;margin-top:10px;word-break:break-all;">
-        POST https://elevateherhoopsreport.com/.netlify/functions/madi-webhook<br>
-        Header: X-Madi-Secret: &lt;MADI_WEBHOOK_SECRET&gt;<br>
-        Body: { "slug": "player-slug", "playerName": "Full Name", "previewUrl": "https://madivisuals.netlify.app/..." }
-      </p>
-      <a class="btn" href="https://madivisuals.netlify.app/" target="_blank" rel="noopener" style="margin-top:12px;">Open Madi Dashboard</a>
+      <span class="tool-status">Built In</span>
+      <h4>Madi Visuals Dashboard</h4>
+      <p>Madi's media dashboard now lives on this same site at the link below. She signs in with the dashboard password, uploads photos and video for each player, and marks what's live. Player Illumination sites pull directly from it. When a design is ready for you to review, it drops into the queue underneath to approve or dismiss. Approving is what actually builds and publishes her Illumination site, nothing goes live before that.</p>
+      <a class="btn" href="/madi-dashboard/" target="_blank" rel="noopener" style="margin-top:12px;">Open Madi Dashboard</a>
     </div>
     <div class="card" id="illuminationQueueCard" style="display:none;">
       <h3>Pending From Madi</h3>
