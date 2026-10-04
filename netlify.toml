@@ -3,10 +3,6 @@
 
 [functions]
   directory = "netlify/functions"
-  # Default is 10s; this asks for the higher ceiling Pro plans can use, as
-  # extra headroom for the Madi dashboard's chunked uploads on a slow
-  # connection. Has no effect unless Netlify has that raised on this project.
-  timeout = 26
 
 [[redirects]]
   from = "https://aiyanahaynes.elevateherhoopsreport.com/media/*"
