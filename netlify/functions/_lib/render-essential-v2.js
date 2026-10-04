@@ -36,6 +36,21 @@ function filmLink(label, url) {
   return `<a class="film-link" href="${esc(href)}" target="_blank" rel="noopener"><span class="dot"></span>${esc(label)} &#8599;</a>`;
 }
 
+function youtubeEmbedUrl(url) {
+  if (!url) return null;
+  const patterns = [
+    /youtu\.be\/([a-zA-Z0-9_-]{6,})/,
+    /youtube\.com\/watch\?[^#]*v=([a-zA-Z0-9_-]{6,})/,
+    /youtube\.com\/embed\/([a-zA-Z0-9_-]{6,})/,
+    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{6,})/,
+  ];
+  for (const re of patterns) {
+    const m = String(url).match(re);
+    if (m) return `https://www.youtube.com/embed/${m[1]}`;
+  }
+  return null;
+}
+
 const CSS = `
   :root{
     --violet:#1E1035;
@@ -137,6 +152,9 @@ const CSS = `
   }
   .film-link:hover{border-color:var(--teal);color:var(--teal);transform:translateY(-3px);}
   .film-link .dot{width:8px;height:8px;border-radius:50%;background:var(--magenta);flex-shrink:0;}
+
+  .video-embed{position:relative;width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:var(--panel);}
+  .video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
 
   .card{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:26px;}
   .request-form{margin-top:16px;display:flex;flex-direction:column;gap:12px;}
@@ -252,6 +270,21 @@ function renderEssentialPlayerV2(p, articles) {
     filmLink("X, Twitter", p.twitter),
     filmLink("YouTube", p.youtube),
   ].filter(Boolean).join("\n");
+
+  const videoEmbedUrl = youtubeEmbedUrl(p.youtube);
+  const videoSection = videoEmbedUrl
+    ? `<section id="highlight-video">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Highlight Reel</div>
+      <div class="display">Watch ${esc(name.split(" ")[0] || name)} In Action</div>
+    </div>
+    <div class="video-embed">
+      <iframe src="${esc(videoEmbedUrl)}" title="${esc(name)} highlight video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </div>
+</section>`
+    : "";
 
   const heroCta = p.maxpreps
     ? `<a class="btn primary" href="${esc(p.maxpreps)}" target="_blank" rel="noopener">View On MaxPreps</a>`
@@ -463,6 +496,8 @@ ${(articles || []).length ? `<section id="news">
     </div>
   </div>
 </section>
+
+${videoSection}
 
 <footer id="links">
   <div class="wrap">
