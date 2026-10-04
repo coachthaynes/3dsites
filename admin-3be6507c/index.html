@@ -384,16 +384,10 @@
       <div class="section-title">Season Stats</div>
       <div class="section-sub">Leave any year blank if she hasn't played it yet.</div>
       <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
-        <label for="maxPrepsStatsSeason" style="font-size:12.5px;color:var(--dim);">Pull into</label>
-        <select id="maxPrepsStatsSeason">
-          <option value="Freshman">Freshman</option>
-          <option value="Sophomore">Sophomore</option>
-          <option value="Junior">Junior</option>
-          <option value="Senior" selected>Senior</option>
-        </select>
-        <button type="button" class="btn" id="btnPullMaxPrepsStats">Try Pull From MaxPreps</button>
+        <button type="button" class="btn" id="btnPullMaxPrepsStats">Try Pull Every Season From MaxPreps</button>
         <span id="maxPrepsStatsStatus" style="font-size:12.5px;color:var(--dim);"></span>
       </div>
+      <div id="maxPrepsStatsFound"></div>
       <div class="stat-table-wrap">
         <table class="stat-table">
           <thead><tr><th>Season</th><th>PPG</th><th>Rebounds</th><th>Steals</th><th>Blocks</th><th>Assists</th><th>Total Points</th></tr></thead>
@@ -1068,37 +1062,79 @@
     }).catch(function(e){ status.textContent = 'Error: ' + e.message; });
   });
 
+  var MAXPREPS_KNOWN_STATS = { ppg: 'PPG', rebounds: 'Rebounds', assists: 'Assists', steals: 'Steals', blocks: 'Blocks', totalPoints: 'TotalPoints' };
+  var MAXPREPS_SEASON_ROWS = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
+
+  function guessMaxPrepsSeasonRow(label){
+    if(!label) return '';
+    var l = String(label).toLowerCase();
+    if(/fresh|^fr\.?$/.test(l)) return 'Freshman';
+    if(/soph|^so\.?$/.test(l)) return 'Sophomore';
+    if(/junior|^jr\.?$/.test(l)) return 'Junior';
+    if(/senior|^sr\.?$/.test(l)) return 'Senior';
+    return '';
+  }
+
+  function applyMaxPrepsSeason(season, stats){
+    var filled = [];
+    Object.keys(MAXPREPS_KNOWN_STATS).forEach(function(key){
+      if(stats[key] === undefined || stats[key] === null || stats[key] === '') return;
+      var el = document.getElementById('f_stat' + season + MAXPREPS_KNOWN_STATS[key]);
+      if(el){ el.value = stats[key]; filled.push(MAXPREPS_KNOWN_STATS[key]); }
+    });
+    return filled;
+  }
+
+  function renderMaxPrepsStatsFound(seasons){
+    var box = document.getElementById('maxPrepsStatsFound');
+    if(seasons.length === 0){ box.innerHTML = ''; return; }
+    box.innerHTML = '<div class="card" style="margin-bottom:16px;">' +
+      '<p style="font-size:12.5px;color:var(--dim);margin:0 0 10px;">Found ' + seasons.length + ' season' + (seasons.length === 1 ? '' : 's') + ' on MaxPreps. Pick which row each one is and apply it, or apply all at once. Always double check the numbers after.</p>' +
+      seasons.map(function(s, i){
+        var known = Object.keys(MAXPREPS_KNOWN_STATS).filter(function(k){ return s[k] !== undefined && s[k] !== null && s[k] !== ''; });
+        var leftover = Object.keys(s).filter(function(k){ return k !== 'source' && k !== 'label' && !MAXPREPS_KNOWN_STATS[k]; });
+        var summary = known.map(function(k){ return s[k] + ' ' + MAXPREPS_KNOWN_STATS[k]; }).join(' &middot; ') || 'No recognizable numbers';
+        var leftoverNote = leftover.length ? '<br><span style="font-size:11.5px;color:var(--amber);">Also found: ' + leftover.map(function(k){ return k + ' = ' + s[k]; }).join(', ') + '</span>' : '';
+        var guess = guessMaxPrepsSeasonRow(s.label);
+        return '<div class="row-actions" style="justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:10px 0;">' +
+          '<div><strong>' + esc(s.label || ('Season ' + (i + 1))) + '</strong>: ' + summary + leftoverNote + '</div>' +
+          '<div class="row-actions">' +
+            '<select data-maxpreps-season-pick="' + i + '">' +
+              '<option value="">Pick a row&hellip;</option>' +
+              MAXPREPS_SEASON_ROWS.map(function(r){ return '<option value="' + r + '"' + (r === guess ? ' selected' : '') + '>' + r + '</option>'; }).join('') +
+            '</select>' +
+            '<button type="button" class="btn small" data-maxpreps-apply="' + i + '">Apply</button>' +
+          '</div>' +
+        '</div>';
+      }).join('') +
+    '</div>';
+
+    box.querySelectorAll('[data-maxpreps-apply]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var i = Number(btn.getAttribute('data-maxpreps-apply'));
+        var select = box.querySelector('[data-maxpreps-season-pick="' + i + '"]');
+        var season = select.value;
+        if(!season){ toast('Pick which row this season goes in first.'); return; }
+        var filled = applyMaxPrepsSeason(season, seasons[i]);
+        toast(filled.length ? 'Filled ' + season + ' ' + filled.join(', ') + '.' : 'Nothing recognizable to fill for that season.');
+      });
+    });
+  }
+
   document.getElementById('btnPullMaxPrepsStats').addEventListener('click', function(){
     var url = document.getElementById('f_maxpreps').value.trim();
-    var season = document.getElementById('maxPrepsStatsSeason').value;
     var status = document.getElementById('maxPrepsStatsStatus');
     if(!url){ status.textContent = 'Add her MaxPreps link above first.'; return; }
     status.textContent = 'Trying MaxPreps, this can take a few seconds and often finds nothing...';
+    document.getElementById('maxPrepsStatsFound').innerHTML = '';
     api('/admin-maxpreps-stats', { method: 'POST', body: JSON.stringify({ maxprepsUrl: url }) }).then(function(res){
-      var stats = res.stats;
-      if(!stats){
-        status.textContent = 'Could not read stats from that page. Enter her numbers by hand below.';
+      var seasons = res.seasons || [];
+      if(seasons.length === 0){
+        status.textContent = 'Could not read any seasons from that page. Enter her numbers by hand below.';
         return;
       }
-      var known = { ppg: 'PPG', rebounds: 'Rebounds', assists: 'Assists' };
-      var filled = [];
-      Object.keys(known).forEach(function(key){
-        if(stats[key] === undefined || stats[key] === null || stats[key] === '') return;
-        var el = document.getElementById('f_stat' + season + known[key]);
-        if(el){ el.value = stats[key]; filled.push(known[key]); }
-      });
-      var leftover = Object.keys(stats).filter(function(k){ return k !== 'source' && !known[k]; });
-      if(filled.length === 0 && leftover.length === 0){
-        status.textContent = 'Could not read stats from that page. Enter her numbers by hand below.';
-        return;
-      }
-      var msg = filled.length
-        ? 'Filled ' + season + ' ' + filled.join(', ') + ' from MaxPreps. Double check before saving.'
-        : 'Found data on MaxPreps but not in a format recognized here.';
-      if(leftover.length){
-        msg += ' Also found: ' + leftover.map(function(k){ return k + ' = ' + stats[k]; }).join(', ') + ' (enter by hand if it looks right).';
-      }
-      status.textContent = msg;
+      status.textContent = 'Found ' + seasons.length + ' season' + (seasons.length === 1 ? '' : 's') + ' below. This is a best effort guess, check it against the real page.';
+      renderMaxPrepsStatsFound(seasons);
     }).catch(function(e){ status.textContent = 'Error: ' + e.message; });
   });
 

@@ -1,5 +1,5 @@
 const { checkAdminSecret } = require("./_lib/auth");
-const { fetchMaxPrepsStats } = require("./_lib/maxpreps-scrape");
+const { fetchMaxPrepsCareerStats } = require("./_lib/maxpreps-scrape");
 
 exports.handler = async (event) => {
   const cors = {
@@ -27,6 +27,6 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "maxprepsUrl is required" }) };
   }
 
-  const stats = await fetchMaxPrepsStats(data.maxprepsUrl);
-  return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ stats }) };
+  const seasons = await fetchMaxPrepsCareerStats(data.maxprepsUrl);
+  return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ seasons }) };
 };
