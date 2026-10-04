@@ -8,6 +8,33 @@
 
 const cheerio = require("cheerio");
 
+// Many players on this site play more than one sport, and MaxPreps profiles
+// can bundle several sports together. These help both scrape strategies stay
+// on her basketball numbers and skip past another sport's stat block.
+const BASKETBALL_PATTERN = /basketball|bball/i;
+const OTHER_SPORT_PATTERN = /\b(volleyball|soccer|track|cross.?country|softball|baseball|football|golf|tennis|swim(?:ming)?|wrestling|lacrosse|field hockey|gymnastics|cheer(?:leading)?)\b/i;
+const SPORT_KEY = /^sport$|^sportname$|^sportslug$|^sporttype$/i;
+
+function objectSportTag(obj) {
+  for (const k of Object.keys(obj)) {
+    if (SPORT_KEY.test(k) && typeof obj[k] === "string") return obj[k];
+  }
+  return null;
+}
+
+function isOtherSportTag(tag) {
+  return Boolean(tag) && OTHER_SPORT_PATTERN.test(tag) && !BASKETBALL_PATTERN.test(tag);
+}
+
+// cheerio's plain .text() runs adjacent block elements together with no
+// space ("...APGVolleyball..."), which can quietly merge two words into one
+// and break \b word boundary matching across element edges. Spacing out
+// block-level elements first keeps every word intact.
+function extractSpacedText($) {
+  $("div, p, li, tr, td, th, br, h1, h2, h3, h4, h5, h6").after(" ");
+  return $("body").text().replace(/\s+/g, " ").trim();
+}
+
 async function fetchMaxPrepsStats(maxprepsUrl) {
   if (!maxprepsUrl) return null;
 
@@ -47,7 +74,7 @@ async function fetchMaxPrepsStats(maxprepsUrl) {
     // Strategy 2: fall back to scanning visible text for "12.4 PPG"-style
     // patterns. Low confidence, but better than nothing when a page happens
     // to be server-rendered.
-    const bodyText = $("body").text().replace(/\s+/g, " ");
+    const bodyText = extractSpacedText($);
     const ppgMatch = bodyText.match(/([\d.]+)\s*PPG/i);
     const rebMatch = bodyText.match(/([\d.]+)\s*(?:RPG|Rebounds)/i);
     const astMatch = bodyText.match(/([\d.]+)\s*(?:APG|Assists)/i);
@@ -111,13 +138,26 @@ async function fetchMaxPrepsCareerStats(maxprepsUrl) {
     // closest grade or year word it finds. Keeping each search one-directional
     // like this is what stops two seasons sitting close together in the text
     // from bleeding into each other's numbers.
-    const bodyText = $("body").text().replace(/\s+/g, " ");
+    const bodyText = extractSpacedText($);
     const ppgMatches = [...bodyText.matchAll(/([\d.]+)\s*PPG/gi)].slice(0, 10);
     ppgMatches.forEach((match, i) => {
       const prev = ppgMatches[i - 1];
       const next = ppgMatches[i + 1];
       const backward = prev ? prev.index + prev[0].length : Math.max(0, match.index - 60);
       const forward = next ? next.index : Math.min(bodyText.length, match.index + 120);
+
+      // Whichever sport name sits closest before this stat line, basketball or
+      // something else, is the sport it belongs to. A wider window than the
+      // label search above since a sport name is more likely to be a distant
+      // section heading than something sitting right next to the number.
+      const sportScanStart = prev ? prev.index + prev[0].length : Math.max(0, match.index - 400);
+      const sportWindow = bodyText.slice(sportScanStart, match.index);
+      const lastBasketballIdx = [...sportWindow.matchAll(new RegExp(BASKETBALL_PATTERN.source, "gi"))].map((m) => m.index).pop();
+      const lastOtherSportIdx = [...sportWindow.matchAll(new RegExp(OTHER_SPORT_PATTERN.source, "gi"))].map((m) => m.index).pop();
+      if (lastOtherSportIdx !== undefined && (lastBasketballIdx === undefined || lastOtherSportIdx > lastBasketballIdx)) {
+        return; // the closest sport mention before this stat line is not basketball, skip it
+      }
+
       const statsWindow = bodyText.slice(match.index, forward);
       const rebMatch = statsWindow.match(/([\d.]+)\s*(?:RPG|Rebounds)/i);
       const astMatch = statsWindow.match(/([\d.]+)\s*(?:APG|Assists)/i);
@@ -169,6 +209,7 @@ function findCareerStatsInObject(obj, depth) {
   for (const k of Object.keys(obj)) {
     const child = obj[k];
     if (child && typeof child === "object") {
+      if (isOtherSportTag(objectSportTag(child))) continue; // a different sport's block, skip it
       const found = findCareerStatsInObject(child, (depth || 0) + 1);
       if (found) return found;
     }
@@ -272,7 +313,7 @@ function findStatsInObject(obj, depth) {
   if (!obj || typeof obj !== "object" || depth > 6) return null;
   const keys = Object.keys(obj);
   const statKeyPattern = /ppg|points.?per.?game|rebounds|assists|steals|blocks/i;
-  if (keys.some((k) => statKeyPattern.test(k))) {
+  if (!isOtherSportTag(objectSportTag(obj)) && keys.some((k) => statKeyPattern.test(k))) {
     const out = {};
     for (const k of keys) {
       if (statKeyPattern.test(k) && (typeof obj[k] === "number" || typeof obj[k] === "string")) {
@@ -284,6 +325,7 @@ function findStatsInObject(obj, depth) {
   for (const k of keys) {
     const child = obj[k];
     if (child && typeof child === "object") {
+      if (isOtherSportTag(objectSportTag(child))) continue; // a different sport's block, skip it
       const found = findStatsInObject(child, (depth || 0) + 1);
       if (found) return found;
     }

@@ -1125,15 +1125,16 @@
     var url = document.getElementById('f_maxpreps').value.trim();
     var status = document.getElementById('maxPrepsStatsStatus');
     if(!url){ status.textContent = 'Add her MaxPreps link above first.'; return; }
+    var urlWarning = /basketball/i.test(url) ? '' : ' Heads up: that link does not say "basketball" in it, double check it is her basketball page and not a general profile or a different sport before trusting these numbers.';
     status.textContent = 'Trying MaxPreps, this can take a few seconds and often finds nothing...';
     document.getElementById('maxPrepsStatsFound').innerHTML = '';
     api('/admin-maxpreps-stats', { method: 'POST', body: JSON.stringify({ maxprepsUrl: url }) }).then(function(res){
       var seasons = res.seasons || [];
       if(seasons.length === 0){
-        status.textContent = 'Could not read any seasons from that page. Enter her numbers by hand below.';
+        status.textContent = 'Could not read any seasons from that page. Enter her numbers by hand below.' + urlWarning;
         return;
       }
-      status.textContent = 'Found ' + seasons.length + ' season' + (seasons.length === 1 ? '' : 's') + ' below. This is a best effort guess, check it against the real page.';
+      status.textContent = 'Found ' + seasons.length + ' season' + (seasons.length === 1 ? '' : 's') + ' below. This is a best effort guess, check it against the real page.' + urlWarning;
       renderMaxPrepsStatsFound(seasons);
     }).catch(function(e){ status.textContent = 'Error: ' + e.message; });
   });
