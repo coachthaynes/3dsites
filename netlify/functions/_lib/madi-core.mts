@@ -4,7 +4,13 @@
 import { getStore } from "@netlify/blobs";
 import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
 
-export const CHUNK_SIZE = 4 * 1024 * 1024; // stays under the 6 MB function payload limit
+// Netlify functions cap a request at 6 MB, and binary bodies are base64
+// encoded in transit (about 30% bigger), so the real ceiling for raw bytes
+// is closer to 4.5 MB. On a slow upload connection a 4 MB chunk can also
+// miss the function's execution time limit before it finishes arriving.
+// 1 MB keeps every chunk comfortably clear of both ceilings; longer videos
+// just mean more chunks, not bigger, riskier ones.
+export const CHUNK_SIZE = 1 * 1024 * 1024;
 export const MAX_FILE = 1536 * 1024 * 1024; // 1.5 GB
 export const ROLES = ["hero", "film", "poster", "portrait", "nil", "editorial", "kit"] as const;
 export type Role = (typeof ROLES)[number];
