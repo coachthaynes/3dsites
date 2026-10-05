@@ -1677,53 +1677,23 @@
     var tile = document.createElement('div');
     tile.className = 'card-tile';
     var published = publishedCards[p.slug];
-    var currentPortraitUrl = null; // the photo currently drawn: Madi's, her header photo, or a cutout data URL
+    var currentPortraitUrl = null; // the photo currently drawn: Madi's portrait or her header photo
     tile.innerHTML = '<canvas></canvas>' +
       '<h4>' + esc(p.playerName || p.slug) + '</h4>' +
       '<span class="card-status">' + (published ? 'Published ' + new Date(published).toLocaleDateString() : 'Not published yet') + '</span>' +
       '<div class="card-actions">' +
         '<button class="btn small" data-act="download">Download PNG</button>' +
         '<button class="btn small" data-act="publish">' + (published ? 'Re-publish' : 'Publish') + '</button>' +
-        '<button class="btn small" data-act="cutout" disabled>Remove Background</button>' +
       '</div>';
     var canvas = tile.querySelector('canvas');
-    var cutoutBtn = tile.querySelector('[data-act="cutout"]');
     fetchPortraitUrl(p.slug).then(function(portraitUrl){
       // Falls back to the single header photo uploaded on her own player
       // record (used by Essential/Elite players, who aren't in Madi at all).
       currentPortraitUrl = portraitUrl || p.playerPhoto || null;
-      cutoutBtn.disabled = !currentPortraitUrl;
       return drawTradingCard(canvas, p, currentPortraitUrl);
     }).catch(function(){ /* leaves whatever drew before the failure, still usable */ });
     tile.querySelector('[data-act="download"]').addEventListener('click', function(){
       downloadCanvas(canvas, p.slug + '-trading-card.png');
-    });
-    cutoutBtn.addEventListener('click', function(){
-      if (!currentPortraitUrl) return;
-      cutoutBtn.disabled = true;
-      cutoutBtn.textContent = 'Removing background...';
-      loadCardImage(currentPortraitUrl).then(function(img){
-        if (!img) throw new Error("Could not load her photo to process it.");
-        var off = document.createElement('canvas');
-        off.width = img.naturalWidth || img.width;
-        off.height = img.naturalHeight || img.height;
-        off.getContext('2d').drawImage(img, 0, 0);
-        return api('/admin-remove-photo-background', {
-          method: 'POST',
-          body: JSON.stringify({ slug: p.slug, contentType: 'image/png', dataBase64: off.toDataURL('image/png').split(',')[1] })
-        });
-      }).then(function(res){
-        currentPortraitUrl = 'data:' + res.contentType + ';base64,' + res.dataBase64;
-        return drawTradingCard(canvas, p, currentPortraitUrl);
-      }).then(function(){
-        cutoutBtn.textContent = 'Background Removed';
-        toast('Background removed for ' + (p.playerName || p.slug) + '. Download or publish to keep it.');
-      }).catch(function(e){
-        cutoutBtn.textContent = 'Remove Background';
-        toast('Error: ' + e.message);
-      }).then(function(){
-        cutoutBtn.disabled = false;
-      });
     });
     tile.querySelector('[data-act="publish"]').addEventListener('click', function(){
       var btn = tile.querySelector('[data-act="publish"]');
