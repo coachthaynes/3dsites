@@ -1445,6 +1445,15 @@
     return (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase();
   }
 
+  // Same rule as the View button on the Players tab, so the card points at
+  // exactly the page that button opens for her.
+  function playerSiteUrl(p){
+    if (p.liveUrl) return p.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    if (p.tier === 'elite') return 'elevateherhoopsreport.com/elite/' + p.slug;
+    if (p.tier === 'illumination') return p.slug + '.elevateherhoopsreport.com';
+    return 'elevateherhoopsreport.com/players/' + p.slug;
+  }
+
   // Same "most advanced season with any stats on file" rule used on her
   // Illumination page, so the card shows the same numbers she does.
   function pickCardStats(p){
@@ -1589,10 +1598,16 @@
       ctx.fillText(c.v || '-', x, statsY + 56);
     });
 
+    var footerText = playerSiteUrl(player).toUpperCase();
+    var footerSize = 22;
+    ctx.font = "600 " + footerSize + "px 'Barlow Condensed', sans-serif";
+    while (ctx.measureText(footerText).width > CARD_W - pad * 2 - 80 && footerSize > 13) {
+      footerSize -= 1;
+      ctx.font = "600 " + footerSize + "px 'Barlow Condensed', sans-serif";
+    }
     ctx.fillStyle = LABEL_COLOR;
-    ctx.font = "600 22px 'Barlow Condensed', sans-serif";
     ctx.textAlign = 'center';
-    ctx.fillText('ELEVATEHERHOOPSREPORT.COM', cx, CARD_H - pad - 50);
+    ctx.fillText(footerText, cx, CARD_H - pad - 50);
   }
 
   function canvasToBase64(canvas){
