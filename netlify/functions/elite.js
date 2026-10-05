@@ -1,6 +1,12 @@
 const { getPlayer } = require("./_lib/blobs");
 const { renderEliteSite } = require("./_lib/render-elite");
 
+function slugFromPath(path) {
+  // /elite/kennedy-jeffress -> kennedy-jeffress
+  const segments = (path || "").split("/").filter(Boolean);
+  return segments[segments.length - 1] || "";
+}
+
 function toUrlList(value) {
   if (!value) return [];
   const arr = Array.isArray(value) ? value : [value];
@@ -17,7 +23,11 @@ function guessVideoType(url) {
 }
 
 exports.handler = async (event) => {
-  const slug = event.queryStringParameters && event.queryStringParameters.slug;
+  // The ?slug=:splat redirect target doesn't always carry the slug through
+  // reliably, same as player.js and photo.js already work around; fall back
+  // to reading it out of the original request path when that happens.
+  const qsSlug = event.queryStringParameters && event.queryStringParameters.slug;
+  const slug = qsSlug && qsSlug !== ":splat" ? qsSlug : slugFromPath(event.path);
   if (!slug) {
     return { statusCode: 400, headers: { "Content-Type": "text/plain" }, body: "Missing slug" };
   }
