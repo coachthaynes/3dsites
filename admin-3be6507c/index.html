@@ -469,6 +469,14 @@
         <div class="form-field"><label>Accolades and Awards</label><textarea id="f_message" rows="3"></textarea></div>
       </div>
       <div class="section-title">Illumination Extras <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);">(Elite only, makes her auto-built site feel hand written)</span></div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+        <button type="button" class="btn" id="btnAutoFillProfile">Auto-Fill Bio, Tags &amp; Skills</button>
+        <label style="font-size:12.5px;color:var(--dim);display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" id="f_autoFillWebSearch" checked> Also search the web for real coverage of her
+        </label>
+        <span id="autoFillProfileStatus" style="font-size:12.5px;color:var(--dim);"></span>
+      </div>
+      <div id="autoFillProfileFound"></div>
       <div class="form-grid full">
         <div class="form-field"><label>About Paragraph 1</label><textarea id="f_aboutParagraph1" rows="2"></textarea></div>
         <div class="form-field"><label>About Paragraph 2</label><textarea id="f_aboutParagraph2" rows="2"></textarea></div>
@@ -1140,6 +1148,63 @@
     }).catch(function(e){ status.textContent = 'Error: ' + e.message; });
   });
 
+  function collectPlayerFormData(){
+    var data = {};
+    fields.forEach(function(f){
+      var el = document.getElementById('f_' + f);
+      if(el) data[f] = el.value;
+    });
+    data.scheduleGames = scheduleGames.filter(function(g){ return g.date && g.opp; });
+    data.writeups = writeups.filter(function(w){ return w.title; });
+    return data;
+  }
+
+  function applyProfileContent(content){
+    var keys = ['aboutParagraph1','aboutParagraph2','tag1','tag2','tag3','skill1Title','skill1Body','skill2Title','skill2Body'];
+    var filled = [];
+    keys.forEach(function(k){
+      var el = document.getElementById('f_' + k);
+      if(el && content[k]){ el.value = content[k]; filled.push(k); }
+    });
+    return filled;
+  }
+
+  function renderAutoFillProfileFound(content){
+    var box = document.getElementById('autoFillProfileFound');
+    var sources = content.sources || [];
+    var sourcesHtml = sources.length
+      ? '<p style="font-size:11.5px;color:var(--dim);margin:6px 0 0;">Sources checked: ' +
+          sources.map(function(s){ return '<a href="' + esc(s.uri) + '" target="_blank" rel="noopener">' + esc(s.title) + '</a>'; }).join(', ') +
+        '</p>'
+      : '';
+    box.innerHTML = '<div class="card" style="margin-bottom:16px;">' +
+      '<p style="font-size:12.5px;color:var(--dim);margin:0 0 10px;">Already filled into the fields below. Read every word, this is a draft, not a fact checked article. Edit anything before saving.</p>' +
+      '<p><strong>Paragraph 1:</strong> ' + esc(content.aboutParagraph1 || '') + '</p>' +
+      '<p><strong>Paragraph 2:</strong> ' + esc(content.aboutParagraph2 || '') + '</p>' +
+      '<p><strong>Tags:</strong> ' + [content.tag1, content.tag2, content.tag3].filter(Boolean).map(esc).join(', ') + '</p>' +
+      '<p><strong>' + esc(content.skill1Title || 'Skill 1') + ':</strong> ' + esc(content.skill1Body || '') + '</p>' +
+      '<p><strong>' + esc(content.skill2Title || 'Skill 2') + ':</strong> ' + esc(content.skill2Body || '') + '</p>' +
+      sourcesHtml +
+    '</div>';
+  }
+
+  document.getElementById('btnAutoFillProfile').addEventListener('click', function(){
+    var status = document.getElementById('autoFillProfileStatus');
+    var data = collectPlayerFormData();
+    if(!data.playerName){ status.textContent = 'Enter her name first.'; return; }
+    var useWebSearch = document.getElementById('f_autoFillWebSearch').checked;
+    status.textContent = 'Writing her bio, tags, and skills, this can take several seconds...';
+    document.getElementById('autoFillProfileFound').innerHTML = '';
+    api('/admin-generate-profile-content', { method: 'POST', body: JSON.stringify({ player: data, useMaxPreps: true, useWebSearch: useWebSearch }) }).then(function(res){
+      var content = res.content || {};
+      var filled = applyProfileContent(content);
+      renderAutoFillProfileFound(content);
+      status.textContent = filled.length
+        ? 'Filled ' + filled.length + ' field' + (filled.length === 1 ? '' : 's') + ' below. Review every word before saving.'
+        : 'Did not get anything usable back, try again.';
+    }).catch(function(e){ status.textContent = 'Error: ' + e.message; });
+  });
+
   function renderWriteupRows(){
     var container = document.getElementById('writeupRows');
     if(writeups.length === 0){
@@ -1290,13 +1355,7 @@
 
   document.getElementById('playerForm').addEventListener('submit', function(e){
     e.preventDefault();
-    var data = {};
-    fields.forEach(function(f){
-      var el = document.getElementById('f_' + f);
-      if(el) data[f] = el.value;
-    });
-    data.scheduleGames = scheduleGames.filter(function(g){ return g.date && g.opp; });
-    data.writeups = writeups.filter(function(w){ return w.title; });
+    var data = collectPlayerFormData();
     api('/admin-players', { method:'POST', body: JSON.stringify(data) }).then(function(){
       toast('Saved. Her page is live now.');
       closeModal();
