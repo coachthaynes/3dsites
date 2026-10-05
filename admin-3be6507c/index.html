@@ -7,7 +7,7 @@
 <title>Dashboard, Elevate Her Hoops Report</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&family=Anton&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --violet:#1E1035; --violet-deep:#150a28; --panel:#241640; --panel-2:#2c1a4d;
@@ -108,6 +108,12 @@
     background:rgba(10,4,24,0.72);color:var(--white);cursor:pointer;font-size:12px;line-height:1;
   }
   .graphic-tile .graphic-remove:hover{background:var(--magenta);}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:18px;}
+  .card-tile{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:16px;}
+  .card-tile canvas{width:100%;height:auto;border-radius:10px;display:block;background:#000;}
+  .card-tile h4{font-family:'Fredoka',sans-serif;margin:12px 0 2px;}
+  .card-tile .card-status{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:10px;}
+  .card-tile .card-actions{display:flex;gap:8px;flex-wrap:wrap;}
   #toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid var(--teal);color:var(--white);padding:12px 18px;border-radius:12px;font-size:13.5px;display:none;z-index:60;}
 </style>
 </head>
@@ -128,6 +134,7 @@
     <button class="tab-btn" data-tab="illumination">Illumination</button>
     <button class="tab-btn" data-tab="forms">Forms</button>
     <button class="tab-btn" data-tab="marketing">Marketing</button>
+    <button class="tab-btn" data-tab="cards">Trading Cards</button>
   </div>
 </header>
 
@@ -277,6 +284,14 @@
         <button class="btn" disabled>Coming Soon</button>
       </div>
     </div>
+  </section>
+
+  <section class="panel" id="panel-cards">
+    <div class="card">
+      <h3>Trading Cards</h3>
+      <p>A shareable trading card for every player, built automatically from her stats and portrait on file, in the neon pink and cyan style. Generate a card below, then Publish it to save a stable link you can download and email to her whenever you're ready. Nothing is sent to her automatically.</p>
+    </div>
+    <div class="cards-grid" id="cardsGrid"></div>
   </section>
 
 </main>
@@ -1410,6 +1425,248 @@
   document.getElementById('btnExportCsv').addEventListener('click', exportCsv);
   document.getElementById('btnExportCsv2').addEventListener('click', exportCsv);
   document.getElementById('btnRefreshSubs').addEventListener('click', loadSubmissions);
+
+  /* ---------- Trading Cards ---------- */
+  var CARD_W = 1080, CARD_H = 1350;
+  var cardsLoaded = false;
+  var publishedCards = {};
+
+  function schoolInitials(name){
+    var words = String(name || '').split(/\s+/).filter(function(w){
+      return w && !/^(of|for|and|the|a|an|high|school|junior|senior)$/i.test(w);
+    });
+    if (!words.length) return 'HS';
+    return words.map(function(w){ return w[0].toUpperCase(); }).join('').slice(0, 4);
+  }
+
+  function playerInitials(name){
+    var words = String(name || '').trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return '?';
+    return (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase();
+  }
+
+  // Same "most advanced season with any stats on file" rule used on her
+  // Illumination page, so the card shows the same numbers she does.
+  function pickCardStats(p){
+    var seasons = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
+    var best = null;
+    seasons.forEach(function(s){
+      if (p['stat' + s + 'PPG']) {
+        best = {
+          ppg: p['stat' + s + 'PPG'],
+          rebounds: p['stat' + s + 'Rebounds'] || '',
+          assists: p['stat' + s + 'Assists'] || '',
+          steals: p['stat' + s + 'Steals'] || '',
+          blocks: p['stat' + s + 'Blocks'] || ''
+        };
+      }
+    });
+    return best;
+  }
+
+  function loadCardImage(url){
+    return new Promise(function(resolve){
+      if (!url) { resolve(null); return; }
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = function(){ resolve(img); };
+      img.onerror = function(){ resolve(null); };
+      img.src = url;
+    });
+  }
+
+  function roundRectPath(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  // Madi's own public media feed, same one her Illumination page reads from.
+  function fetchPortraitUrl(slug){
+    return fetch('/api/sites/' + encodeURIComponent(slug)).then(function(res){
+      return res.ok ? res.json() : null;
+    }).then(function(data){
+      return (data && data.portrait) || null;
+    }).catch(function(){ return null; });
+  }
+
+  async function drawTradingCard(canvas, player, portraitUrl){
+    canvas.width = CARD_W;
+    canvas.height = CARD_H;
+    var ctx = canvas.getContext('2d');
+    var PINK = '#ff2e9a', CYAN = '#38e0ff', NAME_COLOR = '#d7e3ff', LABEL_COLOR = '#9aa3b8';
+    var pad = 48, cx = CARD_W / 2;
+
+    try {
+      await Promise.all([
+        document.fonts.load('700 72px Anton'),
+        document.fonts.load("700 48px 'Barlow Condensed'"),
+        document.fonts.load("600 28px 'Barlow Condensed'")
+      ]);
+    } catch (e) { /* falls back to a default font if the webfont didn't load in time */ }
+
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, CARD_W, CARD_H);
+
+    ctx.save();
+    ctx.strokeStyle = PINK;
+    ctx.lineWidth = 6;
+    ctx.shadowColor = PINK;
+    ctx.shadowBlur = 28;
+    roundRectPath(ctx, pad, pad, CARD_W - pad * 2, CARD_H - pad * 2, 28);
+    ctx.stroke();
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.font = "700 30px 'Barlow Condensed', sans-serif";
+    ctx.fillText(schoolInitials(player.highSchool), pad + 44, pad + 46);
+
+    var cy = 540, cr = 320;
+    ctx.save();
+    ctx.strokeStyle = CYAN;
+    ctx.lineWidth = 5;
+    ctx.shadowColor = CYAN;
+    ctx.shadowBlur = 40;
+    ctx.beginPath();
+    ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    var img = await loadCardImage(portraitUrl);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, cr - 18, 0, Math.PI * 2);
+    ctx.clip();
+    if (img) {
+      var size = (cr - 18) * 2;
+      var scale = Math.max(size / img.width, size / img.height);
+      var iw = img.width * scale, ih = img.height * scale;
+      ctx.drawImage(img, cx - iw / 2, cy - ih / 2, iw, ih);
+    } else {
+      ctx.fillStyle = '#140a24';
+      ctx.fillRect(cx - cr, cy - cr, cr * 2, cr * 2);
+      ctx.fillStyle = PINK;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '700 180px Anton, sans-serif';
+      ctx.fillText(playerInitials(player.playerName), cx, cy + 10);
+    }
+    ctx.restore();
+
+    ctx.fillStyle = NAME_COLOR;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = '700 72px Anton, sans-serif';
+    ctx.fillText((player.playerName || '').toUpperCase(), cx, 980);
+
+    var subtitle = [player.highSchool, player.gradYear ? 'Class of ' + player.gradYear : ''].filter(Boolean).join(' | ');
+    ctx.fillStyle = LABEL_COLOR;
+    ctx.font = "600 32px 'Barlow Condensed', sans-serif";
+    ctx.fillText(subtitle.toUpperCase(), cx, 1030);
+
+    var stats = pickCardStats(player) || {};
+    var cols = [
+      { l: 'PPG', v: stats.ppg }, { l: 'RPG', v: stats.rebounds }, { l: 'APG', v: stats.assists },
+      { l: 'SPG', v: stats.steals }, { l: 'BPG', v: stats.blocks }
+    ];
+    var innerW = CARD_W - pad * 2 - 80, colW = innerW / cols.length, startX = pad + 40 + colW / 2;
+    var statsY = 1110;
+    cols.forEach(function(c, i){
+      var x = startX + i * colW;
+      ctx.fillStyle = LABEL_COLOR;
+      ctx.font = "700 22px 'Barlow Condensed', sans-serif";
+      ctx.textAlign = 'center';
+      ctx.fillText(c.l, x, statsY);
+      ctx.fillStyle = '#fff';
+      ctx.font = "700 48px 'Barlow Condensed', sans-serif";
+      ctx.fillText(c.v || '-', x, statsY + 56);
+    });
+
+    ctx.fillStyle = LABEL_COLOR;
+    ctx.font = "600 22px 'Barlow Condensed', sans-serif";
+    ctx.textAlign = 'center';
+    ctx.fillText('ELEVATEHERHOOPSREPORT.COM', cx, CARD_H - pad - 28);
+  }
+
+  function canvasToBase64(canvas){
+    return canvas.toDataURL('image/png').split(',')[1];
+  }
+
+  function downloadCanvas(canvas, filename){
+    canvas.toBlob(function(blob){
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+    }, 'image/png');
+  }
+
+  function renderCardTile(p){
+    var tile = document.createElement('div');
+    tile.className = 'card-tile';
+    var published = publishedCards[p.slug];
+    tile.innerHTML = '<canvas></canvas>' +
+      '<h4>' + esc(p.playerName || p.slug) + '</h4>' +
+      '<span class="card-status">' + (published ? 'Published ' + new Date(published).toLocaleDateString() : 'Not published yet') + '</span>' +
+      '<div class="card-actions">' +
+        '<button class="btn small" data-act="download">Download PNG</button>' +
+        '<button class="btn small" data-act="publish">' + (published ? 'Re-publish' : 'Publish') + '</button>' +
+      '</div>';
+    var canvas = tile.querySelector('canvas');
+    fetchPortraitUrl(p.slug).then(function(portraitUrl){
+      return drawTradingCard(canvas, p, portraitUrl);
+    }).catch(function(){ /* leaves whatever drew before the failure, still usable */ });
+    tile.querySelector('[data-act="download"]').addEventListener('click', function(){
+      downloadCanvas(canvas, p.slug + '-trading-card.png');
+    });
+    tile.querySelector('[data-act="publish"]').addEventListener('click', function(){
+      var btn = tile.querySelector('[data-act="publish"]');
+      btn.disabled = true;
+      btn.textContent = 'Publishing...';
+      api('/admin-trading-card-upload', {
+        method: 'POST',
+        body: JSON.stringify({ slug: p.slug, contentType: 'image/png', dataBase64: canvasToBase64(canvas) })
+      }).then(function(res){
+        publishedCards[p.slug] = res.publishedAt;
+        tile.querySelector('.card-status').textContent = 'Published ' + new Date(res.publishedAt).toLocaleDateString();
+        btn.textContent = 'Re-publish';
+        btn.disabled = false;
+        toast('Card published for ' + (p.playerName || p.slug));
+      }).catch(function(e){
+        btn.textContent = 'Publish';
+        btn.disabled = false;
+        toast('Error: ' + e.message);
+      });
+    });
+    return tile;
+  }
+
+  function loadTradingCards(){
+    var grid = document.getElementById('cardsGrid');
+    grid.innerHTML = '<p class="empty-note">Loading cards...</p>';
+    api('/admin-trading-card-upload').then(function(res){
+      publishedCards = {};
+      (res.cards || []).forEach(function(c){ publishedCards[c.slug] = c.publishedAt; });
+    }).catch(function(){ publishedCards = {}; }).then(function(){
+      if (playersCache.length === 0) {
+        grid.innerHTML = '<p class="empty-note">No players yet.</p>';
+        return;
+      }
+      grid.innerHTML = '';
+      playersCache.forEach(function(p){ grid.appendChild(renderCardTile(p)); });
+    });
+  }
+
+  document.querySelector('.tab-btn[data-tab="cards"]').addEventListener('click', function(){
+    if (!cardsLoaded) { cardsLoaded = true; loadTradingCards(); }
+  });
 
   loadPlayers();
   loadSubmissions();

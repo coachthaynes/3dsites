@@ -101,6 +101,12 @@
   force = true
 
 [[redirects]]
+  from = "/trading-card/*"
+  to = "/.netlify/functions/trading-card?slug=:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/player-graphics/*"
   to = "/.netlify/functions/graphics?key=:splat"
   status = 200

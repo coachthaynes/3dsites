@@ -34,6 +34,10 @@ function graphicsStore() {
   return makeStore("graphics");
 }
 
+function tradingCardsStore() {
+  return makeStore("trading-cards");
+}
+
 function illuminationQueueStore() {
   return makeStore("illumination-queue");
 }
@@ -155,6 +159,7 @@ module.exports = {
   submissionsStore,
   photosStore,
   graphicsStore,
+  tradingCardsStore,
   illuminationQueueStore,
   listIlluminationQueue,
   saveIlluminationQueueItem,
