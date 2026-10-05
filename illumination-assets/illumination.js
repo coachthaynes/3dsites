@@ -310,7 +310,6 @@
 
   /* ---------- Photo vault ---------- */
   const gallery = $("#gallery");
-  const label = u => u === "nil" ? "NIL Ready" : "Editorial";
   function renderGallery(photos) {
     gallery.innerHTML = "";
     photos.forEach(ph => {
@@ -321,8 +320,7 @@
       const src = ph.thumb || ph.src;
       fig.innerHTML = `
         <div class="empty"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg>Photo coming soon</div>
-        <img src="${esc(src)}" alt="${esc(fullName)}, ${esc(ph.title)}" loading="lazy">
-        <figcaption class="cap"><div><b>${esc(ph.title)}</b></div><span class="badge ${ph.use === "nil" ? "nil" : "ed"}">${label(ph.use)}</span></figcaption>`;
+        <img src="${esc(src)}" alt="${esc(fullName)}, ${esc(ph.title)}" loading="lazy">`;
       const img = fig.querySelector("img");
       img.addEventListener("error", () => {
         if (ph.thumb && img.src !== new URL(ph.src, location.href).href) { img.src = ph.src; return; }
