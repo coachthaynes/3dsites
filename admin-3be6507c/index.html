@@ -1445,6 +1445,31 @@
     return (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase();
   }
 
+  var EH_LOGO_URL = '/assets/eh-logo.jpg';
+
+  // Logos on file, same schools as the public site's school-colors lookup.
+  // Keep this in sync with netlify/functions/_lib/school-colors.js when a
+  // new school logo is added there.
+  var SCHOOL_LOGOS = {
+    'middleburg': '/assets/logos/middleburg.png',
+    'fleming island': '/assets/logos/fleming-island.png',
+    'orange park': '/assets/logos/orange-park.png',
+    'ridgeview': '/assets/logos/ridgeview.png'
+  };
+  function schoolLogoUrl(highSchool){
+    var n = String(highSchool || '').toLowerCase();
+    for (var key in SCHOOL_LOGOS) {
+      if (n.indexOf(key) !== -1) return SCHOOL_LOGOS[key];
+    }
+    return null;
+  }
+
+  function drawCornerLogo(ctx, img, x, y, size){
+    var scale = Math.min(size / img.width, size / img.height);
+    var w = img.width * scale, h = img.height * scale;
+    ctx.drawImage(img, x + (size - w) / 2, y + (size - h) / 2, w, h);
+  }
+
   // Same rule as the View button on the Players tab, so the card points at
   // exactly the page that button opens for her.
   function playerSiteUrl(p){
@@ -1533,11 +1558,22 @@
     ctx.stroke();
     ctx.restore();
 
-    ctx.fillStyle = '#fff';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
-    ctx.font = "700 30px 'Barlow Condensed', sans-serif";
-    ctx.fillText(schoolInitials(player.highSchool), pad + 44, pad + 46);
+    var cornerSize = 84, cornerInset = pad + 26;
+    var schoolLogoImg = await loadCardImage(schoolLogoUrl(player.highSchool));
+    if (schoolLogoImg) {
+      drawCornerLogo(ctx, schoolLogoImg, cornerInset, cornerInset, cornerSize);
+    } else {
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.font = "700 30px 'Barlow Condensed', sans-serif";
+      ctx.fillText(schoolInitials(player.highSchool), pad + 44, pad + 46);
+    }
+
+    var ehLogoImg = await loadCardImage(EH_LOGO_URL);
+    if (ehLogoImg) {
+      drawCornerLogo(ctx, ehLogoImg, CARD_W - pad - 26 - cornerSize, cornerInset, cornerSize);
+    }
 
     var cy = 620, cr = 300;
     ctx.save();
