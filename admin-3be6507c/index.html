@@ -1068,10 +1068,10 @@
   function guessMaxPrepsSeasonRow(label){
     if(!label) return '';
     var l = String(label).toLowerCase();
-    if(/fresh|^fr\.?$/.test(l)) return 'Freshman';
-    if(/soph|^so\.?$/.test(l)) return 'Sophomore';
-    if(/junior|^jr\.?$/.test(l)) return 'Junior';
-    if(/senior|^sr\.?$/.test(l)) return 'Senior';
+    if(/fresh|\bfr\.?(?:\s|$)/.test(l)) return 'Freshman';
+    if(/soph|\bso\.?(?:\s|$)/.test(l)) return 'Sophomore';
+    if(/junior|\bjr\.?(?:\s|$)/.test(l)) return 'Junior';
+    if(/senior|\bsr\.?(?:\s|$)/.test(l)) return 'Senior';
     return '';
   }
 

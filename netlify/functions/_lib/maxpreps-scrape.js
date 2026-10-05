@@ -35,6 +35,113 @@ function extractSpacedText($) {
   return $("body").text().replace(/\s+/g, " ").trim();
 }
 
+// MaxPreps (and other modern Next.js sites) stream their page data as plain
+// <script>self.__next_f.push([1,"..."])</script> tags rather than the older
+// __NEXT_DATA__/application-json pattern this scraper originally looked for.
+// The pushed string is the real content, already present in the HTML with no
+// JavaScript execution needed, just concatenated oddly. Reassembling it here
+// lets the rest of this file work the same way it would against a plain
+// embedded JSON blob.
+function extractNextFlightText($) {
+  let combined = "";
+  $("script").each((_, el) => {
+    const content = $(el).contents().text().trim();
+    const m = /^self\.__next_f\.push\((\[[\s\S]*\])\)\s*;?$/.exec(content);
+    if (!m) return;
+    try {
+      const parsed = JSON.parse(m[1]);
+      if (Array.isArray(parsed) && typeof parsed[1] === "string") combined += parsed[1];
+    } catch (e) {
+      // not a clean [1, "..."] push call, skip it
+    }
+  });
+  return combined;
+}
+
+// Finds "key": then reads one balanced {...} or [...] value starting there,
+// ignoring braces/brackets inside quoted strings. Used to pull a self
+// contained JSON value out of a much larger, not fully parseable blob (the
+// rest of a Next.js flight payload has its own reference syntax that is not
+// valid JSON, so parsing the whole thing is not an option).
+function extractBalancedJsonAfterKey(text, key) {
+  const marker = `"${key}":`;
+  const markerAt = text.indexOf(marker);
+  if (markerAt === -1) return null;
+  let i = markerAt + marker.length;
+  while (i < text.length && /\s/.test(text[i])) i++;
+  const openChar = text[i];
+  if (openChar !== "{" && openChar !== "[") return null;
+  const closeChar = openChar === "{" ? "}" : "]";
+  const start = i;
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  for (; i < text.length; i++) {
+    const c = text[i];
+    if (inString) {
+      if (escape) escape = false;
+      else if (c === "\\") escape = true;
+      else if (c === '"') inString = false;
+      continue;
+    }
+    if (c === '"') { inString = true; continue; }
+    if (c === openChar) depth++;
+    else if (c === closeChar) {
+      depth--;
+      if (depth === 0) { i++; break; }
+    }
+  }
+  try {
+    return JSON.parse(text.slice(start, i));
+  } catch (e) {
+    return null;
+  }
+}
+
+const GAME_STAT_HEADER_MAP = { PPG: "ppg", RPG: "rebounds", APG: "assists", SPG: "steals", BPG: "blocks", Pts: "totalPoints" };
+
+// Walks every group/subgroup row in a MaxPreps careerRollup (Game Stats,
+// Shooting, Totals, Misc Totals all describe the same seasons from different
+// angles) and merges whichever of PPG/RPG/APG/SPG/BPG/Pts each row has into
+// one record per season, keyed by class year + year + team level so the
+// same season found in multiple groups merges into a single entry.
+function mergeCareerRollupSeasons(careerRollup) {
+  if (!careerRollup || !Array.isArray(careerRollup.groups)) return [];
+  const bySeason = new Map();
+  for (const group of careerRollup.groups) {
+    for (const subgroup of group.subgroups || []) {
+      for (const row of subgroup.stats || []) {
+        const key = `${row.classYear || ""}|${row.year || ""}|${row.teamLevel || ""}`;
+        if (!bySeason.has(key)) {
+          bySeason.set(key, {
+            source: "maxpreps-json",
+            label: [row.classYear, row.year].filter(Boolean).join(" ") || row.season || null,
+          });
+        }
+        const merged = bySeason.get(key);
+        for (const stat of row.stats || []) {
+          const field = GAME_STAT_HEADER_MAP[stat.header];
+          if (field && stat.value) merged[field] = stat.value;
+        }
+      }
+    }
+  }
+  return [...bySeason.values()].filter((s) => Object.keys(s).length > 2); // more than just source+label
+}
+
+// Tries the Next.js flight format first (what MaxPreps itself actually uses
+// today), returning merged per-season stats, or null if this page doesn't
+// look like that shape at all so the caller can fall back to other strategies.
+function tryNextFlightCareerStats($) {
+  const text = extractNextFlightText($);
+  if (!text) return null;
+  const statsCardProps = extractBalancedJsonAfterKey(text, "statsCardProps");
+  if (!statsCardProps) return null;
+  const sportTab = Array.isArray(statsCardProps.sportTabs) ? statsCardProps.sportTabs[0] : null;
+  if (sportTab && isOtherSportTag(objectSportTag(sportTab))) return []; // confidently a different sport
+  return mergeCareerRollupSeasons(statsCardProps.careerRollup);
+}
+
 async function fetchMaxPrepsStats(maxprepsUrl) {
   if (!maxprepsUrl) return null;
 
@@ -52,6 +159,16 @@ async function fetchMaxPrepsStats(maxprepsUrl) {
 
   try {
     const $ = cheerio.load(html);
+
+    // Strategy 0: MaxPreps' own current page format, a Next.js flight payload.
+    // This function wants just the most recent season; sorting the label's
+    // year text (e.g. "25-26") descending works since these are always two
+    // digit years within the same century.
+    const flightSeasons = tryNextFlightCareerStats($);
+    if (flightSeasons && flightSeasons.length) {
+      const sorted = [...flightSeasons].sort((a, b) => String(b.label || "").localeCompare(String(a.label || "")));
+      return sorted[0];
+    }
 
     // Strategy 1: many modern sites embed structured JSON in a script tag
     // (Next.js __NEXT_DATA__, JSON-LD, etc). Look for anything that smells
@@ -113,6 +230,10 @@ async function fetchMaxPrepsCareerStats(maxprepsUrl) {
 
   try {
     const $ = cheerio.load(html);
+
+    // Strategy 0: MaxPreps' own current page format, a Next.js flight payload.
+    const flightSeasons = tryNextFlightCareerStats($);
+    if (flightSeasons && flightSeasons.length) return flightSeasons;
 
     // Strategy 1: an array of per-season objects embedded as structured JSON.
     let seasons = [];
