@@ -338,6 +338,99 @@ function findCareerStatsInObject(obj, depth) {
   return null;
 }
 
+const SCHEDULE_MONTHS = {
+  january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+  july: 6, august: 7, september: 8, october: 9, november: 10, december: 11,
+};
+
+// Strips the words that make two names for the same school fail a plain
+// substring match ("Middleburg Broncos" vs "Middleburg High School").
+function stripTeamNoise(s) {
+  return String(s || "")
+    .toLowerCase()
+    .replace(/\b(girls|boys)\b/g, "")
+    .replace(/\bbasketball\b/g, "")
+    .replace(/\bhigh school\b/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// MaxPreps' schema.org SportsEvent startDate is unreliable for the calendar
+// date: it is written with a UTC offset even though the clock value in it
+// is really the local wall time, so a 7:30pm game can land on the next
+// day's date once read as UTC. The event description, written for humans,
+// spells the real local date and time out directly ("...on Tuesday,
+// November 17 @ 7:30p."), so that is parsed first and startDate is only a
+// fallback for the (rare) event with no usable description.
+function mapLdJsonGame(ev, ourTeamName) {
+  if (!ev || ev["@type"] !== "SportsEvent") return null;
+  const home = ev.homeTeam && ev.homeTeam.name;
+  const away = ev.awayTeam && ev.awayTeam.name;
+  if (!home && !away) return null;
+
+  let loc = "TBD";
+  let opp = "";
+  const ourStripped = stripTeamNoise(ourTeamName);
+  const homeStripped = stripTeamNoise(home);
+  const awayStripped = stripTeamNoise(away);
+  const homeIsUs = Boolean(ourStripped && homeStripped && (ourStripped.includes(homeStripped) || homeStripped.includes(ourStripped)));
+  const awayIsUs = Boolean(ourStripped && awayStripped && (ourStripped.includes(awayStripped) || awayStripped.includes(ourStripped)));
+  if (homeIsUs && !awayIsUs) { loc = "Home"; opp = away || ""; }
+  else if (awayIsUs && !homeIsUs) { loc = "Away"; opp = home || ""; }
+  else opp = [home, away].filter(Boolean).join(" vs ");
+  opp = opp.replace(/\s+High School$/i, "").trim();
+
+  let dateIso = null;
+  let time = "TBD";
+  const desc = typeof ev.description === "string" ? ev.description : "";
+  const m = desc.match(/on\s+\w+,\s+(\w+)\s+(\d{1,2})\s*@\s*(\d{1,2}(?::\d{2})?)\s*([ap])\.?m?\.?/i);
+  const startDate = ev.startDate ? new Date(ev.startDate) : null;
+  const startDateValid = startDate && !isNaN(startDate.getTime());
+  if (m) {
+    const month = SCHEDULE_MONTHS[m[1].toLowerCase()];
+    const day = parseInt(m[2], 10);
+    const year = startDateValid ? startDate.getUTCFullYear() : null;
+    if (month !== undefined && year) {
+      dateIso = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+    let timePart = m[3];
+    if (!timePart.includes(":")) timePart += ":00";
+    time = `${timePart} ${m[4].toUpperCase()}M`;
+  }
+  if (!dateIso && startDateValid) dateIso = startDate.toISOString().slice(0, 10);
+  if (!dateIso) return null;
+
+  return { date: dateIso, opp, loc, time, note: "", tag: "", result: "" };
+}
+
+// MaxPreps team schedule pages carry a schema.org ProfilePage/SportsTeam
+// block with a clean, well labeled event list (startDate, home/away team
+// names, a human readable description) alongside whatever Next.js payload
+// format the rest of the page uses. This is a far more reliable source for
+// schedule data specifically than guessing at either Next.js shape, so it
+// is tried before the generic JSON strategies below.
+function findLdJsonSchedule($) {
+  let events = null;
+  let ourTeamName = null;
+  $('script[type="application/ld+json"]').each((_, el) => {
+    if (events) return;
+    let parsed;
+    try {
+      parsed = JSON.parse($(el).contents().text());
+    } catch (e) {
+      return;
+    }
+    const entity = (parsed && parsed.mainEntity) || parsed;
+    if (entity && Array.isArray(entity.event) && entity.event.length) {
+      events = entity.event;
+      ourTeamName = entity.name || null;
+    }
+  });
+  if (!events) return null;
+  const mapped = events.map((ev) => mapLdJsonGame(ev, ourTeamName)).filter(Boolean);
+  return mapped.length ? mapped : null;
+}
+
 // Best-effort MaxPreps schedule pull. Same caveats as the stats scraper
 // above: schedule tables are usually rendered client side with JavaScript,
 // so a plain server side fetch only sees this when the page happens to
@@ -376,7 +469,11 @@ async function fetchMaxPrepsSchedule(maxprepsUrl) {
       }
     }
 
-    // Strategy 1: many modern sites embed structured JSON in a script tag
+    // Strategy 1: the schema.org event list described above.
+    const ldJsonGames = findLdJsonSchedule($);
+    if (ldJsonGames && ldJsonGames.length) return ldJsonGames;
+
+    // Strategy 2: many modern sites embed structured JSON in a script tag
     // (Next.js __NEXT_DATA__, JSON-LD, etc).
     let games = [];
     $('script[type="application/json"], script#__NEXT_DATA__, script[type="application/ld+json"]').each((_, el) => {
