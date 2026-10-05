@@ -884,9 +884,15 @@
     }
     card.style.display = 'block';
     list.innerHTML = pending.map(function(item){
+      // Built from the slug here rather than trusting the previewUrl saved on
+      // the queue item back when it was submitted, since that was computed
+      // once and can go stale (an older item from before this pipeline moved
+      // into this site, for example), while /illumination/<slug> is always
+      // the current, correct route.
+      var previewHref = '/illumination/' + encodeURIComponent(item.slug || '');
       return '<div class="row-actions" style="justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:12px 0;">' +
         '<div><strong>' + esc(item.playerName || item.slug) + '</strong><br>' +
-          '<a href="' + esc(item.previewUrl) + '" target="_blank" rel="noopener" style="font-size:12.5px;">View Madi design &#8599;</a></div>' +
+          '<a href="' + esc(previewHref) + '" target="_blank" rel="noopener" style="font-size:12.5px;">View Madi design &#8599;</a></div>' +
         '<div class="row-actions">' +
           '<button class="btn small" data-madi-slug="' + esc(item.slug) + '" data-madi-name="' + esc(item.playerName || '') + '" data-madi-action="edit-profile">Edit Profile</button>' +
           '<button class="btn" data-madi-slug="' + esc(item.slug) + '" data-madi-action="approve">Approve</button>' +
