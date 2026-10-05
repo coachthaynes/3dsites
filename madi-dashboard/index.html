@@ -191,6 +191,10 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
         <div class="panel">
           <h3>Site readiness</h3>
           <div class="check" id="checklist"></div>
+          <div style="display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap;">
+            <button class="btn ghost small" id="submitReview" type="button">Submit for Illumination review</button>
+            <span class="tagline" id="reviewStatus" style="margin:0;"></span>
+          </div>
         </div>
 
         <div class="panel">
@@ -330,6 +334,7 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
     site.classList.toggle("hide", !current.siteUrl);
     site.href = current.siteUrl || "#";
     $("#pFeed").href = `/api/sites/${current.slug}`;
+    $("#reviewStatus").textContent = "";
     await loadAssets();
   }
 
@@ -390,6 +395,20 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
     ];
     $("#checklist").innerHTML = items.map(([t, ok, s]) => `<div class="${ok ? "ok" : ""}"><i>${ok ? "✓" : ""}</i><span>${esc(t)}<small>${esc(s)}</small></span></div>`).join("");
   }
+
+  $("#submitReview").addEventListener("click", async () => {
+    if (!current) return;
+    const status = $("#reviewStatus");
+    status.textContent = "Submitting...";
+    try {
+      await send("/api/notify-illumination", "POST", { slug: current.slug });
+      status.textContent = "Submitted. The coach approves it from the Illumination tab on the main dashboard before it goes live.";
+      toast("Submitted for review");
+    } catch (err) {
+      status.textContent = "";
+      toast(err.message, true);
+    }
+  });
 
   function preview(a) {
     if (a.status !== "ready") return `<div class="doc">Incomplete</div>`;
