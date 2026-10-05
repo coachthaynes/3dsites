@@ -1646,9 +1646,10 @@
     });
 
     var footerText = playerSiteUrl(player).toUpperCase();
-    var footerSize = 26;
+    var footerMaxWidth = CARD_W - pad * 2 - 24;
+    var footerSize = 68;
     ctx.font = "700 " + footerSize + "px 'Barlow Condensed', sans-serif";
-    while (ctx.measureText(footerText).width > CARD_W - pad * 2 - 80 && footerSize > 14) {
+    while (ctx.measureText(footerText).width > footerMaxWidth && footerSize > 14) {
       footerSize -= 1;
       ctx.font = "700 " + footerSize + "px 'Barlow Condensed', sans-serif";
     }
