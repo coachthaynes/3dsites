@@ -229,6 +229,9 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
 <dialog id="playerDialog">
   <form method="dialog" id="playerForm">
     <h3 id="playerDialogTitle">Add player site</h3>
+    <label id="candidateField">Pick from the Illumination tab or questionnaire <span class="hint">Already set up on the main site but not here yet. Picking one fills in and locks her slug so it matches exactly.</span>
+      <select id="candidatePick"><option value="">Start from scratch</option></select>
+    </label>
     <label>Player name<input name="name" required placeholder="Kennedy Jeffress"></label>
     <label>Slug <span class="hint">Lowercase, used in the site config as media.slug</span><input name="slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="kennedy-jeffress"></label>
     <label>Live site address<input name="siteUrl" type="url" placeholder="https://kennedyjeffress.netlify.app"></label>
@@ -339,11 +342,42 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
   }
 
   const dlg = $("#playerDialog"), pf = $("#playerForm");
+
+  async function loadIlluminationCandidates() {
+    const sel = $("#candidatePick");
+    sel.innerHTML = '<option value="">Start from scratch</option>';
+    try {
+      const { candidates } = await api("/api/illumination-candidates");
+      sel.innerHTML += candidates.map(c =>
+        `<option value="${esc(c.slug)}" data-name="${esc(c.name)}" data-school="${esc(c.school)}" data-classyear="${esc(c.classYear)}">${esc(c.name)}${c.school ? " · " + esc(c.school) : ""}</option>`
+      ).join("");
+    } catch (e) {
+      // non-fatal, starting from scratch still works without this list
+    }
+  }
+
+  $("#candidatePick").addEventListener("change", () => {
+    const opt = $("#candidatePick").selectedOptions[0];
+    if (!opt || !opt.value) { pf.slug.readOnly = false; return; }
+    pf.name.value = opt.dataset.name || "";
+    pf.slug.value = opt.value;
+    pf.school.value = opt.dataset.school || "";
+    pf.classYear.value = opt.dataset.classyear || "";
+    pf.siteUrl.value = `https://${opt.value}.elevateherhoopsreport.com`;
+    pf.slug.readOnly = true;
+  });
+
   function editPlayer(p) {
     pf.reset();
     $("#playerDialogTitle").textContent = p ? "Edit player site" : "Add player site";
     $("#deletePlayer").classList.toggle("hide", !p);
-    if (p) { for (const k of ["name", "slug", "siteUrl", "school", "classYear"]) pf[k].value = p[k] || ""; }
+    $("#candidateField").classList.toggle("hide", !!p);
+    if (p) {
+      for (const k of ["name", "slug", "siteUrl", "school", "classYear"]) pf[k].value = p[k] || "";
+    } else {
+      $("#candidatePick").value = "";
+      loadIlluminationCandidates();
+    }
     pf.slug.readOnly = !!p;
     dlg.showModal();
   }
