@@ -97,7 +97,11 @@
   setBackdrop(heroVideo.poster);
   let heroFailed = false;
   const noVideo = () => { heroFailed = true; document.body.classList.add("no-video"); };
-  const noFilm = () => { filmVideo.style.display = "none"; $("#filmPh").hidden = false; };
+  // style.display is set directly rather than toggling .hidden: the .ph
+  // placeholder's own CSS (display: grid, a class selector) outranks the
+  // browser's built in [hidden] { display: none }, so .hidden alone leaves
+  // it visibly stuck on screen even once marked hidden.
+  const noFilm = () => { filmVideo.style.display = "none"; $("#filmPh").style.display = ""; };
   function watchSources(video, onFail) {
     const last = video.querySelector("source:last-of-type");
     if (last) last.addEventListener("error", onFail);
@@ -393,7 +397,7 @@
       const film = data.film?.length ? data.film : data.hero;
       if (film?.length) {
         filmVideo.style.display = "";
-        $("#filmPh").hidden = true;
+        $("#filmPh").style.display = "none";
         setSources(filmVideo, film, data.poster, noFilm);
       }
       if (data.highlights?.length) renderHighlights(data.highlights);
@@ -402,7 +406,7 @@
         if (!img) { img = document.createElement("img"); $(".portrait").prepend(img); }
         img.alt = `${fullName} portrait`;
         img.onerror = null;
-        img.onload = () => { const ph = $(".portrait .ph"); if (ph) ph.hidden = true; };
+        img.onload = () => { const ph = $(".portrait .ph"); if (ph) ph.style.display = "none"; };
         img.src = data.portrait;
       }
       if (data.poster) $('meta[property="og:image"]').content = data.poster;
