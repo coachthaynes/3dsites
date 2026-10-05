@@ -8,7 +8,9 @@
 // onto a real player's public recruiting page.
 const { buildStatsSummary } = require("./generate-article");
 
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+// gemini-2.0-flash was retired by Google; its own 404 response named
+// gemini-3.8-flash as the replacement, which is why that's the default here.
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
 function buildFactsBlock(player, externalStats) {
   const lines = [];

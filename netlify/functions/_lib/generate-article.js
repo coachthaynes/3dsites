@@ -3,7 +3,10 @@
 // contract, but it hasn't been verified live from this environment (no
 // outbound network access here), so the first real generation should be
 // treated as the actual test of this integration.
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+//
+// gemini-2.0-flash was retired by Google; its own 404 response named
+// gemini-3.8-flash as the replacement, which is why that's the default here.
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
 function buildStatsSummary(p) {
   const lines = [];

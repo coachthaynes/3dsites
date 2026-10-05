@@ -22,8 +22,8 @@ edits and new form submissions take effect immediately with no rebuild.
   generation returns an error but nothing else on the site is
   affected. Untested from this environment (no outbound network
   access here) — the first real generation is the real test.
-- `GEMINI_MODEL` (optional) — defaults to `gemini-2.0-flash`. Override
-  if Google renames or retires that model.
+- `GEMINI_MODEL` (optional) — defaults to `gemini-3.8-flash`. Override
+  if Google renames or retires that model again.
 - `SESSION_SECRET` (optional) — signs the player login session cookie.
   If unset, `ADMIN_API_SECRET` is reused for this instead, so it's not
   strictly required, but setting a separate one means rotating the
