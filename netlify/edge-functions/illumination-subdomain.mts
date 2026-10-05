@@ -27,8 +27,13 @@ export default async (req: Request, context: Context) => {
     return context.next();
   }
 
+  // fetch() here would start a brand new top-level request chain rather than
+  // continuing this one (Netlify's own edge function docs call this out
+  // directly), which is what was silently dropping the slug for every player
+  // subdomain. nextRequest() continues the same chain with a rewritten
+  // request instead, so it reaches the illumination function correctly.
   const target = new URL(`/.netlify/functions/illumination?slug=${encodeURIComponent(slug)}`, req.url);
-  return fetch(target, { headers: req.headers });
+  return context.nextRequest(new Request(target, req));
 };
 
 export const config: Config = { path: "/*" };
