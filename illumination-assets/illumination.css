@@ -271,10 +271,15 @@ td.soon { color: var(--faint); font-style: italic; }
 @media (max-width: 860px) { .cols2 { grid-template-columns: 1fr; } }
 .note { margin-top: 18px; color: var(--muted); font-size: 15px; }
 
+/* Highlights (up to 4 separate clips) */
+.highlights { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+@media (max-width: 640px) { .highlights { grid-template-columns: 1fr; } }
+
 /* Film */
 .film { display: grid; grid-template-columns: 1.6fr 1fr; gap: 18px; }
 @media (max-width: 860px) { .film { grid-template-columns: 1fr; } }
 .player-frame { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden; background: #000; border: 1px solid var(--line); }
+.player-frame.small { aspect-ratio: 9 / 16; }
 .player-frame video { width: 100%; height: 100%; object-fit: cover; }
 .player-frame .ph { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: var(--muted); padding: 20px; background: radial-gradient(circle at 50% 40%, #1b2442, #000 70%); }
 .links { display: grid; gap: 12px; align-content: start; }

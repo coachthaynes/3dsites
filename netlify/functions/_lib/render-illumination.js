@@ -133,10 +133,7 @@ function buildSiteConfig(player) {
   const school = player.highSchool || "";
   const gradYear = player.gradYear || "";
   const offers = offerRows(player);
-  const yearNow = new Date().getFullYear();
-  const yearsLeft = Math.max(0, parseInt(gradYear, 10) - yearNow || 0);
   const latestStats = buildStats(player);
-  const latestPPG = (latestStats.averages.find((a) => a.l === "Points") || {}).v || "";
 
   return {
     player: {
@@ -198,25 +195,9 @@ function buildSiteConfig(player) {
     writeups: buildWriteups(player),
     nil: {
       intro: player.aboutParagraph2 || `${first} is open to NIL partnerships with local businesses and brands that share her values. Every opportunity is reviewed with her family.`,
-      why: [
-        { v: player.jerseyNumber ? `#${player.jerseyNumber}` : "", l: `${player.position || "Player"} for ${school}` },
-        { v: latestPPG, l: "Points per game" },
-        { v: `${yearsLeft} yrs`, l: "Of high school runway ahead" },
-        { v: "Hometown", l: "Rooted in the community" },
-      ],
-      offers: [
-        { icon: "social", title: "Social content", text: "Sponsored posts, reels and stories featuring your product or business." },
-        { icon: "business", title: "Local business ads", text: "Print, digital and in store campaigns using licensed NIL ready photos." },
-        { icon: "appearance", title: "Appearances", text: "Grand openings, community events, autograph sessions and meet and greets." },
-        { icon: "camp", title: "Camps and clinics", text: "Youth skills camps and guest coaching for younger players." },
-        { icon: "product", title: "Product partners", text: "Gear, apparel, nutrition and training products she actually uses." },
-        { icon: "cause", title: "Community causes", text: "Charity drives and nonprofit campaigns that give back locally." },
-      ],
       rules: [
         "Send an inquiry with the opportunity, dates and compensation.",
         "Every inquiry is reviewed with her family, who make the final decision.",
-        "A simple written agreement is signed by a parent or guardian before any content goes live.",
-        "Partners receive licensed photos from the Photo Vault below for the agreed campaign.",
         "Following state association rules, partner content may not use school names, logos, uniforms or facilities, and deals cannot be tied to recruiting or athletic performance.",
       ],
     },
@@ -251,10 +232,6 @@ function renderIlluminationSite(player) {
   html = html.replace(
     '<video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="media/poster.jpg">\n        <source src="media/highlight.mp4" type="video/mp4">\n        <source src="media/highlight.webm" type="video/webm">\n      </video>',
     '<video id="heroVideo" autoplay muted loop playsinline preload="auto"></video>'
-  );
-  html = html.replace(
-    '<video id="filmVideo" controls playsinline preload="metadata" poster="media/poster.jpg">\n          <source src="media/highlight.mp4" type="video/mp4">\n          <source src="media/highlight.webm" type="video/webm">\n        </video>',
-    '<video id="filmVideo" controls playsinline preload="metadata"></video>'
   );
   return html;
 }

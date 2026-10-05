@@ -12,7 +12,7 @@ import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
 // just mean more chunks, not bigger, riskier ones.
 export const CHUNK_SIZE = 1 * 1024 * 1024;
 export const MAX_FILE = 1536 * 1024 * 1024; // 1.5 GB
-export const ROLES = ["hero", "film", "poster", "portrait", "nil", "editorial", "kit"] as const;
+export const ROLES = ["hero", "highlight", "film", "poster", "portrait", "nil", "editorial", "kit"] as const;
 export type Role = (typeof ROLES)[number];
 
 export interface Player {

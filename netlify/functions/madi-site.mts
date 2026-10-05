@@ -25,11 +25,19 @@ export default async (req: Request, context: Context) => {
   };
   const poster = newest("poster")[0];
   const portrait = newest("portrait")[0];
+  // Each highlight clip is its own separate video, unlike hero/film where
+  // multiple uploads are alternate formats of one video, so this keeps one
+  // file per clip (newest first) instead of deduping down to one per type.
+  const highlights = newest("highlight").slice(0, 4).map(a => ({
+    url: file(a),
+    type: a.type === "video/quicktime" ? "video/mp4" : a.type,
+  }));
 
   const feed = {
     player: { slug: player.slug, name: player.name },
     updated: new Date().toISOString(),
     hero: sources("hero"),
+    highlights,
     film: sources("film"),
     poster: poster ? file(poster) : null,
     portrait: portrait ? file(portrait) : null,

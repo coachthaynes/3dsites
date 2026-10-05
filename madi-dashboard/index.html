@@ -254,7 +254,8 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
   const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const ROLES = [
     { id: "hero", label: "Opening video", help: "Plays inside the circle reveal at the top of the site. Muted loop, landscape, 10 to 30 seconds. Upload an MP4, and a WEBM too if you have one." },
-    { id: "film", label: "Highlight reel", help: "The full reel in the Watch Her Play section, with sound." },
+    { id: "highlight", label: "Highlight clip", help: "A single short highlight clip in the Watch Her Play section, with sound. Upload up to 4, each its own separate clip, not multiple formats of the same one." },
+    { id: "film", label: "Full game film", help: "One complete game, for coaches who want to watch more than the highlights." },
     { id: "poster", label: "Poster still", help: "Shows while the video loads and as the preview image when the link is shared." },
     { id: "portrait", label: "Portrait", help: "Profile section photo. Vertical, 4 by 5 works best." },
     { id: "nil", label: "Photo vault: NIL Ready", help: "No school names, logos, uniforms or gym. Partners can license these." },
@@ -422,6 +423,8 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
     const vault = count("nil") + count("editorial");
     const items = [
       ["Opening video", count("hero") > 0, "Top of the site"],
+      ["Highlight clips", count("highlight") > 0, `${count("highlight")} live (up to 4 shown)`],
+      ["Full game film", count("film") > 0, "Watch Her Play section"],
       ["Poster still", count("poster") > 0, "Loading and share image"],
       ["Portrait", count("portrait") > 0, "Profile section"],
       ["Photo vault", vault >= 6 && count("nil") >= 3, `${vault} live, ${count("nil")} NIL Ready (aim for 6 and 3)`],

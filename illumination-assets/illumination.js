@@ -82,16 +82,6 @@
     : `<a class="link pending" aria-disabled="true"><div><b>${esc(l.name)}</b><span>Link coming soon</span></div>${arrow}</a>`).join("");
 
   /* ---------- NIL ---------- */
-  const icons = {
-    social: `<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/>`,
-    business: `<path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/>`,
-    appearance: `<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>`,
-    camp: `<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>`,
-    product: `<path d="M20 7 12 3 4 7v10l8 4 8-4V7z"/><path d="M4 7l8 4 8-4M12 11v10"/>`,
-    cause: `<path d="M12 21s-7-4.5-7-11a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 6.5-7 11-7 11z"/>`
-  };
-  $("#nilWhy").innerHTML = S.nil.why.map(w => `<div><strong>${esc(w.v)}</strong><span>${esc(w.l)}</span></div>`).join("");
-  $("#nilOffers").innerHTML = S.nil.offers.map(o => `<article class="card fade"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${icons[o.icon] || icons.social}</svg></div><h3>${esc(o.title)}</h3><p>${esc(o.text)}</p></article>`).join("");
   $("#nilRules").innerHTML = S.nil.rules.map(r => `<li>${esc(r)}</li>`).join("");
   $("#mailFallback").href = `mailto:${S.contact.email}?subject=${encodeURIComponent("NIL opportunity for " + fullName)}`;
 
@@ -365,6 +355,23 @@
 
   $$(".fade").forEach(el => io.observe(el));
 
+  /* ---------- Highlight clips (up to 4 separate videos) ---------- */
+  function renderHighlights(list) {
+    const box = $("#highlights");
+    if (!box) return;
+    if (!list || !list.length) {
+      box.innerHTML = `<div class="player-frame small"><div class="ph">Highlight clips coming soon.</div></div>`;
+      return;
+    }
+    box.innerHTML = list.map(h => `
+      <div class="player-frame small">
+        <video playsinline preload="metadata" controls>
+          <source src="${esc(h.url)}"${h.type ? ` type="${esc(h.type)}"` : ""}>
+        </video>
+      </div>`).join("");
+  }
+  renderHighlights([]);
+
   /* ---------- Madi Visuals dashboard media ----------
      Pulls everything Madi has marked live for this player. Anything not in the
      dashboard keeps using the local media/ files. */
@@ -389,11 +396,13 @@
         $("#filmPh").hidden = true;
         setSources(filmVideo, film, data.poster, noFilm);
       }
+      if (data.highlights?.length) renderHighlights(data.highlights);
       if (data.portrait) {
         let img = $("#portraitImg");
         if (!img) { img = document.createElement("img"); $(".portrait").prepend(img); }
         img.alt = `${fullName} portrait`;
         img.onerror = null;
+        img.onload = () => { const ph = $(".portrait .ph"); if (ph) ph.hidden = true; };
         img.src = data.portrait;
       }
       if (data.poster) $('meta[property="og:image"]').content = data.poster;

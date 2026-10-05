@@ -58,8 +58,8 @@
       <li><a href="#combine">Combine</a></li>
       <li><a href="#film">Film</a></li>
       <li><a href="#schedule">Schedule</a></li>
-      <li><a href="#writeups">News</a></li>
       <li><a href="#photos">Photos</a></li>
+      <li><a href="#writeups">News</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <a class="cta" href="#nil">NIL Inquiry</a>
@@ -115,13 +115,13 @@
   <div class="wrap">
     <p class="eyebrow fade">Highlights and game film</p>
     <h2 class="fade">Watch <span class="lit">Her Play</span></h2>
+    <div class="highlights fade" id="highlights"></div>
+
+    <h3 class="fade" style="margin-top:40px">Full game film</h3>
     <div class="film">
       <div class="player-frame fade">
-        <video id="filmVideo" controls playsinline preload="metadata" poster="media/poster.jpg">
-          <source src="media/highlight.mp4" type="video/mp4">
-          <source src="media/highlight.webm" type="video/webm">
-        </video>
-        <div class="ph" id="filmPh" hidden>Full highlight reel coming soon.<br>Use the film links for game footage.</div>
+        <video id="filmVideo" controls playsinline preload="metadata"></video>
+        <div class="ph" id="filmPh" hidden>Full game film coming soon.<br>Use the film links for more footage.</div>
       </div>
       <div class="links fade" id="filmLinks"></div>
     </div>
@@ -139,6 +139,32 @@
   </div>
 </section>
 
+<section class="block" id="photos">
+  <div class="wrap">
+    <p class="eyebrow fade">Photo vault</p>
+    <h2 class="fade">Pro Photos <span class="lit">for NIL</span></h2>
+    <p class="lede fade">Professional, high resolution photos of <span data-bind="first"></span>. Photos marked <strong style="color:var(--accent-2)">NIL Ready</strong> are free of school marks and can be licensed for partner campaigns. <strong>Editorial</strong> photos are for media, recruiting and news use only.</p>
+    <div class="filters fade" role="group" aria-label="Filter photos">
+      <button type="button" data-filter="all" aria-pressed="true">All</button>
+      <button type="button" data-filter="nil" aria-pressed="false">NIL Ready</button>
+      <button type="button" data-filter="editorial" aria-pressed="false">Editorial</button>
+    </div>
+    <div class="gallery" id="gallery"></div>
+    <div class="license">
+      <div class="card fade">
+        <h3>NIL Ready license</h3>
+        <p>Approved partners may use these photos in the campaign named in their signed agreement, for the agreed dates. Do not crop out the photographer credit where one is shown, alter her likeness, or imply an endorsement beyond the agreement.</p>
+        <p>Downloads are for review. Final use requires a signed agreement with a parent or guardian.</p>
+      </div>
+      <div class="card fade">
+        <h3>Editorial use</h3>
+        <p>Game and uniform photos may be used by media outlets, college coaches and recruiting services with credit. They may not be used in advertising or any commercial NIL campaign.</p>
+        <p>Need a specific shot? Ask in your inquiry and we will set up a session.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="block" id="writeups">
   <div class="wrap">
     <p class="eyebrow fade">Writeups</p>
@@ -153,8 +179,6 @@
     <p class="eyebrow fade">Name, Image and Likeness</p>
     <h2 class="fade">Partner with <span class="lit" data-bind="first"></span></h2>
     <p class="lede fade" data-bind="nilIntro"></p>
-    <div class="why fade" id="nilWhy"></div>
-    <div class="offer" id="nilOffers"></div>
     <div class="cols2">
       <div class="fade">
         <h3>How it works</h3>
@@ -196,32 +220,6 @@
           </div>
           <p class="form-status full" id="formStatus" role="status"></p>
         </form>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="block" id="photos">
-  <div class="wrap">
-    <p class="eyebrow fade">Photo vault</p>
-    <h2 class="fade">Pro Photos <span class="lit">for NIL</span></h2>
-    <p class="lede fade">Professional, high resolution photos of <span data-bind="first"></span>. Photos marked <strong style="color:var(--accent-2)">NIL Ready</strong> are free of school marks and can be licensed for partner campaigns. <strong>Editorial</strong> photos are for media, recruiting and news use only.</p>
-    <div class="filters fade" role="group" aria-label="Filter photos">
-      <button type="button" data-filter="all" aria-pressed="true">All</button>
-      <button type="button" data-filter="nil" aria-pressed="false">NIL Ready</button>
-      <button type="button" data-filter="editorial" aria-pressed="false">Editorial</button>
-    </div>
-    <div class="gallery" id="gallery"></div>
-    <div class="license">
-      <div class="card fade">
-        <h3>NIL Ready license</h3>
-        <p>Approved partners may use these photos in the campaign named in their signed agreement, for the agreed dates. Do not crop out the photographer credit where one is shown, alter her likeness, or imply an endorsement beyond the agreement.</p>
-        <p>Downloads are for review. Final use requires a signed agreement with a parent or guardian.</p>
-      </div>
-      <div class="card fade">
-        <h3>Editorial use</h3>
-        <p>Game and uniform photos may be used by media outlets, college coaches and recruiting services with credit. They may not be used in advertising or any commercial NIL campaign.</p>
-        <p>Need a specific shot? Ask in your inquiry and we will set up a session.</p>
       </div>
     </div>
   </div>
