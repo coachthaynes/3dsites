@@ -1427,7 +1427,7 @@
   document.getElementById('btnRefreshSubs').addEventListener('click', loadSubmissions);
 
   /* ---------- Trading Cards ---------- */
-  var CARD_W = 1080, CARD_H = 1350;
+  var CARD_W = 1080, CARD_H = 1920; // Instagram Story size
   var cardsLoaded = false;
   var publishedCards = {};
 
@@ -1528,7 +1528,7 @@
     ctx.font = "700 30px 'Barlow Condensed', sans-serif";
     ctx.fillText(schoolInitials(player.highSchool), pad + 44, pad + 46);
 
-    var cy = 540, cr = 320;
+    var cy = 680, cr = 340;
     ctx.save();
     ctx.strokeStyle = CYAN;
     ctx.lineWidth = 5;
@@ -1564,12 +1564,12 @@
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
     ctx.font = '700 72px Anton, sans-serif';
-    ctx.fillText((player.playerName || '').toUpperCase(), cx, 980);
+    ctx.fillText((player.playerName || '').toUpperCase(), cx, 1210);
 
     var subtitle = [player.highSchool, player.gradYear ? 'Class of ' + player.gradYear : ''].filter(Boolean).join(' | ');
     ctx.fillStyle = LABEL_COLOR;
     ctx.font = "600 32px 'Barlow Condensed', sans-serif";
-    ctx.fillText(subtitle.toUpperCase(), cx, 1030);
+    ctx.fillText(subtitle.toUpperCase(), cx, 1268);
 
     var stats = pickCardStats(player) || {};
     var cols = [
@@ -1577,7 +1577,7 @@
       { l: 'SPG', v: stats.steals }, { l: 'BPG', v: stats.blocks }
     ];
     var innerW = CARD_W - pad * 2 - 80, colW = innerW / cols.length, startX = pad + 40 + colW / 2;
-    var statsY = 1110;
+    var statsY = 1420;
     cols.forEach(function(c, i){
       var x = startX + i * colW;
       ctx.fillStyle = LABEL_COLOR;
@@ -1592,7 +1592,7 @@
     ctx.fillStyle = LABEL_COLOR;
     ctx.font = "600 22px 'Barlow Condensed', sans-serif";
     ctx.textAlign = 'center';
-    ctx.fillText('ELEVATEHERHOOPSREPORT.COM', cx, CARD_H - pad - 28);
+    ctx.fillText('ELEVATEHERHOOPSREPORT.COM', cx, CARD_H - pad - 50);
   }
 
   function canvasToBase64(canvas){
