@@ -392,11 +392,14 @@
         setSources(heroVideo, data.hero, data.poster, noVideo);
         if (introDone) heroVideo.play().catch(() => {});
       } else if (data.poster) { heroVideo.poster = data.poster; setBackdrop(data.poster); }
-      const film = data.film?.length ? data.film : data.hero;
-      if (film?.length) {
+      // No fallback to data.hero here: that is the muted teaser loop at the
+      // top of the page, not a real game recording, so reusing it here would
+      // show a hero clip labeled as full game film instead of honestly
+      // saying none has been uploaded yet.
+      if (data.film?.length) {
         filmVideo.style.display = "";
         $("#filmPh").style.display = "none";
-        setSources(filmVideo, film, data.poster, noFilm);
+        setSources(filmVideo, data.film, data.poster, noFilm);
       }
       if (data.highlights?.length) renderHighlights(data.highlights);
       if (data.portrait) {
