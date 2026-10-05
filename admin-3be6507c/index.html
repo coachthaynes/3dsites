@@ -1570,9 +1570,10 @@
       ctx.fillText(schoolInitials(player.highSchool), pad + 44, pad + 46);
     }
 
+    var ehLogoSize = 190;
     var ehLogoImg = await loadCardImage(EH_LOGO_URL);
     if (ehLogoImg) {
-      drawCornerLogo(ctx, ehLogoImg, CARD_W - pad - 26 - cornerSize, cornerInset, cornerSize);
+      drawCornerLogo(ctx, ehLogoImg, CARD_W - pad - 26 - ehLogoSize, cornerInset, ehLogoSize);
     }
 
     var cy = 620, cr = 300;
