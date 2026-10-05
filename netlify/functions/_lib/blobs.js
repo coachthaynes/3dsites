@@ -38,6 +38,10 @@ function tradingCardsStore() {
   return makeStore("trading-cards");
 }
 
+function tradingCardPortraitsStore() {
+  return makeStore("trading-card-portraits");
+}
+
 function illuminationQueueStore() {
   return makeStore("illumination-queue");
 }
@@ -160,6 +164,7 @@ module.exports = {
   photosStore,
   graphicsStore,
   tradingCardsStore,
+  tradingCardPortraitsStore,
   illuminationQueueStore,
   listIlluminationQueue,
   saveIlluminationQueueItem,
