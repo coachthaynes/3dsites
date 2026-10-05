@@ -1454,23 +1454,25 @@
     return 'elevateherhoopsreport.com/players/' + p.slug;
   }
 
-  // Same "most advanced season with any stats on file" rule used on her
-  // Illumination page, so the card shows the same numbers she does.
-  function pickCardStats(p){
+  // Up to the 2 most advanced seasons with any stats on file, most recent
+  // first, same per season data her Illumination page uses.
+  function pickCardSeasons(p, max){
     var seasons = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
-    var best = null;
+    var found = [];
     seasons.forEach(function(s){
       if (p['stat' + s + 'PPG']) {
-        best = {
+        found.push({
+          label: s,
           ppg: p['stat' + s + 'PPG'],
           rebounds: p['stat' + s + 'Rebounds'] || '',
           assists: p['stat' + s + 'Assists'] || '',
           steals: p['stat' + s + 'Steals'] || '',
           blocks: p['stat' + s + 'Blocks'] || ''
-        };
+        });
       }
     });
-    return best;
+    found.reverse();
+    return found.slice(0, max || 2);
   }
 
   function loadCardImage(url){
@@ -1537,7 +1539,7 @@
     ctx.font = "700 30px 'Barlow Condensed', sans-serif";
     ctx.fillText(schoolInitials(player.highSchool), pad + 44, pad + 46);
 
-    var cy = 680, cr = 340;
+    var cy = 620, cr = 300;
     ctx.save();
     ctx.strokeStyle = CYAN;
     ctx.lineWidth = 5;
@@ -1564,7 +1566,7 @@
       ctx.fillStyle = PINK;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.font = '700 180px Anton, sans-serif';
+      ctx.font = '700 160px Anton, sans-serif';
       ctx.fillText(playerInitials(player.playerName), cx, cy + 10);
     }
     ctx.restore();
@@ -1573,41 +1575,53 @@
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
     ctx.font = '700 72px Anton, sans-serif';
-    ctx.fillText((player.playerName || '').toUpperCase(), cx, 1210);
+    ctx.fillText((player.playerName || '').toUpperCase(), cx, 1030);
 
-    var subtitle = [player.highSchool, player.gradYear ? 'Class of ' + player.gradYear : ''].filter(Boolean).join(' | ');
+    var subtitle = [player.position, player.highSchool, player.gradYear ? 'Class of ' + player.gradYear : '']
+      .filter(Boolean).join(' | ');
     ctx.fillStyle = LABEL_COLOR;
     ctx.font = "600 32px 'Barlow Condensed', sans-serif";
-    ctx.fillText(subtitle.toUpperCase(), cx, 1268);
+    ctx.fillText(subtitle.toUpperCase(), cx, 1086);
 
-    var stats = pickCardStats(player) || {};
-    var cols = [
-      { l: 'PPG', v: stats.ppg }, { l: 'RPG', v: stats.rebounds }, { l: 'APG', v: stats.assists },
-      { l: 'SPG', v: stats.steals }, { l: 'BPG', v: stats.blocks }
-    ];
-    var innerW = CARD_W - pad * 2 - 80, colW = innerW / cols.length, startX = pad + 40 + colW / 2;
-    var statsY = 1420;
-    cols.forEach(function(c, i){
-      var x = startX + i * colW;
-      ctx.fillStyle = LABEL_COLOR;
-      ctx.font = "700 22px 'Barlow Condensed', sans-serif";
+    var seasons = pickCardSeasons(player, 2);
+    var innerW = CARD_W - pad * 2 - 80, colW = innerW / 5, startX = pad + 40 + colW / 2;
+    var rowY = 1190, rowGap = 180;
+    seasons.forEach(function(season, row){
+      var y = rowY + row * rowGap;
+      ctx.fillStyle = PINK;
+      ctx.font = "700 24px 'Barlow Condensed', sans-serif";
       ctx.textAlign = 'center';
-      ctx.fillText(c.l, x, statsY);
-      ctx.fillStyle = '#fff';
-      ctx.font = "700 48px 'Barlow Condensed', sans-serif";
-      ctx.fillText(c.v || '-', x, statsY + 56);
+      ctx.fillText(season.label.toUpperCase() + ' SEASON', cx, y);
+      var cols = [
+        { l: 'PPG', v: season.ppg }, { l: 'RPG', v: season.rebounds }, { l: 'APG', v: season.assists },
+        { l: 'SPG', v: season.steals }, { l: 'BPG', v: season.blocks }
+      ];
+      cols.forEach(function(c, i){
+        var x = startX + i * colW;
+        ctx.fillStyle = LABEL_COLOR;
+        ctx.font = "700 22px 'Barlow Condensed', sans-serif";
+        ctx.textAlign = 'center';
+        ctx.fillText(c.l, x, y + 50);
+        ctx.fillStyle = '#fff';
+        ctx.font = "700 48px 'Barlow Condensed', sans-serif";
+        ctx.fillText(c.v || '-', x, y + 106);
+      });
     });
 
     var footerText = playerSiteUrl(player).toUpperCase();
-    var footerSize = 22;
-    ctx.font = "600 " + footerSize + "px 'Barlow Condensed', sans-serif";
-    while (ctx.measureText(footerText).width > CARD_W - pad * 2 - 80 && footerSize > 13) {
+    var footerSize = 26;
+    ctx.font = "700 " + footerSize + "px 'Barlow Condensed', sans-serif";
+    while (ctx.measureText(footerText).width > CARD_W - pad * 2 - 80 && footerSize > 14) {
       footerSize -= 1;
-      ctx.font = "600 " + footerSize + "px 'Barlow Condensed', sans-serif";
+      ctx.font = "700 " + footerSize + "px 'Barlow Condensed', sans-serif";
     }
-    ctx.fillStyle = LABEL_COLOR;
+    ctx.save();
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = CYAN;
+    ctx.shadowBlur = 16;
     ctx.textAlign = 'center';
     ctx.fillText(footerText, cx, CARD_H - pad - 50);
+    ctx.restore();
   }
 
   function canvasToBase64(canvas){
@@ -1636,7 +1650,9 @@
       '</div>';
     var canvas = tile.querySelector('canvas');
     fetchPortraitUrl(p.slug).then(function(portraitUrl){
-      return drawTradingCard(canvas, p, portraitUrl);
+      // Falls back to the single header photo uploaded on her own player
+      // record (used by Essential/Elite players, who aren't in Madi at all).
+      return drawTradingCard(canvas, p, portraitUrl || p.playerPhoto || null);
     }).catch(function(){ /* leaves whatever drew before the failure, still usable */ });
     tile.querySelector('[data-act="download"]').addEventListener('click', function(){
       downloadCanvas(canvas, p.slug + '-trading-card.png');
