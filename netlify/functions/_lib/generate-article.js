@@ -69,7 +69,10 @@ Respond with ONLY a JSON object, no markdown fences, no extra text, in exactly t
 
   if (!res.ok) {
     const errText = await res.text().catch(() => "");
-    throw new Error(`Gemini API error ${res.status}: ${errText.slice(0, 300)}`);
+    const hint = res.status === 429
+      ? " This is the Gemini free tier's own request limit (per minute or per day), not a sign anything is wrong here. Wait a bit and try again."
+      : "";
+    throw new Error(`Gemini API error ${res.status}: ${errText.slice(0, 300)}${hint}`);
   }
 
   const data = await res.json();

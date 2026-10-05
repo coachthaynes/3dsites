@@ -85,7 +85,15 @@ Respond with ONLY a JSON object, no markdown fences, no extra text, in exactly t
 
   if (!res.ok) {
     const errText = await res.text().catch(() => "");
-    throw new Error(`Gemini API error ${res.status}: ${errText.slice(0, 300)}`);
+    // Google Search grounding carries its own, much stricter free tier
+    // quota than plain text generation, so a 429 on the very first try
+    // with web search on almost always means that quota, not the model's
+    // general rate limit, which this points at directly rather than
+    // leaving the admin to guess from a raw Google error.
+    const hint = res.status === 429 && useWebSearch
+      ? " This is very likely the Google Search grounding quota, which is separate and much smaller than plain text generation, rather than general API usage. Try again with the web search checkbox off, or check billing for grounding at ai.google.dev/gemini-api/docs/rate-limits."
+      : "";
+    throw new Error(`Gemini API error ${res.status}: ${errText.slice(0, 300)}${hint}`);
   }
 
   const data = await res.json();
