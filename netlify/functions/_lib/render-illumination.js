@@ -203,7 +203,7 @@ function buildSiteConfig(player) {
     },
     contact: {
       approver: "Her family",
-      email: "coachthaynes@gmail.com",
+      email: "elevateherhoopsreport@gmail.com",
       people: [
         { role: "Player", who: name || "TBD", detail: "Phone and email on request" },
         { role: "Parent or guardian", who: player.guardianName || "TBD", detail: "Phone on request" },

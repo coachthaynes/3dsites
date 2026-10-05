@@ -385,7 +385,7 @@ ${vault.length ? `<section id="photos">
           var lines = [];
           data.forEach(function(v, k){ if(skip.indexOf(k) === -1) lines.push(k + ': ' + v); });
           var subject = data.get('subject') || 'Contact request';
-          location.href = 'mailto:coachthaynes@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\\n'));
+          location.href = 'mailto:elevateherhoopsreport@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\\n'));
         });
     });
   }
