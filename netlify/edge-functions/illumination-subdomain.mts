@@ -36,4 +36,11 @@ export default async (req: Request, context: Context) => {
   return context.nextRequest(new Request(target, req));
 };
 
-export const config: Config = { path: "/*" };
+// Scoped to exactly the one path this function ever acts on (every other
+// path hits the early "not root" return above and does nothing). A blanket
+// "/*" here also matched the internal rewritten target of every other
+// ?field=:splat redirect on the site (/illumination/*, /elite/*, /players/*,
+// and so on), running this function a second time against paths like
+// /.netlify/functions/illumination that have nothing to do with subdomains,
+// for no reason. Scoping it to "/" removes it from that path entirely.
+export const config: Config = { path: "/" };
