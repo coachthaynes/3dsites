@@ -361,6 +361,23 @@ async function fetchMaxPrepsSchedule(maxprepsUrl) {
 
   try {
     const $ = cheerio.load(html);
+
+    // Strategy 0: same Next.js flight format the stats page uses. Pull the
+    // pageProps value out of it (the stable wrapper every page on this site
+    // seems to use to hand its data to the page) and search inside that with
+    // the same game array finder Strategy 1 below uses, rather than guessing
+    // the exact key name a schedule page keeps its games under.
+    const flightText = extractNextFlightText($);
+    if (flightText) {
+      const pageProps = extractBalancedJsonAfterKey(flightText, "pageProps");
+      if (pageProps) {
+        const found = findScheduleInObject(pageProps, 0);
+        if (found && found.length) return found;
+      }
+    }
+
+    // Strategy 1: many modern sites embed structured JSON in a script tag
+    // (Next.js __NEXT_DATA__, JSON-LD, etc).
     let games = [];
     $('script[type="application/json"], script#__NEXT_DATA__, script[type="application/ld+json"]').each((_, el) => {
       if (games.length) return;

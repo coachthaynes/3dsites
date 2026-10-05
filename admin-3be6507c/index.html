@@ -490,6 +490,7 @@
       <div class="section-title">Season Schedule <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);">(Illumination only)</span></div>
       <div class="form-grid full">
         <div class="form-field"><label>Schedule Title</label><input id="f_scheduleTitle" placeholder="Season Schedule"></div>
+        <div class="form-field"><label>MaxPreps Schedule Link <span style="font-weight:400;text-transform:none;letter-spacing:0;">(usually her team's schedule page, a different link than her MaxPreps stats page above)</span></label><input id="f_maxprepsSchedule" placeholder="https://"></div>
       </div>
       <div id="scheduleRows"></div>
       <div style="display:flex;gap:10px;align-items:center;margin-bottom:24px;flex-wrap:wrap;">
@@ -996,7 +997,7 @@
     'statSophomorePPG','statSophomoreRebounds','statSophomoreSteals','statSophomoreBlocks','statSophomoreAssists','statSophomoreTotalPoints',
     'statJuniorPPG','statJuniorRebounds','statJuniorSteals','statJuniorBlocks','statJuniorAssists','statJuniorTotalPoints',
     'statSeniorPPG','statSeniorRebounds','statSeniorSteals','statSeniorBlocks','statSeniorAssists','statSeniorTotalPoints',
-    'maxpreps','hudl','fieldlevel','prepgirlshoops','instagram','twitter','youtube',
+    'maxpreps','maxprepsSchedule','hudl','fieldlevel','prepgirlshoops','instagram','twitter','youtube',
     'coachName','coachPhone','coachEmail',
     'currentOffers','ncaaId','playerPhoto','message',
     'aboutParagraph1','aboutParagraph2','tag1','tag2','tag3',
@@ -1046,9 +1047,9 @@
     renderScheduleRows();
   });
   document.getElementById('btnPullMaxPreps').addEventListener('click', function(){
-    var url = document.getElementById('f_maxpreps').value.trim();
+    var url = document.getElementById('f_maxprepsSchedule').value.trim() || document.getElementById('f_maxpreps').value.trim();
     var status = document.getElementById('maxPrepsPullStatus');
-    if(!url){ status.textContent = 'Add her MaxPreps link above first.'; return; }
+    if(!url){ status.textContent = 'Add her MaxPreps Schedule link above first (or her MaxPreps stats link, if that is the only one you have).'; return; }
     status.textContent = 'Trying MaxPreps, this can take a few seconds and often finds nothing...';
     api('/admin-maxpreps-schedule', { method: 'POST', body: JSON.stringify({ maxprepsUrl: url }) }).then(function(res){
       var games = res.games || [];
