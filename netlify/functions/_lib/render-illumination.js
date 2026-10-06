@@ -134,6 +134,9 @@ function buildSiteConfig(player) {
   const gradYear = player.gradYear || "";
   const offers = offerRows(player);
   const latestStats = buildStats(player);
+  // Optional extra stats block (for example a converted hand built page's "first five games" splits).
+  const splits = player.illuminationExtras && player.illuminationExtras.splits;
+  if (splits && splits.title && Array.isArray(splits.tiles) && Array.isArray(splits.meters)) latestStats.splits = splits;
 
   return {
     player: {

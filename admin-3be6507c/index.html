@@ -178,6 +178,11 @@
     <div class="row-actions" style="margin-bottom:16px;">
       <button class="btn primary" id="btnAddPlayer">Add Player</button>
     </div>
+    <div class="card" id="conversionsCard" style="display:none;">
+      <h3 style="margin:0 0 6px;">Convert hand built pages</h3>
+      <p style="margin:0 0 12px;font-size:13px;color:var(--gray);">Turns a hand built player page into an editable Illumination page. Her photos and videos stay in Madi Visuals. Anything you already edited for her here is kept.</p>
+      <div id="conversionsList"></div>
+    </div>
     <div class="card" style="padding:0;overflow-x:auto;">
       <table>
         <thead><tr><th>Name</th><th>School</th><th>Status</th><th>Views</th><th>MaxPreps</th><th></th></tr></thead>
@@ -609,12 +614,39 @@
     return api('/admin-players').then(function(res){
       playersCache = res.players || [];
       renderPlayers();
+      loadConversions();
       renderOverview();
       renderArticlePlayerSelect();
       renderFulfillment();
       renderArticles();
       renderIllumination();
     }).catch(function(e){ toast('Error loading players: ' + e.message); });
+  }
+
+  function loadConversions(){
+    api('/admin-import-handbuilt').then(function(res){
+      var list = res.conversions || [];
+      var card = document.getElementById('conversionsCard');
+      if(!list.length){ card.style.display = 'none'; return; }
+      card.style.display = '';
+      document.getElementById('conversionsList').innerHTML = list.map(function(c){
+        return '<div class="row-actions" style="margin-bottom:8px;align-items:center;">' +
+          (c.imported
+            ? '<span style="font-size:13px;">' + esc(c.playerName) + ' is converted.</span> <a class="btn" href="' + esc(c.url) + '" target="_blank" rel="noopener">Open her page</a> <button class="btn" data-convert="' + esc(c.slug) + '">Convert again</button>'
+            : '<button class="btn primary" data-convert="' + esc(c.slug) + '">Convert ' + esc(c.playerName) + '</button>') +
+          '</div>';
+      }).join('');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-convert]'), function(b){
+        b.addEventListener('click', function(){
+          b.disabled = true;
+          api('/admin-import-handbuilt', { method: 'POST', body: JSON.stringify({ slug: b.getAttribute('data-convert') }) }).then(function(r){
+            toast('Converted. Opening her editable page.');
+            window.open(r.url, '_blank');
+            loadPlayers();
+          }).catch(function(e){ b.disabled = false; toast('Could not convert: ' + e.message); });
+        });
+      });
+    }).catch(function(){ /* nothing to convert */ });
   }
 
   function loadSubmissions(){
