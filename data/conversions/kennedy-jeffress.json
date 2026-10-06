@@ -1,0 +1,273 @@
+{
+  "slug": "kennedy-jeffress",
+  "playerName": "Kennedy Jeffress",
+  "jerseyNumber": "2",
+  "position": "Guard",
+  "highSchool": "Middleburg High School",
+  "gradYear": "2029",
+  "height": "5'6\"",
+  "aboutParagraph1": "A fearless scorer with quick hands on defense. As a freshman Kennedy led the Lady Broncos attack, pouring in 380 points while averaging 17.3 points and 3.2 steals per game.",
+  "scheduleTitle": "2026/27 Season Schedule",
+  "scheduleGames": [
+    {
+      "date": "2026-11-12",
+      "opp": "Beachside Preseason",
+      "loc": "Away",
+      "time": "TBD"
+    },
+    {
+      "date": "2026-11-13",
+      "opp": "Beachside Preseason",
+      "loc": "Away",
+      "time": "TBD"
+    },
+    {
+      "date": "2026-11-16",
+      "opp": "Temple Christian",
+      "loc": "Home",
+      "time": "6:00 PM",
+      "note": "Triple header"
+    },
+    {
+      "date": "2026-11-18",
+      "opp": "Tocoi Creek",
+      "loc": "Home",
+      "time": "7:30 PM",
+      "note": "JV 6:00"
+    },
+    {
+      "date": "2026-11-20",
+      "opp": "Spruce Creek",
+      "loc": "Home",
+      "time": "7:30 PM",
+      "note": "JV 6:00"
+    },
+    {
+      "date": "2026-11-25",
+      "opp": "IE Thanksgiving Tournament",
+      "loc": "TBD",
+      "time": "TBD",
+      "tag": "Tournament"
+    },
+    {
+      "date": "2026-11-26",
+      "opp": "IE Thanksgiving Tournament",
+      "loc": "TBD",
+      "time": "TBD",
+      "tag": "Tournament"
+    },
+    {
+      "date": "2026-12-01",
+      "opp": "Duval Charter",
+      "loc": "Home",
+      "time": "6:00 PM",
+      "note": "Triple header"
+    },
+    {
+      "date": "2026-12-03",
+      "opp": "Beachside",
+      "loc": "Away",
+      "time": "7:30 PM",
+      "note": "JV 6:00"
+    },
+    {
+      "date": "2026-12-04",
+      "opp": "Ridgeview",
+      "loc": "Away",
+      "time": "6:00 PM"
+    },
+    {
+      "date": "2026-12-07",
+      "opp": "Bolles",
+      "loc": "Away",
+      "time": "6:00 PM",
+      "note": "Varsity only"
+    },
+    {
+      "date": "2026-12-09",
+      "opp": "Episcopal",
+      "loc": "Away",
+      "time": "7:30 PM",
+      "note": "JV 6:00"
+    },
+    {
+      "date": "2026-12-14",
+      "opp": "Clay",
+      "loc": "Home",
+      "time": "7:30 PM",
+      "note": "JV 6:00"
+    },
+    {
+      "date": "2026-12-16",
+      "opp": "Oakleaf",
+      "loc": "Away",
+      "time": "6:00 PM"
+    },
+    {
+      "date": "2027-01-05",
+      "opp": "Creekside",
+      "loc": "Away",
+      "time": "6:00 PM",
+      "note": "Varsity only"
+    },
+    {
+      "date": "2027-01-07",
+      "opp": "Fleming Island",
+      "loc": "Away",
+      "time": "6:00 PM",
+      "note": "Triple header"
+    },
+    {
+      "date": "2027-01-08",
+      "opp": "Jackson",
+      "loc": "Away",
+      "time": "6:00 PM",
+      "note": "Varsity only"
+    },
+    {
+      "date": "2027-01-11",
+      "opp": "St. Augustine",
+      "loc": "Away",
+      "time": "7:30 PM",
+      "note": "JV 6:00"
+    },
+    {
+      "date": "2027-01-12",
+      "opp": "Bartram Trail",
+      "loc": "Away",
+      "time": "7:30 PM",
+      "note": "JV 6:00"
+    },
+    {
+      "date": "2027-01-14",
+      "opp": "Nease",
+      "loc": "Home",
+      "time": "7:30 PM",
+      "note": "JV 6:00"
+    },
+    {
+      "date": "2027-01-20",
+      "opp": "FSDB",
+      "loc": "Home",
+      "time": "6:00 PM",
+      "tag": "Senior Night"
+    },
+    {
+      "date": "2027-01-22",
+      "opp": "Pedro Menendez",
+      "loc": "Away",
+      "time": "7:30 PM",
+      "note": "JV 6:00"
+    },
+    {
+      "date": "2027-01-25",
+      "opp": "Orange Park",
+      "loc": "Home",
+      "time": "5:30 PM"
+    },
+    {
+      "date": "2027-01-26",
+      "opp": "Bradford",
+      "loc": "Away",
+      "time": "6:00 PM",
+      "note": "Triple header"
+    },
+    {
+      "date": "2027-01-28",
+      "opp": "Ponte Vedra",
+      "loc": "Away",
+      "time": "6:00 PM",
+      "note": "Varsity only"
+    }
+  ],
+  "guardianName": "Jeffress Family",
+  "coachName": "Tenise Haynes",
+  "tier": "illumination",
+  "illuminationApproved": true,
+  "status": "published",
+  "illuminationExtras": {
+    "splits": {
+      "title": "Hot start: first five games",
+      "source": "Source: Hudl team report",
+      "tiles": [
+        {
+          "v": "106",
+          "l": "Points",
+          "hot": true
+        },
+        {
+          "v": "21.2",
+          "l": "Points per game",
+          "hot": true
+        },
+        {
+          "v": "148",
+          "l": "Minutes"
+        },
+        {
+          "v": "+9",
+          "l": "Plus minus"
+        },
+        {
+          "v": "41.5%",
+          "l": "Effective FG"
+        }
+      ],
+      "meters": [
+        {
+          "pct": "38.7",
+          "made": 41,
+          "att": 106,
+          "label": "Field goals"
+        },
+        {
+          "pct": "45.5",
+          "made": 35,
+          "att": 77,
+          "label": "Two pointers"
+        },
+        {
+          "pct": "20.7",
+          "made": 6,
+          "att": 29,
+          "label": "Three pointers"
+        },
+        {
+          "pct": "60.0",
+          "made": 18,
+          "att": 30,
+          "label": "Free throws"
+        }
+      ]
+    }
+  },
+  "statFreshmanPPG": "17.3",
+  "statFreshmanRebounds": "4.1",
+  "statFreshmanSteals": "3.2",
+  "statFreshmanAssists": "2.3",
+  "statFreshmanBlocks": "0.2",
+  "statFreshmanTotalPoints": "380",
+  "localMedia": {
+    "hero": [
+      {
+        "url": "/media/players/kennedy-jeffress/highlight.mp4",
+        "type": "video/mp4"
+      },
+      {
+        "url": "/media/players/kennedy-jeffress/highlight.webm",
+        "type": "video/webm"
+      }
+    ],
+    "film": [
+      {
+        "url": "/media/players/kennedy-jeffress/highlight.mp4",
+        "type": "video/mp4"
+      },
+      {
+        "url": "/media/players/kennedy-jeffress/highlight.webm",
+        "type": "video/webm"
+      }
+    ],
+    "poster": "/media/players/kennedy-jeffress/poster.jpg"
+  }
+}

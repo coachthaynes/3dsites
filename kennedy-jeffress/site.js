@@ -165,7 +165,7 @@ window.SITE = {
 
   contact: {
     approver: "Coach Haynes",
-    email: "coachthaynes@gmail.com",
+    email: "elevateherhoopsreport@gmail.com",
     people: [
       { role: "Player", who: "Kennedy Jeffress", detail: "Phone and email on request" },
       { role: "Parent or guardian", who: "Jeffress Family", detail: "Phone on request" },

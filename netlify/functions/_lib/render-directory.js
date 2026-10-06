@@ -1,3 +1,4 @@
+const { shareTags } = require("./share-tags");
 const CSS = require("./directory-css");
 const { getCanonicalSchoolName } = require("./school-colors");
 
@@ -43,7 +44,7 @@ const COUNTIES = [
         name: "Middleburg High School",
         maxpreps: "https://www.maxpreps.com/fl/middleburg/middleburg-broncos/basketball/girls/",
         extraLinks: [
-          { href: "https://aiyanahaynes.elevateherhoopsreport.com", label: "Aiyana Haynes" },
+          { href: "/illumination/aiyana-haynes", label: "Aiyana Haynes" },
           { href: "https://kennedyjeffress.elevateherhoopsreport.com", label: "Kennedy Jeffress" },
         ],
       },
@@ -155,6 +156,7 @@ ${unmatched.map((p) => `          <a href="players/${esc(p.slug)}">${esc(p.playe
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Player Directory, Elevate Her Hoops Report</title>
 <meta name="description" content="Public high schools with girls varsity basketball programs in Duval, Clay, and St. Johns counties, Florida. Player profiles go live here as they join Elevate Her.">
+${shareTags({ title: "Player Directory | Elevate Her Hoops Report", description: "Girls basketball players and programs in Duval, Clay and St. Johns counties, Florida. Profiles go live here as players join Elevate Her.", url: "/players-directory.html" })}
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏀</text></svg>">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">

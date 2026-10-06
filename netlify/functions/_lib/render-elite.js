@@ -1,3 +1,4 @@
+const { shareTags } = require("./share-tags");
 const { getSchoolColors } = require("./school-colors");
 
 function esc(s) {
@@ -82,6 +83,7 @@ function renderEliteSite(player, feed) {
     if (src && !seenImages.has(src)) { seenImages.add(src); heroSlides.push({ kind: "image", url: src }); }
   });
   const profilePhoto = actionPhoto || poster || "";
+  const shareDesc = [[player.gradYear ? `Class of ${player.gradYear}` : "", player.position].filter(Boolean).join(" "), school].filter(Boolean).join(", ") + ". Film, stats and her recruiting story.";
 
   const statStrip = latestStatStrip(player);
   const rows = seasonRows(player);
@@ -95,6 +97,8 @@ function renderEliteSite(player, feed) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(name)} | ${esc(school)}</title>
+<meta name="description" content="${esc(shareDesc)}">
+${shareTags({ title: `${name} | ${school}`, description: shareDesc, image: profilePhoto, url: player.slug ? `/elite/${player.slug}` : "", imageAlt: name, type: "profile" })}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -385,7 +389,7 @@ ${vault.length ? `<section id="photos">
           var lines = [];
           data.forEach(function(v, k){ if(skip.indexOf(k) === -1) lines.push(k + ': ' + v); });
           var subject = data.get('subject') || 'Contact request';
-          location.href = 'mailto:coachthaynes@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\\n'));
+          location.href = 'mailto:elevateherhoopsreport@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\\n'));
         });
     });
   }
