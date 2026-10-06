@@ -155,6 +155,7 @@ const CSS = `
 
   .video-embed{position:relative;width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:var(--panel);}
   .video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .video-embed video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;}
 
   .card{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:26px;}
   .request-form{margin-top:16px;display:flex;flex-direction:column;gap:12px;}
@@ -271,8 +272,15 @@ function renderEssentialPlayerV2(p, articles) {
     filmLink("YouTube", p.youtube),
   ].filter(Boolean).join("\n");
 
+  // An uploaded clip takes priority over a pasted YouTube link, since it's
+  // the player's own footage hosted directly rather than a link out.
   const videoEmbedUrl = youtubeEmbedUrl(p.youtube);
-  const videoSection = videoEmbedUrl
+  const videoEmbed = p.highlightVideo
+    ? `<video controls preload="metadata" src="${esc(p.highlightVideo)}"></video>`
+    : videoEmbedUrl
+      ? `<iframe src="${esc(videoEmbedUrl)}" title="${esc(name)} highlight video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>`
+      : "";
+  const videoSection = videoEmbed
     ? `<section id="highlight-video">
   <div class="wrap">
     <div class="section-head">
@@ -280,7 +288,7 @@ function renderEssentialPlayerV2(p, articles) {
       <div class="display">Watch ${esc(name.split(" ")[0] || name)} In Action</div>
     </div>
     <div class="video-embed">
-      <iframe src="${esc(videoEmbedUrl)}" title="${esc(name)} highlight video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+      ${videoEmbed}
     </div>
   </div>
 </section>`

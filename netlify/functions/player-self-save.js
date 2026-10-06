@@ -14,7 +14,7 @@ const ALLOWED_FIELDS = [
   "statJuniorPPG", "statJuniorRebounds", "statJuniorSteals", "statJuniorBlocks", "statJuniorAssists", "statJuniorTotalPoints",
   "statSeniorPPG", "statSeniorRebounds", "statSeniorSteals", "statSeniorBlocks", "statSeniorAssists", "statSeniorTotalPoints",
   "maxpreps", "hudl", "fieldlevel", "prepgirlshoops", "instagram", "twitter", "youtube",
-  "currentOffers", "ncaaId", "playerPhoto", "message",
+  "currentOffers", "ncaaId", "playerPhoto", "highlightVideo", "message",
 ];
 
 exports.handler = async (event) => {

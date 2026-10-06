@@ -117,6 +117,7 @@ exports.handler = async (event) => {
 
   const views = await getViews(slug);
   const viewsBlock = `<div class="stat-num">${views.toLocaleString()}</div><div class="stat-label">Total page views</div>`;
+  const showVideoUploader = player.tier !== "elite" && player.tier !== "illumination";
 
   const sections = FIELDS.map(([title, fields]) => {
     const rows = fields.map(([key, label, type]) => {
@@ -148,6 +149,7 @@ exports.handler = async (event) => {
     ...FIELDS.flatMap(([, fields]) => fields.map(([key]) => key)),
     ...SEASONS.flatMap((season) => STAT_COLS.map(([key]) => `stat${season}${key}`)),
     "playerPhoto",
+    "highlightVideo",
   ];
 
   return {
@@ -187,6 +189,9 @@ exports.handler = async (event) => {
   table.stat-table td input{width:100%;background:var(--violet-deep);border:1px solid var(--line);border-radius:8px;padding:6px 7px;color:var(--white);font-size:12.5px;font-family:'IBM Plex Mono',monospace;}
   .photo-row{display:flex;align-items:center;gap:14px;margin-top:10px;}
   #photoPreview{width:64px;height:64px;object-fit:cover;border-radius:8px;background:var(--panel-2);display:none;}
+  #videoPreview{width:100%;max-width:320px;border-radius:10px;background:var(--panel-2);display:none;margin-top:10px;}
+  #videoProgressWrap{background:var(--panel-2);border-radius:999px;height:8px;overflow:hidden;margin-top:10px;display:none;max-width:320px;}
+  #videoProgressBar{background:var(--teal);height:100%;width:0%;}
   .btn{display:inline-block;padding:12px 22px;font-weight:700;font-size:13px;letter-spacing:0.03em;border-radius:999px;border:none;cursor:pointer;}
   .btn.primary{background:var(--magenta);color:var(--white);margin-top:28px;}
   #status{margin-top:14px;font-size:13.5px;color:var(--dim);}
@@ -233,6 +238,15 @@ exports.handler = async (event) => {
       <input type="file" id="f_playerPhotoFile" accept="image/*">
     </div>
     <input type="hidden" id="f_playerPhoto" value="${esc(player.playerPhoto)}">
+    ${showVideoUploader ? `
+    <div class="section-title">Highlight Video</div>
+    <div class="section-sub">One clip, up to 80MB. Trim it to your best highlights first, a full game won't fit.</div>
+    <video id="videoPreview" controls ${player.highlightVideo ? `src="${esc(player.highlightVideo)}" style="display:block;"` : ""}></video>
+    <div id="videoProgressWrap"><div id="videoProgressBar"></div></div>
+    <input type="file" id="f_highlightVideoFile" accept="video/mp4,video/webm,video/quicktime" style="margin-top:10px;">
+    <div id="videoStatus" style="margin-top:8px;font-size:13px;color:var(--dim);"></div>
+    <input type="hidden" id="f_highlightVideo" value="${esc(player.highlightVideo)}">
+    ` : ""}
     <button type="submit" class="btn primary">Save Changes</button>
     <div id="status"></div>
   </form>
@@ -270,6 +284,71 @@ exports.handler = async (event) => {
     };
     reader.readAsDataURL(file);
   });
+
+  var videoFileInput = document.getElementById('f_highlightVideoFile');
+  if (videoFileInput) {
+    videoFileInput.addEventListener('change', function(e){
+      var file = e.target.files && e.target.files[0];
+      if (!file) return;
+      var status = document.getElementById('videoStatus');
+      var progressWrap = document.getElementById('videoProgressWrap');
+      var progressBar = document.getElementById('videoProgressBar');
+      progressWrap.style.display = 'block';
+      progressBar.style.width = '0%';
+      status.textContent = 'Starting upload...';
+
+      function post(action, data){
+        return fetch('/.netlify/functions/player-video-upload?action=' + action, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(data)
+        }).then(function(r){
+          if(!r.ok) return r.text().then(function(t){ throw new Error(t); });
+          return r.json();
+        });
+      }
+      function readChunkAsBase64(blob){
+        return new Promise(function(resolve, reject){
+          var reader = new FileReader();
+          reader.onload = function(){ resolve(reader.result.split(',')[1]); };
+          reader.onerror = function(){ reject(new Error('Could not read file')); };
+          reader.readAsDataURL(blob);
+        });
+      }
+
+      post('start', { slug: slug, token: token, contentType: file.type, size: file.size, name: file.name })
+        .then(function(started){
+          var chunkSize = started.chunkSize, chunks = started.chunks, id = started.id;
+          var n = 0;
+          function nextChunk(){
+            if (n >= chunks) {
+              return post('finish', { slug: slug, token: token, id: id });
+            }
+            var start = n * chunkSize;
+            var blob = file.slice(start, start + chunkSize);
+            return readChunkAsBase64(blob).then(function(dataBase64){
+              return post('chunk', { slug: slug, token: token, id: id, n: n, dataBase64: dataBase64 });
+            }).then(function(){
+              n += 1;
+              progressBar.style.width = Math.round((n / chunks) * 100) + '%';
+              status.textContent = 'Uploading... ' + Math.round((n / chunks) * 100) + '%';
+              return nextChunk();
+            });
+          }
+          return nextChunk();
+        })
+        .then(function(result){
+          document.getElementById('f_highlightVideo').value = result.url;
+          var preview = document.getElementById('videoPreview');
+          preview.src = result.url;
+          preview.style.display = 'block';
+          status.textContent = 'Video uploaded. Click Save Changes to publish it.';
+        })
+        .catch(function(err){
+          status.textContent = 'Error uploading video: ' + err.message;
+        });
+    });
+  }
 
   document.getElementById('btnSetPassword').addEventListener('click', function(){
     var pwStatus = document.getElementById('passwordStatus');
