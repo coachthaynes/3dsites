@@ -18,7 +18,13 @@
 
 [[redirects]]
   from = "https://kennedyjeffress.elevateherhoopsreport.com/media/*"
-  to = "/kennedy-jeffress/media/:splat"
+  to = "/media/players/kennedy-jeffress/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/kennedy-jeffress/media/*"
+  to = "/media/players/kennedy-jeffress/:splat"
   status = 200
   force = true
 

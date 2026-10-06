@@ -349,7 +349,7 @@
     $$(".filters button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
     applyFilter();
   }));
-  renderGallery((S.photos || []).map(p => ({ ...p, src: "media/photos/" + p.file })));
+  renderGallery((S.photos || []).map(p => ({ ...p, src: p.url || "media/photos/" + p.file })));
   const closeLb = () => $("#lightbox").classList.remove("open");
   $("#lbClose").addEventListener("click", closeLb);
   $("#lightbox").addEventListener("click", e => { if (e.target.id === "lightbox") closeLb(); });

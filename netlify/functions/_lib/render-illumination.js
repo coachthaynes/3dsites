@@ -213,7 +213,7 @@ function buildSiteConfig(player) {
         { role: "Head Coach", who: player.coachName || "TBD", detail: "Phone and email on request" },
       ],
     },
-    photos: [],
+    photos: (player.localMedia && Array.isArray(player.localMedia.photos)) ? player.localMedia.photos : [],
   };
 }
 
@@ -231,11 +231,22 @@ function renderIlluminationSite(player) {
   html = html.replace('<meta name="description" content="">', `<meta name="description" content="${esc(desc)}">`);
   html = html.replace('<meta property="og:title" content="">', `<meta property="og:title" content="${esc(name)} #${esc(player.jerseyNumber || "")} | ${esc(school)}">`);
   html = html.replace('<meta property="og:description" content="">', `<meta property="og:description" content="${esc(desc)}">`);
-  html = html.replace('<meta property="og:image" content="media/poster.jpg">', '<meta property="og:image" content="">');
+  // Files kept in this site for a player (for example a converted hand built page) show until
+  // Madi uploads to the dashboard, which then replaces them in the browser.
+  const lm = player.localMedia || {};
+  const sources = (list) => (Array.isArray(list) ? list : []).filter((v) => v && v.url)
+    .map((v) => `\n        <source src="${esc(v.url)}"${v.type ? ` type="${esc(v.type)}"` : ""}>`).join("");
+  const poster = lm.poster ? ` poster="${esc(lm.poster)}"` : "";
+  html = html.replace('<meta property="og:image" content="media/poster.jpg">', `<meta property="og:image" content="${esc(lm.poster || "")}">`);
   html = html.replace(
     '<video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="media/poster.jpg">\n        <source src="media/highlight.mp4" type="video/mp4">\n        <source src="media/highlight.webm" type="video/webm">\n      </video>',
-    '<video id="heroVideo" autoplay muted loop playsinline preload="auto"></video>'
+    `<video id="heroVideo" autoplay muted loop playsinline preload="auto"${poster}>${sources(lm.hero)}${sources(lm.hero) ? "\n      " : ""}</video>`
   );
+  if (sources(lm.film)) {
+    html = html.replace('<video id="filmVideo" controls playsinline preload="metadata"></video>',
+      `<video id="filmVideo" controls playsinline preload="metadata"${poster}>${sources(lm.film)}\n        </video>`);
+  }
+  html = html.replace('<img id="portraitImg" src="media/photos/portrait.jpg"', `<img id="portraitImg" src="${esc(lm.portrait || "media/photos/portrait.jpg")}"`);
   return html;
 }
 

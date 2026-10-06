@@ -246,5 +246,28 @@
   "statFreshmanSteals": "3.2",
   "statFreshmanAssists": "2.3",
   "statFreshmanBlocks": "0.2",
-  "statFreshmanTotalPoints": "380"
+  "statFreshmanTotalPoints": "380",
+  "localMedia": {
+    "hero": [
+      {
+        "url": "/media/players/kennedy-jeffress/highlight.mp4",
+        "type": "video/mp4"
+      },
+      {
+        "url": "/media/players/kennedy-jeffress/highlight.webm",
+        "type": "video/webm"
+      }
+    ],
+    "film": [
+      {
+        "url": "/media/players/kennedy-jeffress/highlight.mp4",
+        "type": "video/mp4"
+      },
+      {
+        "url": "/media/players/kennedy-jeffress/highlight.webm",
+        "type": "video/webm"
+      }
+    ],
+    "poster": "/media/players/kennedy-jeffress/poster.jpg"
+  }
 }
