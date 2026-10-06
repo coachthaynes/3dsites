@@ -1,3 +1,4 @@
+const { shareTags } = require("./share-tags");
 const { getSchoolLogo, getSchoolInitials } = require("./school-colors");
 
 function esc(s) {
@@ -204,6 +205,7 @@ function renderEssentialPlayerV2(p, articles) {
     ? `<img class="school-logo-img" src="${esc(schoolLogo)}" alt="${esc(school)} logo">`
     : `<span class="school-badge">${esc(getSchoolInitials(school))}</span>`;
   const team = /middleburg/i.test(school) ? "Middleburg Lady Broncos" : `${school} Girls Basketball`;
+  const shareDesc = [[p.gradYear ? `Class of ${p.gradYear}` : "", p.position].filter(Boolean).join(" "), school].filter(Boolean).join(", ") + ". Stats, film and recruiting profile.";
   const tagLine = [p.position, school, p.gradYear ? `Class of ${p.gradYear}` : ""].filter(Boolean).join(", ");
 
   const seasons = [
@@ -364,11 +366,8 @@ function renderEssentialPlayerV2(p, articles) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(name)} | ${esc(team)}</title>
-<meta name="description" content="${esc(name)}, ${esc(team)}. Full stats and film on MaxPreps.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="${esc(name)} | ${esc(team)}">
-<meta property="og:description" content="${esc(name)}, ${esc(team)}.">
-<meta name="twitter:card" content="summary">
+<meta name="description" content="${esc(shareDesc)}">
+${shareTags({ title: `${name} | ${team}`, description: shareDesc, image: p.playerPhoto, url: p.slug ? `/players/${p.slug}` : "", imageAlt: name, type: "profile" })}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">

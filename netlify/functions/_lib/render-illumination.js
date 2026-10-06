@@ -1,3 +1,4 @@
+const { shareTags } = require("./share-tags");
 const fs = require("fs");
 const path = require("path");
 const { getSchoolColors } = require("./school-colors");
@@ -221,7 +222,7 @@ function renderIlluminationSite(player) {
   const site = buildSiteConfig(player);
   const name = player.playerName || "";
   const school = player.highSchool || "";
-  const desc = `Recruiting profile for ${name}, #${player.jerseyNumber || ""} ${player.position || "player"} at ${school}. Vitals, season stats, highlight film, NIL partnerships and licensed photos.`;
+  const desc = `${name}, #${player.jerseyNumber || ""} ${player.position || "player"} at ${school}. Recruiting profile with vitals, season stats and highlight film.`;
 
   let html = fs.readFileSync(TEMPLATE_PATH, "utf8");
   html = html.replace('href="illumination.css"', 'href="/illumination-assets/illumination.css"');
@@ -229,15 +230,16 @@ function renderIlluminationSite(player) {
   html = html.replace('<script src="site.js"></script>', `<script>window.SITE = ${JSON.stringify(site)};</script>`);
   html = html.replace("<title>Player Profile</title>", `<title>${esc(name)} #${esc(player.jerseyNumber || "")}</title>`);
   html = html.replace('<meta name="description" content="">', `<meta name="description" content="${esc(desc)}">`);
-  html = html.replace('<meta property="og:title" content="">', `<meta property="og:title" content="${esc(name)} #${esc(player.jerseyNumber || "")} | ${esc(school)}">`);
-  html = html.replace('<meta property="og:description" content="">', `<meta property="og:description" content="${esc(desc)}">`);
   // Files kept in this site for a player (for example a converted hand built page) show until
   // Madi uploads to the dashboard, which then replaces them in the browser.
   const lm = player.localMedia || {};
   const sources = (list) => (Array.isArray(list) ? list : []).filter((v) => v && v.url)
     .map((v) => `\n        <source src="${esc(v.url)}"${v.type ? ` type="${esc(v.type)}"` : ""}>`).join("");
   const poster = lm.poster ? ` poster="${esc(lm.poster)}"` : "";
-  html = html.replace('<meta property="og:image" content="media/poster.jpg">', `<meta property="og:image" content="${esc(lm.poster || "")}">`);
+  // Link previews: her poster or photo when there is one, otherwise the Elevate Her card.
+  const shareImage = lm.poster || player.playerPhoto || player.photoUrl || (Array.isArray(lm.photos) && lm.photos[0] && lm.photos[0].url) || "";
+  html = html.replace('<meta property="og:title" content="">\n<meta property="og:description" content="">\n<meta property="og:image" content="media/poster.jpg">',
+    shareTags({ title: `${name} #${player.jerseyNumber || ""} | ${school}`, description: desc, image: shareImage, url: player.slug ? `/illumination/${player.slug}` : "", imageAlt: name, type: "profile" }));
   html = html.replace(
     '<video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="media/poster.jpg">\n        <source src="media/highlight.mp4" type="video/mp4">\n        <source src="media/highlight.webm" type="video/webm">\n      </video>',
     `<video id="heroVideo" autoplay muted loop playsinline preload="auto"${poster}>${sources(lm.hero)}${sources(lm.hero) ? "\n      " : ""}</video>`
