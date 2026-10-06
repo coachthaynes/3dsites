@@ -43,7 +43,7 @@ const COUNTIES = [
         name: "Middleburg High School",
         maxpreps: "https://www.maxpreps.com/fl/middleburg/middleburg-broncos/basketball/girls/",
         extraLinks: [
-          { href: "https://aiyanahaynes.elevateherhoopsreport.com", label: "Aiyana Haynes" },
+          { href: "/illumination/aiyana-haynes", label: "Aiyana Haynes" },
           { href: "https://kennedyjeffress.elevateherhoopsreport.com", label: "Kennedy Jeffress" },
         ],
       },
