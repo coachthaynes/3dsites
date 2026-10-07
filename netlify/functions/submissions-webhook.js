@@ -1,4 +1,5 @@
 const { submissionsStore, savePlayer } = require("./_lib/blobs");
+const { sanitizeSlug } = require("./_lib/reserved-slugs");
 
 function slugify(name) {
   return String(name)
@@ -64,7 +65,7 @@ exports.handler = async (event) => {
   // hidden tier field so those land in the right tier straight away.
   const QUESTIONNAIRE_FORMS = ["player-questionnaire", "elite-questionnaire", "illumination-questionnaire"];
   if (QUESTIONNAIRE_FORMS.includes(formName) && data.playerName) {
-    const slug = slugify(data.playerName);
+    const slug = sanitizeSlug(slugify(data.playerName));
     await savePlayer(Object.assign({}, unwrapFileFields(data), { id: slug, slug, status: "published" }));
   }
 

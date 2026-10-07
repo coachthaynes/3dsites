@@ -244,7 +244,7 @@ function renderIlluminationSite(player) {
   // Link previews: her poster or photo when there is one, otherwise the Elevate Her card.
   const shareImage = lm.poster || player.playerPhoto || player.photoUrl || (Array.isArray(lm.photos) && lm.photos[0] && lm.photos[0].url) || "";
   html = html.replace('<meta property="og:title" content="">\n<meta property="og:description" content="">\n<meta property="og:image" content="media/poster.jpg">',
-    shareTags({ title: `${name} #${player.jerseyNumber || ""} | ${school}`, description: desc, image: shareImage, url: player.slug ? `/illumination/${player.slug}` : "", imageAlt: name, type: "profile" }));
+    shareTags({ title: `${name} #${player.jerseyNumber || ""} | ${school}`, description: desc, image: shareImage, url: player.slug ? `/${player.slug}` : "", imageAlt: name, type: "profile" }));
   const heroSources = sources(lm.hero);
   html = html.replace(
     '<video id="heroVideo" autoplay muted loop playsinline preload="auto">\n        <source src="media/highlight.mp4" type="video/mp4">\n        <source src="media/highlight.webm" type="video/webm">\n      </video>',

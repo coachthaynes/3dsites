@@ -159,3 +159,12 @@
   to = "/.netlify/functions/player-articles"
   status = 200
   force = true
+
+# Illumination players' bare root URL (elevateherhoopsreport.com/<slug>), kept
+# last so every more specific rule above still matches first. Static files and
+# directories always win over a redirect, so this never shadows a real page.
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/illumination?slug=:splat"
+  status = 200
+  force = true

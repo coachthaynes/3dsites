@@ -840,7 +840,7 @@
     }
     container.innerHTML = illumination.map(function(p){
       var liveNote = p.illuminationApproved
-        ? '<p style="margin-top:6px;"><span class="tool-status" style="display:inline;">Live</span> <a href="/illumination/' + esc(p.slug) + '" target="_blank" rel="noopener">/illumination/' + esc(p.slug) + ' &#8599;</a></p>'
+        ? '<p style="margin-top:6px;"><span class="tool-status" style="display:inline;">Live</span> <a href="/' + esc(p.slug) + '" target="_blank" rel="noopener">elevateherhoopsreport.com/' + esc(p.slug) + ' &#8599;</a></p>'
         : '<p style="margin-top:6px;color:var(--dim);font-size:12.5px;">Not approved yet, approve her design above once Madi sends one.</p>';
       var profileNote = p.aboutParagraph1
         ? ''
@@ -995,7 +995,7 @@
       var status = p.status === 'draft' ? 'draft' : 'published';
       var viewHref = p.liveUrl ? p.liveUrl
         : p.tier === 'elite' ? '/elite/' + esc(p.slug)
-        : p.tier === 'illumination' ? '/illumination/' + esc(p.slug)
+        : p.tier === 'illumination' ? '/' + esc(p.slug)
         : '/players/' + esc(p.slug);
       return '<tr>' +
         '<td><strong>' + esc(p.playerName || '(unnamed)') + '</strong></td>' +
@@ -1590,7 +1590,7 @@
   function playerSiteUrl(p){
     if (p.liveUrl) return p.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
     if (p.tier === 'elite') return 'elevateherhoopsreport.com/elite/' + p.slug;
-    if (p.tier === 'illumination') return p.slug + '.elevateherhoopsreport.com';
+    if (p.tier === 'illumination') return 'elevateherhoopsreport.com/' + p.slug;
     return 'elevateherhoopsreport.com/players/' + p.slug;
   }
 
