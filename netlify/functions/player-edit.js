@@ -240,7 +240,7 @@ exports.handler = async (event) => {
     <input type="hidden" id="f_playerPhoto" value="${esc(player.playerPhoto)}">
     ${showVideoUploader ? `
     <div class="section-title">Highlight Video</div>
-    <div class="section-sub">One clip, up to 80MB. Trim it to your best highlights first, a full game won't fit.</div>
+    <div class="section-sub">One clip, about 3 minutes or less works best. Trim it to your top highlights, not a full game (80MB max).</div>
     <video id="videoPreview" controls ${player.highlightVideo ? `src="${esc(player.highlightVideo)}" style="display:block;"` : ""}></video>
     <div id="videoProgressWrap"><div id="videoProgressBar"></div></div>
     <input type="file" id="f_highlightVideoFile" accept="video/mp4,video/webm,video/quicktime" style="margin-top:10px;">

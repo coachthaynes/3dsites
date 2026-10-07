@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const { getPlayer, highlightVideoAssetsStore, highlightVideoChunksStore } = require("./_lib/blobs");
-const { checkPlayerToken, verifySessionCookie } = require("./_lib/auth");
+const { checkPlayerToken, verifySessionCookie, checkAdminSecret } = require("./_lib/auth");
 
 // One self-uploaded highlight clip for Essential (free) tier players, who
 // aren't in Madi and don't get the Elite questionnaire's Netlify Forms
@@ -12,7 +12,11 @@ const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB
 const MAX_VIDEO_SIZE = 80 * 1024 * 1024; // 80MB: one trimmed highlight clip, not a full game
 
 function json(data, status) {
-  return { statusCode: status || 200, headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) };
+  return {
+    statusCode: status || 200,
+    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+    body: JSON.stringify(data),
+  };
 }
 function fail(message, status) {
   return json({ error: message }, status || 400);
@@ -21,6 +25,12 @@ function fail(message, status) {
 async function authorizePlayer(event, body) {
   const slug = body.slug;
   if (!slug) return null;
+  if (checkAdminSecret(event)) {
+    // Admin may be uploading before a brand-new player's first save, so
+    // don't require the record to already exist, same as admin-photo-upload.
+    const player = await getPlayer(slug);
+    return player || { slug };
+  }
   const player = await getPlayer(slug);
   if (!player) return null;
   if (checkPlayerToken(player, body.token)) return player;
@@ -29,7 +39,16 @@ async function authorizePlayer(event, body) {
   return null;
 }
 
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type, X-Admin-Secret",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
 exports.handler = async (event) => {
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 204, headers: CORS, body: "" };
+  }
   if (event.httpMethod !== "POST") {
     return fail("Method not allowed", 405);
   }

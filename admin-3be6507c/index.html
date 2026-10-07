@@ -484,6 +484,17 @@
           <div id="photoStatus" style="font-size:12px;color:var(--dim);margin-top:6px;"></div>
         </div>
       </div>
+      <div class="section-title">Highlight Video <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);">(Essential tier only)</span></div>
+      <div class="form-grid full">
+        <div class="form-field">
+          <label>Upload One Clip <span style="font-weight:400;text-transform:none;letter-spacing:0;">(MP4, MOV, or WEBM, about 3 minutes or less works best, 80MB max)</span></label>
+          <input type="hidden" id="f_highlightVideo">
+          <input type="file" id="f_highlightVideoFile" accept="video/mp4,video/webm,video/quicktime">
+          <video id="videoPreview" controls style="display:none;max-width:280px;margin-top:10px;border-radius:10px;border:1px solid var(--line);"></video>
+          <div id="videoProgressWrap" style="background:var(--panel-2);border-radius:999px;height:8px;overflow:hidden;margin-top:10px;display:none;max-width:280px;"><div id="videoProgressBar" style="background:var(--teal);height:100%;width:0%;"></div></div>
+          <div id="videoStatus" style="font-size:12px;color:var(--dim);margin-top:6px;"></div>
+        </div>
+      </div>
       <div class="section-title">Accolades and Awards</div>
       <div class="form-grid full">
         <div class="form-field"><label>Accolades and Awards</label><textarea id="f_message" rows="3"></textarea></div>
@@ -1060,7 +1071,7 @@
     'statSeniorPPG','statSeniorRebounds','statSeniorSteals','statSeniorBlocks','statSeniorAssists','statSeniorTotalPoints',
     'maxpreps','maxprepsSchedule','hudl','fieldlevel','prepgirlshoops','instagram','twitter','youtube',
     'coachName','coachPhone','coachEmail',
-    'currentOffers','ncaaId','playerPhoto','message',
+    'currentOffers','ncaaId','playerPhoto','highlightVideo','message',
     'aboutParagraph1','aboutParagraph2','tag1','tag2','tag3',
     'skill1Title','skill1Body','skill2Title','skill2Body','scheduleTitle'];
 
@@ -1308,6 +1319,12 @@
     else { img.src = ''; img.style.display = 'none'; }
   }
 
+  function setVideoPreview(url){
+    var video = document.getElementById('videoPreview');
+    if(url){ video.src = url; video.style.display = 'block'; }
+    else { video.src = ''; video.style.display = 'none'; }
+  }
+
   function openModal(player){
     document.getElementById('modalTitle').textContent = player ? 'Edit Player' : 'Add Player';
     fields.forEach(function(f){
@@ -1325,6 +1342,10 @@
     document.getElementById('f_playerPhotoFile').value = '';
     document.getElementById('photoStatus').textContent = '';
     setPhotoPreview(player && player.playerPhoto);
+    document.getElementById('f_highlightVideoFile').value = '';
+    document.getElementById('videoStatus').textContent = '';
+    document.getElementById('videoProgressWrap').style.display = 'none';
+    setVideoPreview(player && player.highlightVideo);
     scheduleGames = (player && Array.isArray(player.scheduleGames)) ? player.scheduleGames.slice() : [];
     writeups = (player && Array.isArray(player.writeups)) ? player.writeups.slice() : [];
     renderScheduleRows();
@@ -1365,6 +1386,68 @@
     };
     reader.readAsDataURL(file);
   });
+
+  document.getElementById('f_highlightVideoFile').addEventListener('change', function(e){
+    var file = e.target.files && e.target.files[0];
+    if(!file) return;
+    var videoStatus = document.getElementById('videoStatus');
+    var nameEl = document.getElementById('f_playerName');
+    var slugEl = document.getElementById('f_slug');
+    if(!nameEl.value.trim()){
+      videoStatus.textContent = "Enter the player's name first, then upload her video.";
+      e.target.value = '';
+      return;
+    }
+    if(!slugEl.value.trim()) slugEl.value = slugify(nameEl.value);
+    var slug = slugEl.value.trim();
+
+    var progressWrap = document.getElementById('videoProgressWrap');
+    var progressBar = document.getElementById('videoProgressBar');
+    progressWrap.style.display = 'block';
+    progressBar.style.width = '0%';
+    videoStatus.textContent = 'Starting upload...';
+
+    function readChunkAsBase64(blob){
+      return new Promise(function(resolve, reject){
+        var reader = new FileReader();
+        reader.onload = function(){ resolve(reader.result.split(',')[1]); };
+        reader.onerror = function(){ reject(new Error('Could not read file')); };
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    api('/player-video-upload?action=start', {
+      method: 'POST',
+      body: JSON.stringify({ slug: slug, contentType: file.type, size: file.size, name: file.name })
+    }).then(function(started){
+      var chunkSize = started.chunkSize, chunks = started.chunks, id = started.id;
+      var n = 0;
+      function nextChunk(){
+        if (n >= chunks) {
+          return api('/player-video-upload?action=finish', { method: 'POST', body: JSON.stringify({ slug: slug, id: id }) });
+        }
+        var start = n * chunkSize;
+        var blob = file.slice(start, start + chunkSize);
+        return readChunkAsBase64(blob).then(function(dataBase64){
+          return api('/player-video-upload?action=chunk', { method: 'POST', body: JSON.stringify({ slug: slug, id: id, n: n, dataBase64: dataBase64 }) });
+        }).then(function(){
+          n += 1;
+          progressBar.style.width = Math.round((n / chunks) * 100) + '%';
+          videoStatus.textContent = 'Uploading... ' + Math.round((n / chunks) * 100) + '%';
+          return nextChunk();
+        });
+      }
+      return nextChunk();
+    }).then(function(result){
+      document.getElementById('f_highlightVideo').value = result.url;
+      setVideoPreview(result.url);
+      videoStatus.textContent = 'Video uploaded. Save the player to publish it.';
+    }).catch(function(err){
+      videoStatus.textContent = 'Error uploading video: ' + err.message;
+      e.target.value = '';
+    });
+  });
+
   function closeModal(){ modalBackdrop.classList.remove('open'); }
 
   document.getElementById('btnAddPlayer').addEventListener('click', function(){ openModal(null); });
