@@ -12,6 +12,20 @@
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const ease = t => 1 - Math.pow(1 - t, 3);
   const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  function youtubeEmbedUrl(url) {
+    if (!url) return "";
+    const patterns = [
+      /youtu\.be\/([a-zA-Z0-9_-]{6,})/,
+      /youtube\.com\/watch\?[^#]*v=([a-zA-Z0-9_-]{6,})/,
+      /youtube\.com\/embed\/([a-zA-Z0-9_-]{6,})/,
+      /youtube\.com\/shorts\/([a-zA-Z0-9_-]{6,})/,
+    ];
+    for (const re of patterns) {
+      const m = String(url).match(re);
+      if (m) return `https://www.youtube.com/embed/${m[1]}`;
+    }
+    return "";
+  }
   const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   const toDate = iso => { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d); };
@@ -93,11 +107,38 @@
   const heroVideo = $("#heroVideo"), filmVideo = $("#filmVideo");
   let heroFailed = false;
   const noVideo = () => { heroFailed = true; document.body.classList.add("no-video"); };
+
+  /* ---------- Full game film: uploaded clip, else a YouTube embed, else "coming soon" ---------- */
+  const filmFrame = filmVideo.closest(".player-frame");
+  let filmYoutubeIframe = null;
+  function showFilmYoutube(embedUrl) {
+    if (!filmYoutubeIframe) {
+      filmYoutubeIframe = document.createElement("iframe");
+      filmYoutubeIframe.title = `${fullName} full game film`;
+      filmYoutubeIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      filmYoutubeIframe.allowFullscreen = true;
+      filmYoutubeIframe.loading = "lazy";
+      filmFrame.appendChild(filmYoutubeIframe);
+    }
+    filmYoutubeIframe.src = embedUrl;
+    filmVideo.style.display = "none";
+    $("#filmPh").style.display = "none";
+  }
+  function hideFilmYoutube() {
+    if (filmYoutubeIframe) filmYoutubeIframe.remove();
+    filmYoutubeIframe = null;
+  }
   // style.display is set directly rather than toggling .hidden: the .ph
   // placeholder's own CSS (display: grid, a class selector) outranks the
   // browser's built in [hidden] { display: none }, so .hidden alone leaves
   // it visibly stuck on screen even once marked hidden.
-  const noFilm = () => { filmVideo.style.display = "none"; $("#filmPh").style.display = ""; };
+  const noFilm = () => {
+    if (filmYoutubeIframe) return; // a YouTube embed already stands in for it
+    filmVideo.style.display = "none";
+    $("#filmPh").style.display = "";
+  };
+  const filmYoutubeEmbedUrl = youtubeEmbedUrl(S.film.youtubeUrl);
+  if (filmYoutubeEmbedUrl) showFilmYoutube(filmYoutubeEmbedUrl);
   function watchSources(video, onFail) {
     const last = video.querySelector("source:last-of-type");
     if (last) last.addEventListener("error", onFail);
@@ -331,6 +372,7 @@
       // show a hero clip labeled as full game film instead of honestly
       // saying none has been uploaded yet.
       if (data.film?.length) {
+        hideFilmYoutube();
         filmVideo.style.display = "";
         $("#filmPh").style.display = "none";
         setSources(filmVideo, data.film, data.poster, noFilm);

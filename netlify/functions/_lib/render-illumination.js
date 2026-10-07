@@ -183,6 +183,9 @@ function buildSiteConfig(player) {
     ],
     academicsNote: "College coaches can request transcripts and academic details through the contact request below.",
     film: {
+      // Full game film embeds straight from a YouTube link when there's no
+      // uploaded clip yet, same link already listed below in Film & Social.
+      youtubeUrl: player.youtube || "",
       links: [
         { name: "Hudl", desc: "Full game film and highlights", url: player.hudl || "" },
         { name: "Field Level", desc: "Recruiting profile", url: player.fieldlevel || "" },
