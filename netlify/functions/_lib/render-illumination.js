@@ -200,14 +200,6 @@ function buildSiteConfig(player) {
       games: buildScheduleGames(player),
     },
     writeups: buildWriteups(player),
-    nil: {
-      intro: player.aboutParagraph2 || `${first} is open to NIL partnerships with local businesses and brands that share her values. Every opportunity is reviewed with her family.`,
-      rules: [
-        "Send an inquiry with the opportunity, dates and compensation.",
-        "Every inquiry is reviewed with her family, who make the final decision.",
-        "Following state association rules, partner content may not use school names, logos, uniforms or facilities, and deals cannot be tied to recruiting or athletic performance.",
-      ],
-    },
     contact: {
       approver: "Her family",
       email: "elevateherhoopsreport@gmail.com",
@@ -234,7 +226,7 @@ function renderIlluminationSite(player) {
   html = html.replace("<title>Player Profile</title>", `<title>${esc(name)} #${esc(player.jerseyNumber || "")}</title>`);
   html = html.replace('<meta name="description" content="">', `<meta name="description" content="${esc(desc)}">`);
   // Files kept in this site for a player (for example a converted hand built page) show until
-  // Madi uploads to the dashboard, which then replaces them in the browser.
+  // the Visual-Dashboard gets an upload, which then replaces them in the browser.
   const lm = player.localMedia || {};
   const sources = (list) => (Array.isArray(list) ? list : []).filter((v) => v && v.url)
     .map((v) => `\n        <source src="${esc(v.url)}"${v.type ? ` type="${esc(v.type)}"` : ""}>`).join("");

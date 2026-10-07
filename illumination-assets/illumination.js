@@ -1,6 +1,6 @@
 /* Elevate Her · Illumination package renderer.
    Reads window.SITE (from site.js) and builds the page. Media comes from the
-   Madi Visuals dashboard when SITE.media.dashboard is set, with the files in
+   Visual-Dashboard when SITE.media.dashboard is set, with the files in
    media/ as a fallback. Shared by every Illumination site: edit site.js, not this file. */
 (function () {
   const S = window.SITE;
@@ -38,7 +38,7 @@
   if (S.theme?.accent2) root.setProperty("--accent-2", S.theme.accent2);
   if (S.theme?.glow) root.setProperty("--accent-glow", S.theme.glow);
   document.title = `${fullName} #${P.number}`;
-  const desc = `${fullName}, #${P.number} ${P.position.toLowerCase()} for the ${P.team}, Class of ${P.classYear}. Highlights, stats, film, NIL partnerships and licensed photos.`;
+  const desc = `${fullName}, #${P.number} ${P.position.toLowerCase()} for the ${P.team}, Class of ${P.classYear}. Highlights, stats, film and photos.`;
   $('meta[name="description"]').content = desc;
   $('meta[property="og:title"]').content = `${fullName} #${P.number} | ${P.team}`;
   $('meta[property="og:description"]').content = desc;
@@ -47,7 +47,7 @@
   const binds = {
     number: P.number, team: P.team, first: P.first, last: P.last, bio: S.bio,
     testingNote: S.testingNote, academicsNote: S.academicsNote,
-    scheduleTitle: S.schedule.title, scheduleNote: S.schedule.note, nilIntro: S.nil.intro
+    scheduleTitle: S.schedule.title, scheduleNote: S.schedule.note
   };
   $$("[data-bind]").forEach(el => { el.textContent = binds[el.dataset.bind] ?? ""; });
   $("#name").setAttribute("aria-label", fullName);
@@ -93,9 +93,6 @@
     ? `<a class="link" href="${esc(l.url)}" target="_blank" rel="noopener"><div><b>${esc(l.name)}</b><span>${esc(l.desc)}</span></div>${arrow}</a>`
     : `<a class="link pending" aria-disabled="true"><div><b>${esc(l.name)}</b><span>Link coming soon</span></div>${arrow}</a>`).join("");
 
-  /* ---------- NIL ---------- */
-  $("#nilRules").innerHTML = S.nil.rules.map(r => `<li>${esc(r)}</li>`).join("");
-  $("#mailFallback").href = `mailto:${S.contact.email}?subject=${encodeURIComponent("NIL opportunity for " + fullName)}`;
 
   /* ---------- Contact (private, by request) ---------- */
   const lock = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
@@ -289,7 +286,6 @@
       const fig = document.createElement("figure");
       fig.className = "shot fade in " + (ph.size || "");
       fig.style.margin = 0;
-      fig.dataset.use = ph.use;
       const src = ph.thumb || ph.src;
       fig.innerHTML = `
         <div class="empty"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg>Photo coming soon</div>
@@ -304,7 +300,6 @@
         $("#lbImg").src = ph.large || ph.src;
         $("#lbImg").alt = img.alt;
         $("#lbTitle").textContent = ph.title;
-        $("#lbUse").textContent = ph.use === "nil" ? "NIL Ready: licensed partner use with a signed agreement" : "Editorial: media and recruiting use only";
         const dl = $("#lbDownload");
         dl.href = ph.download || ph.src;
         dl.setAttribute("download", `${P.first}_${P.last}_${(ph.title || "photo").replace(/\s+/g, "_")}`);
@@ -313,15 +308,7 @@
       });
       gallery.appendChild(fig);
     });
-    applyFilter();
   }
-  let filter = "all";
-  function applyFilter() { $$(".shot").forEach(s => s.style.display = (filter === "all" || s.dataset.use === filter) ? "" : "none"); }
-  $$(".filters button").forEach(b => b.addEventListener("click", () => {
-    filter = b.dataset.filter;
-    $$(".filters button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-    applyFilter();
-  }));
   renderGallery((S.photos || []).map(p => ({ ...p, src: p.url || "media/photos/" + p.file })));
   const closeLb = () => $("#lightbox").classList.remove("open");
   $("#lbClose").addEventListener("click", closeLb);
@@ -347,8 +334,8 @@
   }
   renderHighlights([]);
 
-  /* ---------- Madi Visuals dashboard media ----------
-     Pulls everything Madi has marked live for this player. Anything not in the
+  /* ---------- Visual-Dashboard media ----------
+     Pulls everything marked live for this player. Anything not in the
      dashboard keeps using the local media/ files. */
   async function loadDashboardMedia() {
     const m = S.media;
@@ -412,7 +399,6 @@
       }
     });
   }
-  wireForm($("#nilForm"), $("#formStatus"), `Thank you. ${approver} will review your inquiry and be in touch soon.`, `NIL opportunity for ${fullName}`);
   wireForm($("#contactForm"), $("#contactStatus"), `Request received. ${approver} will review it and email you directly.`, `Contact request for ${fullName}`);
 
   syncNav();

@@ -149,7 +149,7 @@
     </div>
     <div class="card">
       <h3>What this dashboard does</h3>
-      <p>Essential and Elite player pages are generated live from the data below &mdash; edit a player here and her page updates immediately, no rebuild needed. Illumination pages pull her data from here too, plus her live media from the Madi Visual Dashboard.</p>
+      <p>Essential and Elite player pages are generated live from the data below &mdash; edit a player here and her page updates immediately, no rebuild needed. Illumination pages pull her data from here too, plus her live media from the Visual-Dashboard.</p>
       <p>New questionnaire submissions automatically create or update a player's page, already tagged with the right Package Tier. Package inquiry and questionnaire form submissions both show up under the Forms tab.</p>
     </div>
     <div class="card">
@@ -158,10 +158,10 @@
       <ul style="margin:10px 0 0;padding-left:18px;line-height:1.8;font-size:13.5px;color:var(--dim);">
         <li><strong style="color:var(--white);">Essential</strong> (free) &mdash; auto generated from the free questionnaire, violet/teal design (<a href="../essential-mockup.html" target="_blank" rel="noopener">see the sample</a>).</li>
         <li><strong style="color:var(--white);">Elite</strong> ($249) &mdash; auto generated from her own uploaded photos and video, dark red/black design in her school colors.</li>
-        <li><strong style="color:var(--white);">Illumination</strong> ($850) &mdash; same dark red/black design as Elite, built by the Madi Visual Dashboard team instead of self uploaded, plus NIL content.</li>
+        <li><strong style="color:var(--white);">Illumination</strong> ($850) &mdash; same dark red/black design as Elite, built by the Visual-Dashboard team instead of self uploaded.</li>
       </ul>
       <p style="margin-top:10px;font-size:12px;">A player's tier is set on the Players tab and controls the Articles, Fulfillment, and Illumination tabs.</p>
-      <p style="margin-top:10px;font-size:12px;">Aiyana Haynes and Kennedy Jeffress are Illumination tier but hand built as standalone pages rather than run through this dashboard's Elite/Illumination pipeline. Their player records have a Live URL set so the View button on the Players tab opens their real page.</p>
+      <p style="margin-top:10px;font-size:12px;">Kennedy Jeffress is Illumination tier but hand built as a standalone page rather than run through this dashboard's Elite/Illumination pipeline. Her player record has a Live URL set so the View button on the Players tab opens her real page. Aiyana Haynes was converted to a normal dynamic Illumination page, so if her Live URL field still has something in it from before, it can be cleared.</p>
     </div>
     <div class="card">
       <h3>Test the auto update pipeline</h3>
@@ -180,7 +180,7 @@
     </div>
     <div class="card" id="conversionsCard" style="display:none;">
       <h3 style="margin:0 0 6px;">Convert hand built pages</h3>
-      <p style="margin:0 0 12px;font-size:13px;color:var(--gray);">Turns a hand built player page into an editable Illumination page. Her photos and videos stay in Madi Visuals. Anything you already edited for her here is kept.</p>
+      <p style="margin:0 0 12px;font-size:13px;color:var(--gray);">Turns a hand built player page into an editable Illumination page. Her photos and videos stay in the Visual-Dashboard. Anything you already edited for her here is kept.</p>
       <div id="conversionsList"></div>
     </div>
     <div class="card" style="padding:0;overflow-x:auto;">
@@ -234,12 +234,12 @@
     </div>
     <div class="tool-card" style="margin-bottom:20px;">
       <span class="tool-status">Built In</span>
-      <h4>Madi Visuals Dashboard</h4>
-      <p>Madi's media dashboard now lives on this same site at the link below. She signs in with the dashboard password, uploads photos and video for each player, and marks what's live. Player Illumination sites pull directly from it. When a design is ready for you to review, it drops into the queue underneath to approve or dismiss. Approving is what actually builds and publishes her Illumination site, nothing goes live before that.</p>
-      <a class="btn" href="/madi-dashboard/" target="_blank" rel="noopener" style="margin-top:12px;">Open Madi Dashboard</a>
+      <h4>Visual-Dashboard</h4>
+      <p>The media dashboard now lives on this same site at the link below. The designer signs in with the dashboard password, uploads photos and video for each player, and marks what's live. Player Illumination sites pull directly from it. When a design is ready for you to review, it drops into the queue underneath to approve or dismiss. Approving is what actually builds and publishes her Illumination site, nothing goes live before that.</p>
+      <a class="btn" href="/madi-dashboard/" target="_blank" rel="noopener" style="margin-top:12px;">Open Visual-Dashboard</a>
     </div>
     <div class="card" id="illuminationQueueCard" style="display:none;">
-      <h3>Pending From Madi</h3>
+      <h3>Pending From Visual-Dashboard</h3>
       <div id="illuminationQueueList"></div>
     </div>
     <div id="illuminationList"></div>
@@ -768,7 +768,7 @@
       ['commitmentGraphic', 'Commitment graphic delivered (when she commits)'],
     ],
     illumination: [
-      ['madiSiteBuilt', 'Illumination site built from the Madi Visual Dashboard'],
+      ['madiSiteBuilt', 'Illumination site built from the Visual-Dashboard'],
       ['fullGameFootage', 'Full game / highlight video footage delivered'],
       ['photoShoot', 'Player photo shoot completed'],
       ['weeklyGraphicLastSent', 'Weekly stat / accolade graphic sent this week', 'date'],
@@ -841,7 +841,7 @@
     container.innerHTML = illumination.map(function(p){
       var liveNote = p.illuminationApproved
         ? '<p style="margin-top:6px;"><span class="tool-status" style="display:inline;">Live</span> <a href="/' + esc(p.slug) + '" target="_blank" rel="noopener">elevateherhoopsreport.com/' + esc(p.slug) + ' &#8599;</a></p>'
-        : '<p style="margin-top:6px;color:var(--dim);font-size:12.5px;">Not approved yet, approve her design above once Madi sends one.</p>';
+        : '<p style="margin-top:6px;color:var(--dim);font-size:12.5px;">Not approved yet, approve her design above once the Visual-Dashboard sends one.</p>';
       var profileNote = p.aboutParagraph1
         ? ''
         : '<p style="margin-top:6px;color:var(--magenta);font-size:12.5px;">No bio or stats entered yet, her page is showing placeholder text.</p>';
@@ -928,7 +928,7 @@
   function loadIlluminationQueue(){
     api('/admin-illumination-queue').then(function(res){
       renderIlluminationQueue((res.items || []).filter(function(i){ return i.status === 'pending'; }));
-    }).catch(function(e){ toast('Error loading Madi queue: ' + e.message); });
+    }).catch(function(e){ toast('Error loading Visual-Dashboard queue: ' + e.message); });
   }
 
   function renderIlluminationQueue(pending){
@@ -950,7 +950,7 @@
       var previewHref = '/illumination/' + encodeURIComponent(item.slug || '');
       return '<div class="row-actions" style="justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:12px 0;">' +
         '<div><strong>' + esc(item.playerName || item.slug) + '</strong><br>' +
-          '<a href="' + esc(previewHref) + '" target="_blank" rel="noopener" style="font-size:12.5px;">View Madi design &#8599;</a></div>' +
+          '<a href="' + esc(previewHref) + '" target="_blank" rel="noopener" style="font-size:12.5px;">View Visual-Dashboard design &#8599;</a></div>' +
         '<div class="row-actions">' +
           '<button class="btn small" data-madi-slug="' + esc(item.slug) + '" data-madi-name="' + esc(item.playerName || '') + '" data-madi-action="edit-profile">Edit Profile</button>' +
           '<button class="btn" data-madi-slug="' + esc(item.slug) + '" data-madi-action="approve">Approve</button>' +
@@ -1636,7 +1636,7 @@
     ctx.closePath();
   }
 
-  // Madi's own public media feed, same one her Illumination page reads from.
+  // The Visual-Dashboard's own public media feed, same one her Illumination page reads from.
   function fetchPortraitUrl(slug){
     return fetch('/api/sites/' + encodeURIComponent(slug)).then(function(res){
       return res.ok ? res.json() : null;
@@ -1794,7 +1794,7 @@
     var tile = document.createElement('div');
     tile.className = 'card-tile';
     var published = publishedCards[p.slug];
-    var currentPortraitUrl = null; // the photo currently drawn: Madi's portrait or her header photo
+    var currentPortraitUrl = null; // the photo currently drawn: Visual-Dashboard's portrait or her header photo
     tile.innerHTML = '<canvas></canvas>' +
       '<h4>' + esc(p.playerName || p.slug) + '</h4>' +
       '<span class="card-status">' + (published ? 'Published ' + new Date(published).toLocaleDateString() : 'Not published yet') + '</span>' +
@@ -1805,7 +1805,7 @@
     var canvas = tile.querySelector('canvas');
     fetchPortraitUrl(p.slug).then(function(portraitUrl){
       // Falls back to the single header photo uploaded on her own player
-      // record (used by Essential/Elite players, who aren't in Madi at all).
+      // record (used by Essential/Elite players, who aren't in the Visual-Dashboard at all).
       currentPortraitUrl = portraitUrl || p.playerPhoto || null;
       return drawTradingCard(canvas, p, currentPortraitUrl);
     }).catch(function(){ /* leaves whatever drew before the failure, still usable */ });

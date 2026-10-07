@@ -27,7 +27,7 @@ exports.handler = async (event) => {
   }
 
   // Media (hero video, portrait, photos) loads client side straight from the
-  // Madi Visuals dashboard, so no server side fetch is needed here.
+  // Visual-Dashboard, so no server side fetch is needed here.
   const html = renderIlluminationSite(player);
 
   return {

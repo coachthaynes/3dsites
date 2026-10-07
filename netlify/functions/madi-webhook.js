@@ -1,7 +1,7 @@
 const { saveIlluminationQueueItem, getPlayer } = require("./_lib/blobs");
 const { checkMadiSecret } = require("./_lib/auth");
 
-// Receives notice from the Madi Visuals dashboard that a player's design is
+// Receives notice from the Visual-Dashboard that a player's design is
 // ready. This never publishes anything by itself, it only drops the item
 // into a review queue. A human has to approve it from the Illumination tab
 // before it counts as ready to build into a live site.

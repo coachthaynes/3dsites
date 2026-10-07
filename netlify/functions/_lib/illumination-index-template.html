@@ -139,25 +139,8 @@
   <div class="wrap">
     <p class="eyebrow fade">Photos</p>
     <h2 class="fade">Photo <span class="lit">Gallery</span></h2>
-    <p class="lede fade">Photos of <span data-bind="first"></span>, free to use for her own social media posts. Photos marked <strong style="color:var(--accent-2)">NIL Ready</strong> are also free of school marks and can be licensed for partner campaigns. <strong>Editorial</strong> photos are for media, recruiting and news use only.</p>
-    <div class="filters fade" role="group" aria-label="Filter photos">
-      <button type="button" data-filter="all" aria-pressed="true">All</button>
-      <button type="button" data-filter="nil" aria-pressed="false">NIL Ready</button>
-      <button type="button" data-filter="editorial" aria-pressed="false">Editorial</button>
-    </div>
+    <p class="lede fade">Photos of <span data-bind="first"></span>, free to use for her own social media posts.</p>
     <div class="gallery" id="gallery"></div>
-    <div class="license">
-      <div class="card fade">
-        <h3>NIL Ready license</h3>
-        <p>Approved partners may use these photos in the campaign named in their signed agreement, for the agreed dates. Do not crop out the photographer credit where one is shown, alter her likeness, or imply an endorsement beyond the agreement.</p>
-        <p>Downloads are for review. Final use requires a signed agreement with a parent or guardian.</p>
-      </div>
-      <div class="card fade">
-        <h3>Editorial use</h3>
-        <p>Game and uniform photos may be used by media outlets, college coaches and recruiting services with credit. They may not be used in advertising or any commercial NIL campaign.</p>
-        <p>Need a specific shot? Ask in your inquiry and we will set up a session.</p>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -167,57 +150,6 @@
     <h2 class="fade">In the <span class="lit">News</span></h2>
     <p class="lede fade">Articles, scouting reports and coach evaluations about <span data-bind="first"></span>.</p>
     <div class="writeups" id="writeupList"></div>
-  </div>
-</section>
-
-<section class="block nil" id="nil">
-  <div class="wrap">
-    <p class="eyebrow fade">Name, Image and Likeness</p>
-    <h2 class="fade">Partner with <span class="lit" data-bind="first"></span></h2>
-    <p class="lede fade" data-bind="nilIntro"></p>
-    <div class="cols2">
-      <div class="fade">
-        <h3>How it works</h3>
-        <div class="rules"><ul id="nilRules"></ul></div>
-      </div>
-      <div class="fade">
-        <h3>Send an inquiry</h3>
-        <form class="inquiry" name="nil-inquiry" method="POST" data-netlify="true" netlify-honeypot="company-url" id="nilForm">
-          <input type="hidden" name="form-name" value="nil-inquiry">
-          <p class="sr"><label>Leave this empty <input name="company-url"></label></p>
-          <label>Your name<input name="name" required autocomplete="name"></label>
-          <label>Business or brand<input name="business" autocomplete="organization"></label>
-          <label>Email<input type="email" name="email" required autocomplete="email"></label>
-          <label>Phone<input type="tel" name="phone" autocomplete="tel"></label>
-          <label>Opportunity
-            <select name="type">
-              <option>Social content</option>
-              <option>Local business ad</option>
-              <option>Appearance</option>
-              <option>Camp or clinic</option>
-              <option>Product partnership</option>
-              <option>Community cause</option>
-              <option>Something else</option>
-            </select>
-          </label>
-          <label>Budget
-            <select name="budget">
-              <option>Product or trade</option>
-              <option>Under $250</option>
-              <option>$250 to $1,000</option>
-              <option>$1,000 or more</option>
-              <option>Let's talk</option>
-            </select>
-          </label>
-          <label class="full">Tell us about it<textarea name="message" required placeholder="Dates, deliverables and anything else we should know"></textarea></label>
-          <div class="full" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
-            <button class="btn" type="submit">Send inquiry</button>
-            <a class="btn ghost" id="mailFallback" href="#">Email instead</a>
-          </div>
-          <p class="form-status full" id="formStatus" role="status"></p>
-        </form>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -267,7 +199,7 @@
 <footer>
   <div class="wrap">
     <span id="footLeft"></span>
-    <span class="credit">An <a href="https://elevateherhoopsreport.netlify.app" target="_blank" rel="noopener">Elevate Her</a> Illumination site · Media by Madi Visuals</span>
+    <span class="credit">An <a href="https://elevateherhoopsreport.netlify.app" target="_blank" rel="noopener">Elevate Her</a> Illumination site · Media by Visual-Dashboard</span>
   </div>
 </footer>
 
@@ -286,7 +218,7 @@
   <figure>
     <img id="lbImg" alt="">
     <figcaption>
-      <div><b id="lbTitle" style="font:700 20px var(--cond);letter-spacing:.08em;text-transform:uppercase"></b><div id="lbUse" style="color:var(--muted);font-size:15px"></div></div>
+      <div><b id="lbTitle" style="font:700 20px var(--cond);letter-spacing:.08em;text-transform:uppercase"></b></div>
       <a class="btn" id="lbDownload" download>Download</a>
     </figcaption>
   </figure>

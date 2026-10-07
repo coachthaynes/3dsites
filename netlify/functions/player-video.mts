@@ -4,8 +4,8 @@ import { getStore } from "@netlify/blobs";
 // GET /player-videos/:id  public delivery of an Essential-tier player's
 // single uploaded highlight clip, with byte-range support so it can stream
 // and seek. Mirrors /madi-media/:id, but reads the separate stores
-// player-video-upload.js writes to instead of Madi's asset catalog, since
-// Essential players aren't in Madi at all.
+// player-video-upload.js writes to instead of the Visual-Dashboard's asset catalog, since
+// Essential players aren't in the Visual-Dashboard at all.
 const SITE_ID = process.env.BLOBS_SITE_ID || process.env.SITE_ID;
 const TOKEN = process.env.BLOBS_TOKEN;
 function store(name: string) {

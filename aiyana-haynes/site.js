@@ -1,6 +1,6 @@
 /* Elevate Her · Illumination site config for Aiyana Haynes.
    Everything on the page comes from this file. Photos and videos come from the
-   Madi Visuals dashboard (media.dashboard + media.slug), with files in media/ as a fallback.
+   Visual-Dashboard (media.dashboard + media.slug), with files in media/ as a fallback.
    Keep visible text free of hyphens and dashes. */
 window.SITE = {
   player: {
@@ -137,31 +137,6 @@ window.SITE = {
   writeups: [
     { kind: "Scouting profile", title: "Aiyana Haynes player profile", source: "Prep Girls Hoops", excerpt: "Her evaluation and ranking page on Prep Girls Hoops.", url: "https://prepgirlshoops.com/player/aiyana-haynes/" }
   ],
-
-  nil: {
-    intro: "Silent work. Loud impact. Aiyana is a performance first athlete: a quiet worker, an emotional competitor and a student of the game. She partners with brands that value grit, training and youth development, and every opportunity is reviewed with her family.",
-    why: [
-      { v: "#20", l: "Two way guard for the Lady Broncos" },
-      { v: "4.3", l: "Steals per game as a junior" },
-      { v: "799", l: "Career points heading into her senior year" },
-      { v: "2", l: "College offers and counting" }
-    ],
-    offers: [
-      { icon: "camp", title: "Defensive IQ clinics", text: "Small group and youth clinics on guard defense, footwork and reading the floor." },
-      { icon: "product", title: "Strength and recovery", text: "Training gyms, recovery studios and conditioning brands that match her daily grind." },
-      { icon: "social", title: "Social content", text: "Sponsored posts, reels and stories with a low talk, high edge style." },
-      { icon: "business", title: "Local business ads", text: "Print, digital and in store campaigns using licensed NIL ready photos." },
-      { icon: "appearance", title: "Appearances", text: "Community events, youth camps, grand openings and meet and greets." },
-      { icon: "cause", title: "Community causes", text: "Youth sports and education efforts that give back to Clay County." }
-    ],
-    rules: [
-      "Send an inquiry with the opportunity, dates and compensation.",
-      "Her family reviews every inquiry and makes the final decision.",
-      "A simple written agreement is signed by a parent or guardian before any content goes live.",
-      "Partners receive licensed photos from the Photo Vault below for the agreed campaign.",
-      "Following FHSAA rules, partner content may not use Middleburg High School or Clay County District Schools names, logos, uniforms or facilities, and deals cannot be tied to recruiting or athletic performance."
-    ]
-  },
 
   contact: {
     approver: "Her family",

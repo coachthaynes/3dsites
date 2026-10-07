@@ -18,7 +18,7 @@ exports.handler = async (event) => {
   if (event.httpMethod === "GET") {
     const list = await Promise.all(conversions.map(async (c) => {
       const existing = await getPlayer(c.slug);
-      return { slug: c.slug, playerName: c.playerName, tier: c.tier, imported: Boolean(existing && existing.convertedAt), url: `/illumination/${c.slug}` };
+      return { slug: c.slug, playerName: c.playerName, tier: c.tier, imported: Boolean(existing && existing.convertedAt), url: `/${c.slug}` };
     }));
     return out(200, { conversions: list });
   }
@@ -40,7 +40,7 @@ exports.handler = async (event) => {
       tier: "illumination", illuminationApproved: true, illuminationApprovedAt: existing.illuminationApprovedAt || new Date().toISOString(),
       convertedAt: new Date().toISOString(),
     });
-    return out(200, { player: { slug: saved.slug, playerName: saved.playerName }, url: `/illumination/${saved.slug}` });
+    return out(200, { player: { slug: saved.slug, playerName: saved.playerName }, url: `/${saved.slug}` });
   }
   return out(405, { error: "Method not allowed" });
 };

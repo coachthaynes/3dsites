@@ -3,7 +3,7 @@ const { getPlayer, highlightVideoAssetsStore, highlightVideoChunksStore } = requ
 const { checkPlayerToken, verifySessionCookie, checkAdminSecret } = require("./_lib/auth");
 
 // One self-uploaded highlight clip for Essential (free) tier players, who
-// aren't in Madi and don't get the Elite questionnaire's Netlify Forms
+// aren't in the Visual-Dashboard and don't get the Elite questionnaire's Netlify Forms
 // upload. Arrives in small chunks so it stays under the function payload
 // limit regardless of the clip's total size; /player-video.mts serves the
 // finished file back out with byte-range support for playback.

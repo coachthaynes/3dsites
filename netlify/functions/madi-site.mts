@@ -2,7 +2,7 @@ import type { Context } from "@netlify/functions";
 import { listAssets, getPlayer, SLUG, type Asset } from "./_lib/madi-core.mts";
 
 // GET /api/sites/:slug  public media feed read by the player's Illumination site.
-// Only assets Madi has switched to Live are included. Player sites live on other
+// Only assets switched to Live in the Visual-Dashboard are included. Player sites live on other
 // domains, so this one endpoint allows cross origin reads.
 export default async (req: Request, context: Context) => {
   const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, OPTIONS" };
