@@ -161,10 +161,11 @@
   force = true
 
 # Illumination players' bare root URL (elevateherhoopsreport.com/<slug>), kept
-# last so every more specific rule above still matches first. Static files and
-# directories always win over a redirect, so this never shadows a real page.
+# last so every more specific rule above still matches first. No `force`: a
+# real static file or directory at the request path must always win over this
+# redirect (CSS, JS, images, every other page's own assets), or this catch-all
+# would swallow the whole site's static assets, not just player slugs.
 [[redirects]]
   from = "/*"
   to = "/.netlify/functions/illumination?slug=:splat"
   status = 200
-  force = true
