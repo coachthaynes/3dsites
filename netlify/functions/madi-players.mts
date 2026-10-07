@@ -20,6 +20,7 @@ export default async (req: Request) => {
       siteUrl: String(body?.siteUrl || "").trim(),
       school: String(body?.school || "").trim(),
       classYear: String(body?.classYear || "").trim(),
+      filmYoutubeUrl: String(body?.filmYoutubeUrl || "").trim(),
       created: existing?.created || new Date().toISOString()
     };
     await catalog().setJSON(`player/${slug}`, player);

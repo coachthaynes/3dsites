@@ -21,6 +21,9 @@ export interface Player {
   siteUrl?: string;
   school?: string;
   classYear?: string;
+  // Embeds in place of "coming soon" for full game film until a real clip
+  // is uploaded; an uploaded clip always takes priority over this link.
+  filmYoutubeUrl?: string;
   created: string;
 }
 

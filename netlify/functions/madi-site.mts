@@ -39,6 +39,7 @@ export default async (req: Request, context: Context) => {
     hero: sources("hero"),
     highlights,
     film: sources("film"),
+    filmYoutubeUrl: player.filmYoutubeUrl || "",
     poster: poster ? file(poster) : null,
     portrait: portrait ? file(portrait) : null,
     photos: live.filter(a => a.role === "nil" || a.role === "editorial").map(a => ({

@@ -376,6 +376,9 @@
         filmVideo.style.display = "";
         $("#filmPh").style.display = "none";
         setSources(filmVideo, data.film, data.poster, noFilm);
+      } else {
+        const dashboardFilmEmbed = youtubeEmbedUrl(data.filmYoutubeUrl);
+        if (dashboardFilmEmbed) showFilmYoutube(dashboardFilmEmbed);
       }
       if (data.highlights?.length) renderHighlights(data.highlights);
       if (data.portrait) {
