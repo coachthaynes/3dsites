@@ -22,30 +22,26 @@
 <header class="hero" id="top">
   <div class="stage" id="stage">
     <div class="reveal" id="reveal">
-      <div class="backdrop" id="backdrop" aria-hidden="true"></div>
-      <video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="media/poster.jpg">
+      <video id="heroVideo" autoplay muted loop playsinline preload="auto">
         <source src="media/highlight.mp4" type="video/mp4">
         <source src="media/highlight.webm" type="video/webm">
       </video>
       <div class="fallback" aria-hidden="true"><div class="court"></div></div>
       <div class="shade"></div>
     </div>
-    <div class="ring" id="ring"></div>
-    <div class="spark" id="spark"></div>
 
     <div class="title" id="title">
       <div class="num" aria-hidden="true"><span data-bind="number"></span></div>
       <p class="kicker" id="kicker" data-bind="team"></p>
       <h1 class="name" id="name">
-        <span class="line" data-split data-bind="first"></span>
-        <span class="line last" data-split data-bind="last"></span>
+        <span class="line" data-bind="first"></span>
+        <span class="line last" data-bind="last"></span>
       </h1>
       <div class="meta" id="meta"></div>
     </div>
 
     <div class="cue" id="cue">Scroll<i></i></div>
     <button class="sound" id="sound" type="button" aria-pressed="false">Sound off</button>
-    <div class="outro" id="outro">The story continues</div>
   </div>
 </header>
 

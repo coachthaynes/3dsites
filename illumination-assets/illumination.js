@@ -11,8 +11,6 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const ease = t => 1 - Math.pow(1 - t, 3);
-  const easeIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
   const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -93,8 +91,6 @@
 
   /* ---------- Hero video availability ---------- */
   const heroVideo = $("#heroVideo"), filmVideo = $("#filmVideo");
-  const setBackdrop = url => { if (url) $("#backdrop").style.setProperty("--poster", `url("${String(url).replace(/"/g, "%22")}")`); };
-  setBackdrop(heroVideo.poster);
   let heroFailed = false;
   const noVideo = () => { heroFailed = true; document.body.classList.add("no-video"); };
   // style.display is set directly rather than toggling .hidden: the .ph
@@ -115,7 +111,9 @@
   setTimeout(() => { if (dead(heroVideo)) noVideo(); if (dead(filmVideo)) noFilm(); }, 2500);
   function setSources(video, list, poster, onFail) {
     video.innerHTML = list.map(s => `<source src="${esc(s.url)}"${s.type ? ` type="${esc(s.type)}"` : ""}>`).join("");
-    if (poster) { video.poster = poster; if (video === heroVideo) setBackdrop(poster); }
+    // The hero never shows a poster image: it plays straight to video, no
+    // picture before it. The film player keeps its poster as before.
+    if (poster && video !== heroVideo) video.poster = poster;
     watchSources(video, onFail);
     video.load();
   }
@@ -128,84 +126,18 @@
     sound.setAttribute("aria-pressed", String(!heroVideo.muted));
   });
 
-  /* ---------- Split name into letters ---------- */
-  $$("[data-split]").forEach(el => {
-    const text = el.textContent;
-    el.textContent = "";
-    [...text].forEach(c => { const s = document.createElement("span"); s.className = "ch"; s.textContent = c; el.appendChild(s); });
-  });
-  const letters = $$(".name .ch"), metas = $$("#meta span");
-
-  /* ---------- Hero: opening + scroll ---------- */
-  const hero = $("#top"), reveal = $("#reveal"), ring = $("#ring"), spark = $("#spark");
-  const title = $("#title"), cue = $("#cue"), outro = $("#outro"), nav = $("#nav"), kicker = $("#kicker");
-  let open = reduce ? 1 : 0;
-  let introDone = reduce;
-  let W = innerWidth, H = innerHeight, halfDiag = Math.hypot(W, H) / 2;
-  addEventListener("resize", () => { W = innerWidth; H = innerHeight; halfDiag = Math.hypot(W, H) / 2; render(); });
-  const progress = () => clamp(-hero.getBoundingClientRect().top / (hero.offsetHeight - H));
-
-  function render() {
-    const p = progress();
-    const close = easeIO(clamp(p / 0.82));
-    const r = halfDiag * 1.02 * ease(open) * (1 - close);
-    reveal.style.clipPath = `circle(${r.toFixed(1)}px at 50% 50%)`;
-    reveal.style.opacity = String(1 - smooth(0.55, 0.9, p));
-    reveal.style.setProperty("--zoom", (1.08 + p * 0.25).toFixed(3));
-    const edge = (open < 1 ? Math.sin(open * Math.PI) : 0) + smooth(0.02, 0.2, p) * (1 - smooth(0.7, 0.86, p));
-    ring.style.width = ring.style.height = (r * 2).toFixed(1) + "px";
-    ring.style.opacity = String(clamp(edge));
-    const tFade = smooth(0, 0.35, p);
-    title.style.opacity = String(1 - tFade);
-    title.style.transform = `translateY(${(-p * 120).toFixed(1)}px) scale(${(1 - tFade * 0.08).toFixed(3)})`;
-    cue.style.opacity = introDone ? String(1 - smooth(0, 0.08, p)) : "0";
-    sound.style.opacity = introDone ? String(1 - smooth(0.3, 0.5, p)) : "0";
-    outro.style.opacity = String(smooth(0.86, 0.95, p) * (1 - smooth(0.97, 1, p)));
-    nav.classList.toggle("show", p > 0.96 || hero.getBoundingClientRect().bottom < H * 0.5);
-    if (p > 0.95) heroVideo.pause(); else if (heroVideo.paused && introDone && !heroFailed) heroVideo.play().catch(() => {});
+  /* ---------- Hero: static, nav shows once scrolled past it ---------- */
+  const hero = $("#top"), nav = $("#nav");
+  function syncNav() {
+    nav.classList.toggle("show", scrollY > hero.offsetHeight - 80);
   }
-
-  function intro() {
-    if (reduce) {
-      letters.forEach(l => { l.style.transform = "none"; l.style.opacity = 1; });
-      metas.forEach(m => { m.style.transform = "none"; m.style.opacity = 1; });
-      render();
-      return;
-    }
-    const t0 = performance.now(), SPARK = 700, OPEN = 1900;
-    function frame(now) {
-      const t = now - t0;
-      const s = clamp(t / SPARK);
-      spark.style.opacity = String(s < 1 ? s : Math.max(0, 1 - (t - SPARK) / 400));
-      spark.style.transform = `scale(${(0.4 + s * 0.8).toFixed(2)})`;
-      open = clamp((t - SPARK * 0.8) / OPEN);
-      const tt = t - SPARK - OPEN * 0.45;
-      letters.forEach((l, i) => {
-        const k = ease(clamp((tt - i * 45) / 700));
-        l.style.transform = `translateY(${(110 * (1 - k)).toFixed(1)}%)`;
-        l.style.opacity = String(k);
-      });
-      kicker.style.opacity = String(clamp((tt + 200) / 600));
-      metas.forEach((m, i) => {
-        const k = ease(clamp((tt - 500 - i * 110) / 600));
-        m.style.transform = `translateY(${(12 * (1 - k)).toFixed(1)}px)`;
-        m.style.opacity = String(k);
-      });
-      if (t > SPARK + OPEN + 1300) introDone = true;
-      render();
-      if (!introDone) requestAnimationFrame(frame);
-    }
-    kicker.style.opacity = 0;
-    requestAnimationFrame(frame);
-  }
-
-  let ticking = false;
+  let navTicking = false;
   addEventListener("scroll", () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => { render(); ticking = false; });
+    if (navTicking) return;
+    navTicking = true;
+    requestAnimationFrame(() => { syncNav(); navTicking = false; });
   }, { passive: true });
-  if (document.readyState === "complete") intro(); else addEventListener("load", intro);
+  syncNav();
 
   /* ---------- Reveal on view + count up ---------- */
   const io = new IntersectionObserver(entries => {
@@ -234,7 +166,7 @@
   if (!reduce && matchMedia("(pointer: fine)").matches) {
     addEventListener("pointermove", e => {
       glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-      glow.style.opacity = progress() >= 1 ? "1" : "0";
+      glow.style.opacity = scrollY > hero.offsetHeight ? "1" : "0";
     }, { passive: true });
     document.addEventListener("pointermove", e => {
       const c = e.target.closest?.(".card");
@@ -390,8 +322,10 @@
         heroFailed = false;
         document.body.classList.remove("no-video");
         setSources(heroVideo, data.hero, data.poster, noVideo);
-        if (introDone) heroVideo.play().catch(() => {});
-      } else if (data.poster) { heroVideo.poster = data.poster; setBackdrop(data.poster); }
+        heroVideo.play().catch(() => {});
+      } else {
+        noVideo();
+      }
       // No fallback to data.hero here: that is the muted teaser loop at the
       // top of the page, not a real game recording, so reusing it here would
       // show a hero clip labeled as full game film instead of honestly
@@ -436,5 +370,5 @@
   wireForm($("#nilForm"), $("#formStatus"), `Thank you. ${approver} will review your inquiry and be in touch soon.`, `NIL opportunity for ${fullName}`);
   wireForm($("#contactForm"), $("#contactStatus"), `Request received. ${approver} will review it and email you directly.`, `Contact request for ${fullName}`);
 
-  render();
+  syncNav();
 })();

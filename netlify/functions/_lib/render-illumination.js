@@ -235,18 +235,21 @@ function renderIlluminationSite(player) {
   const lm = player.localMedia || {};
   const sources = (list) => (Array.isArray(list) ? list : []).filter((v) => v && v.url)
     .map((v) => `\n        <source src="${esc(v.url)}"${v.type ? ` type="${esc(v.type)}"` : ""}>`).join("");
-  const poster = lm.poster ? ` poster="${esc(lm.poster)}"` : "";
+  // The hero never shows a poster image, it plays straight to video; the
+  // film player below keeps its poster as before.
+  const filmPoster = lm.poster ? ` poster="${esc(lm.poster)}"` : "";
   // Link previews: her poster or photo when there is one, otherwise the Elevate Her card.
   const shareImage = lm.poster || player.playerPhoto || player.photoUrl || (Array.isArray(lm.photos) && lm.photos[0] && lm.photos[0].url) || "";
   html = html.replace('<meta property="og:title" content="">\n<meta property="og:description" content="">\n<meta property="og:image" content="media/poster.jpg">',
     shareTags({ title: `${name} #${player.jerseyNumber || ""} | ${school}`, description: desc, image: shareImage, url: player.slug ? `/illumination/${player.slug}` : "", imageAlt: name, type: "profile" }));
+  const heroSources = sources(lm.hero);
   html = html.replace(
-    '<video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="media/poster.jpg">\n        <source src="media/highlight.mp4" type="video/mp4">\n        <source src="media/highlight.webm" type="video/webm">\n      </video>',
-    `<video id="heroVideo" autoplay muted loop playsinline preload="auto"${poster}>${sources(lm.hero)}${sources(lm.hero) ? "\n      " : ""}</video>`
+    '<video id="heroVideo" autoplay muted loop playsinline preload="auto">\n        <source src="media/highlight.mp4" type="video/mp4">\n        <source src="media/highlight.webm" type="video/webm">\n      </video>',
+    `<video id="heroVideo" autoplay muted loop playsinline preload="auto">${heroSources}${heroSources ? "\n      " : ""}</video>`
   );
   if (sources(lm.film)) {
     html = html.replace('<video id="filmVideo" controls playsinline preload="metadata"></video>',
-      `<video id="filmVideo" controls playsinline preload="metadata"${poster}>${sources(lm.film)}\n        </video>`);
+      `<video id="filmVideo" controls playsinline preload="metadata"${filmPoster}>${sources(lm.film)}\n        </video>`);
   }
   html = html.replace('<img id="portraitImg" src="media/photos/portrait.jpg"', `<img id="portraitImg" src="${esc(lm.portrait || "media/photos/portrait.jpg")}"`);
   return html;
