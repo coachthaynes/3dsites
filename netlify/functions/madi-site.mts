@@ -42,7 +42,7 @@ export default async (req: Request, context: Context) => {
     filmYoutubeUrl: player.filmYoutubeUrl || "",
     poster: poster ? file(poster) : null,
     portrait: portrait ? file(portrait) : null,
-    photos: live.filter(a => a.role === "nil" || a.role === "editorial").map(a => ({
+    photos: live.filter(a => a.role === "nil" || a.role === "editorial" || a.role === "photo").map(a => ({
       title: a.title, use: a.role, size: a.layout,
       src: file(a), thumb: img(a, 900), large: file(a), download: `${file(a)}?download=1`
     })),

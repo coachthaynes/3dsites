@@ -215,7 +215,7 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
                 </select>
               </label>
               <label class="tick"><input type="checkbox" id="upLive" checked> Make live on the site right away</label>
-              <p class="tagline" style="margin:0;line-height:1.6;letter-spacing:.08em;text-transform:none;font-family:var(--body);font-weight:400;font-size:13px">Decide for me puts videos in Highlight reel, PDFs in Marketing kit and photos in Photo vault Editorial. You can move anything after it uploads.</p>
+              <p class="tagline" style="margin:0;line-height:1.6;letter-spacing:.08em;text-transform:none;font-family:var(--body);font-weight:400;font-size:13px">Decide for me puts videos in Highlight reel, PDFs in Marketing kit and photos in Photo Gallery. You can move anything after it uploads.</p>
             </div>
           </div>
         </div>
@@ -255,15 +255,18 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
   const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const ROLES = [
     { id: "hero", label: "Opening video", help: "Plays inside the circle reveal at the top of the site. Muted loop, landscape, 10 to 30 seconds. Upload an MP4, and a WEBM too if you have one." },
-    { id: "highlight", label: "Highlight clip", help: "A single short highlight clip in the Watch Her Play section, with sound. Upload up to 4, each its own separate clip, not multiple formats of the same one." },
+    { id: "highlight", label: "Highlight clip", help: "A single short highlight clip in the Highlights section, with sound. Upload up to 4, each its own separate clip, not multiple formats of the same one." },
     { id: "film", label: "Full game film", help: "One complete game, for coaches who want to watch more than the highlights." },
     { id: "poster", label: "Poster still", help: "Shows while the video loads and as the preview image when the link is shared." },
     { id: "portrait", label: "Portrait", help: "Profile section photo. Vertical, 4 by 5 works best." },
-    { id: "nil", label: "Photo vault: NIL Ready", help: "No school names, logos, uniforms or gym. Partners can license these." },
-    { id: "editorial", label: "Photo vault: Editorial", help: "Game and uniform photos for media and recruiting." },
+    { id: "photo", label: "Photo Gallery", help: "Photos of her for her own social media, shown together in one gallery on her site." },
     { id: "kit", label: "Marketing kit", help: "Flyers, social graphics and PDFs. Available in the media feed, not shown on the site." }
   ];
-  const roleLabel = id => ROLES.find(r => r.id === id)?.label || id;
+  // Older assets may still be tagged "nil" or "editorial" from before the
+  // site's Photo Gallery was unified; they group and display exactly like
+  // "photo" everywhere below so nothing already uploaded needs to change.
+  const PHOTO_ROLES = ["photo", "nil", "editorial"];
+  const roleLabel = id => ROLES.find(r => r.id === id)?.label || (PHOTO_ROLES.includes(id) ? "Photo Gallery" : id);
   $("#upRole").insertAdjacentHTML("beforeend", ROLES.map(r => `<option value="${r.id}">${esc(r.label)}</option>`).join(""));
 
   let token = null;
@@ -421,14 +424,14 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
   function renderChecklist() {
     const live = assets.filter(a => a.live && a.status === "ready");
     const count = r => live.filter(a => a.role === r).length;
-    const vault = count("nil") + count("editorial");
+    const gallery = count("photo") + count("nil") + count("editorial");
     const items = [
       ["Opening video", count("hero") > 0, "Top of the site"],
       ["Highlight clips", count("highlight") > 0, `${count("highlight")} live (up to 4 shown)`],
-      ["Full game film", count("film") > 0, "Watch Her Play section"],
+      ["Full game film", count("film") > 0, "Full game film section"],
       ["Poster still", count("poster") > 0, "Loading and share image"],
       ["Portrait", count("portrait") > 0, "Profile section"],
-      ["Photo vault", vault >= 6 && count("nil") >= 3, `${vault} live, ${count("nil")} NIL Ready (aim for 6 and 3)`],
+      ["Photo Gallery", gallery >= 6, `${gallery} live (aim for at least 6)`],
       ["Marketing kit", count("kit") > 0, `${count("kit")} files`]
     ];
     $("#checklist").innerHTML = items.map(([t, ok, s]) => `<div class="${ok ? "ok" : ""}"><i>${ok ? "✓" : ""}</i><span>${esc(t)}<small>${esc(s)}</small></span></div>`).join("");
@@ -458,19 +461,19 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
   function renderAssets() {
     renderChecklist();
     $("#groups").innerHTML = ROLES.map(r => {
-      const list = assets.filter(a => a.role === r.id);
+      const list = assets.filter(a => r.id === "photo" ? PHOTO_ROLES.includes(a.role) : a.role === r.id);
       return `<section class="group"><header><h3>${esc(r.label)} <span class="tagline">(${list.length})</span></h3><p>${esc(r.help)}</p></header>
         ${list.length ? `<div class="grid">${list.map(card).join("")}</div>` : `<div class="empty" style="padding:22px">Nothing here yet</div>`}</section>`;
     }).join("");
   }
 
   function card(a) {
-    const photo = a.role === "nil" || a.role === "editorial";
+    const photo = PHOTO_ROLES.includes(a.role);
     return `<article class="asset${a.live && a.status === "ready" ? " live" : ""}" data-id="${esc(a.id)}">
       <div class="thumb">${preview(a)}<span class="status">${a.status !== "ready" ? "Upload failed" : a.live ? "Live" : "Draft"}</span></div>
       <div class="body">
         <input data-f="title" value="${esc(a.title)}" aria-label="Title">
-        <select data-f="role" aria-label="Where it goes">${ROLES.map(r => `<option value="${r.id}"${r.id === a.role ? " selected" : ""}>${esc(r.label)}</option>`).join("")}</select>
+        <select data-f="role" aria-label="Where it goes">${ROLES.map(r => `<option value="${r.id}"${r.id === a.role || (r.id === "photo" && photo) ? " selected" : ""}>${esc(r.label)}</option>`).join("")}</select>
         ${photo ? `<select data-f="layout" aria-label="Grid size"><option value=""${a.layout === "" ? " selected" : ""}>Standard tile</option><option value="tall"${a.layout === "tall" ? " selected" : ""}>Tall tile</option><option value="wide"${a.layout === "wide" ? " selected" : ""}>Wide tile</option></select>` : ""}
         <div class="row">
           <label class="switch"><input type="checkbox" data-f="live"${a.live ? " checked" : ""}${a.status !== "ready" ? " disabled" : ""}><i></i>Live</label>

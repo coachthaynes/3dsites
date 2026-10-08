@@ -23,7 +23,7 @@ export default async (req: Request, context: Context) => {
     if (!ALLOWED.test(type)) return fail("Use JPG, PNG, WEBP, MP4, MOV, WEBM or PDF files. iPhone HEIC photos need to be exported as JPG first.");
     if (!Number.isFinite(size) || size <= 0 || size > MAX_FILE) return fail("Files must be under 1.5 GB");
     const name = String(b?.name || "file").slice(0, 160);
-    const role: Role = ROLES.includes(b?.role) ? b.role : type.startsWith("video/") ? "film" : type === "application/pdf" ? "kit" : "editorial";
+    const role: Role = ROLES.includes(b?.role) ? b.role : type.startsWith("video/") ? "film" : type === "application/pdf" ? "kit" : "photo";
     const asset: Asset = {
       id: newId(), slug, name, type, size,
       chunks: Math.ceil(size / CHUNK_SIZE), chunkSize: CHUNK_SIZE,
