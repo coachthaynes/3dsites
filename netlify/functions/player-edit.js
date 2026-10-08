@@ -118,6 +118,7 @@ exports.handler = async (event) => {
   const views = await getViews(slug);
   const viewsBlock = `<div class="stat-num">${views.toLocaleString()}</div><div class="stat-label">Total page views</div>`;
   const showVideoUploader = player.tier !== "elite" && player.tier !== "illumination";
+  const showWeeklyStats = player.tier === "elite" || player.tier === "illumination";
 
   const sections = FIELDS.map(([title, fields]) => {
     const rows = fields.map(([key, label, type]) => {
@@ -250,6 +251,27 @@ exports.handler = async (event) => {
     <button type="submit" class="btn primary">Save Changes</button>
     <div id="status"></div>
   </form>
+
+  ${showWeeklyStats ? `
+  <div class="stat-card">
+    <div class="section-title" style="margin-top:0;">Weekly Stats For Your Graphic</div>
+    <div class="section-sub">Send this week's stats and we'll build your graphic and get it to you. Fill this out whenever you have a game to report.</div>
+    <form id="weeklyStatsForm" name="weekly-stats" method="POST" data-netlify="true" netlify-honeypot="website">
+      <input type="hidden" name="form-name" value="weekly-stats">
+      <p style="position:absolute;left:-9999px;"><label>Leave this field blank <input name="website" tabindex="-1" autocomplete="off"></label></p>
+      <input type="hidden" name="slug" value="${esc(slug)}">
+      <input type="hidden" name="playerName" value="${esc(player.playerName)}">
+      <input type="hidden" name="playerEmail" value="${esc(player.playerEmail || player.guardianEmail || "")}">
+      <div class="form-grid" style="grid-template-columns:1fr;">
+        <div class="form-field"><label>This Week's Stats</label><textarea name="stats" rows="3" placeholder="vs Nease: 18 pts, 9 reb, 4 ast" required></textarea></div>
+        <div class="form-field"><label>Special Mentions (optional)</label><textarea name="specialMentions" rows="2" placeholder="Hit 7 threes, new personal record for assists..."></textarea></div>
+        <div class="form-field"><label>Specific Photo To Use (optional)</label><input name="photoNote" placeholder="Leave blank and we'll pick one from your uploads"></div>
+      </div>
+      <button type="submit" class="btn" style="margin-top:14px;background:var(--panel-2);color:var(--white);border:1px solid var(--line);">Send My Stats</button>
+      <div id="weeklyStatsStatus" style="margin-top:10px;font-size:13px;color:var(--dim);"></div>
+    </form>
+  </div>
+  ` : ""}
 </div>
 <script>
 (function(){
@@ -401,6 +423,26 @@ exports.handler = async (event) => {
       status.textContent = 'Error saving: ' + err.message;
     });
   });
+
+  var weeklyStatsForm = document.getElementById('weeklyStatsForm');
+  if (weeklyStatsForm) {
+    weeklyStatsForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var wsStatus = document.getElementById('weeklyStatsStatus');
+      wsStatus.textContent = 'Sending...';
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(new FormData(weeklyStatsForm)).toString()
+      }).then(function(r){
+        if (!r.ok) throw new Error(r.status);
+        weeklyStatsForm.reset();
+        wsStatus.textContent = 'Sent. We will build your graphic and get it to you.';
+      }).catch(function(){
+        wsStatus.textContent = 'Something went wrong sending this. Email your stats to elevateherhoopsreport@gmail.com instead.';
+      });
+    });
+  }
 })();
 </script>
 </body>
