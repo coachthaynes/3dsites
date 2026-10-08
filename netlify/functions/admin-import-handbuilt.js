@@ -5,6 +5,23 @@ const { getPlayer, savePlayer } = require("./_lib/blobs");
 const { checkAdminSecret } = require("./_lib/auth");
 const conversions = require("../../data/conversions");
 
+// An array where every entry is blank (every value undefined/null/"") has
+// nothing in it worth keeping, so it should be treated the same as an empty
+// array below, not skipped just because its length isn't zero. A blank entry
+// like this is left behind by, for example, the admin dashboard's "Add
+// Writeup" button being clicked and never filled in.
+function isBlank(v) {
+  if (v === undefined || v === null || v === "") return true;
+  if (Array.isArray(v)) {
+    return v.every((item) => (
+      item && typeof item === "object"
+        ? Object.values(item).every((x) => x === undefined || x === null || x === "")
+        : isBlank(item)
+    ));
+  }
+  return false;
+}
+
 exports.handler = async (event) => {
   const cors = {
     "Access-Control-Allow-Origin": "*",
@@ -32,8 +49,7 @@ exports.handler = async (event) => {
     // Keep anything already set on her record; the conversion only fills what is missing.
     const merged = {};
     for (const [k, v] of Object.entries(record)) {
-      const cur = existing[k];
-      if (cur === undefined || cur === null || cur === "" || (Array.isArray(cur) && !cur.length)) merged[k] = v;
+      if (isBlank(existing[k])) merged[k] = v;
     }
     const saved = await savePlayer({
       ...merged, slug: record.slug, id: existing.id || record.slug,
