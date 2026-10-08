@@ -89,7 +89,7 @@ window.SITE = {
     { k: "NCAA ID", v: "On request", pending: true },
     { k: "Current offers", v: "On request", pending: true }
   ],
-  academicsNote: "College coaches can request transcripts and academic details through Coach Haynes.",
+  academicsNote: "College coaches can request transcripts and academic details through the Elevate Her Team.",
 
   film: {
     links: [
@@ -139,12 +139,12 @@ window.SITE = {
   writeups: [],
 
   contact: {
-    approver: "Coach Haynes",
+    approver: "Elevate Her Team",
     email: "elevateherhoopsreport@gmail.com",
     people: [
       { role: "Player", who: "Kennedy Jeffress", detail: "Phone and email on request" },
       { role: "Parent or guardian", who: "Jeffress Family", detail: "Phone on request" },
-      { role: "Head Coach", who: "Tenise Haynes", detail: "Phone and email on request" }
+      { role: "Head Coach", who: "Elevate Her Team", detail: "Phone and email on request" }
     ]
   },
 
