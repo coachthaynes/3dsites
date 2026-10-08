@@ -1,4 +1,3 @@
-const { publicCoachName } = require("./public-names");
 const { shareTags } = require("./share-tags");
 const fs = require("fs");
 const path = require("path");
@@ -207,7 +206,7 @@ function buildSiteConfig(player) {
       people: [
         { role: "Player", who: name || "TBD", detail: "Phone and email on request" },
         { role: "Parent or guardian", who: player.guardianName || "TBD", detail: "Phone on request" },
-        { role: "Head Coach", who: publicCoachName(player.coachName), detail: "Phone and email on request" },
+        { role: "Head Coach", who: player.coachName || "TBD", detail: "Phone and email on request" },
       ],
     },
     photos: (player.localMedia && Array.isArray(player.localMedia.photos)) ? player.localMedia.photos : [],

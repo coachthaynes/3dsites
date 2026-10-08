@@ -1,4 +1,3 @@
-const { publicCoachName } = require("./public-names");
 const { shareTags } = require("./share-tags");
 const { getSchoolColors } = require("./school-colors");
 
@@ -326,7 +325,7 @@ ${vault.length ? `<section id="photos">
         <h4>Contact</h4>
         <p style="color:var(--gray);font-size:13.5px;line-height:1.6;margin-bottom:6px;">To protect ${esc(fn)}'s privacy, contact details are shared by request only. Tell us who you are and we will send the information directly to you once approved.</p>
         ${player.playerName ? `<div class="contact-row"><span>Player </span>${esc(name)}, phone and email on request</div>` : ""}
-        ${player.coachName ? `<div class="contact-row"><span>Coach / Parent </span>${esc(publicCoachName(player.coachName))}, phone and email on request</div>` : ""}
+        ${player.coachName ? `<div class="contact-row"><span>Coach / Parent </span>${esc(player.coachName)}, phone and email on request</div>` : ""}
         <form class="request-form" name="elite-contact-request" method="POST" data-netlify="true" netlify-honeypot="website" id="contactForm">
           <input type="hidden" name="form-name" value="elite-contact-request">
           <input type="hidden" name="subject" value="Contact request for ${esc(name)}">
