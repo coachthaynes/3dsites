@@ -239,8 +239,8 @@ function renderIlluminationSite(player) {
     shareTags({ title: `${name} #${player.jerseyNumber || ""} | ${school}`, description: desc, image: shareImage, url: player.slug ? `/${player.slug}` : "", imageAlt: name, type: "profile" }));
   const heroSources = sources(lm.hero);
   html = html.replace(
-    '<video id="heroVideo" autoplay muted loop playsinline preload="auto">\n        <source src="media/highlight.mp4" type="video/mp4">\n        <source src="media/highlight.webm" type="video/webm">\n      </video>',
-    `<video id="heroVideo" autoplay muted loop playsinline preload="auto">${heroSources}${heroSources ? "\n      " : ""}</video>`
+    '<video id="heroVideo" autoplay muted playsinline preload="auto">\n        <source src="media/highlight.mp4" type="video/mp4">\n        <source src="media/highlight.webm" type="video/webm">\n      </video>',
+    `<video id="heroVideo" autoplay muted playsinline preload="auto">${heroSources}${heroSources ? "\n      " : ""}</video>`
   );
   if (sources(lm.film)) {
     html = html.replace('<video id="filmVideo" controls playsinline preload="metadata"></video>',

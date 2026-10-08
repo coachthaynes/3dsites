@@ -105,6 +105,17 @@
   let heroFailed = false;
   const noVideo = () => { heroFailed = true; document.body.classList.add("no-video"); };
 
+  // Plays once sources are actually ready instead of a single blind attempt
+  // right after load(), which can silently not stick (the hero sits paused
+  // showing the browser's own play button). Plays through once, no loop.
+  heroVideo.loop = false;
+  function playWhenReady(video) {
+    const tryPlay = () => video.play().catch(() => {});
+    tryPlay();
+    if (video.readyState < 3) video.addEventListener("canplay", tryPlay, { once: true });
+  }
+  playWhenReady(heroVideo);
+
   /* ---------- Full game film: uploaded clip, else a YouTube embed, else "coming soon" ---------- */
   const filmFrame = filmVideo.closest(".player-frame");
   let filmYoutubeIframe = null;
@@ -350,7 +361,7 @@
         heroFailed = false;
         document.body.classList.remove("no-video");
         setSources(heroVideo, data.hero, data.poster, noVideo);
-        heroVideo.play().catch(() => {});
+        playWhenReady(heroVideo);
       } else {
         noVideo();
       }
