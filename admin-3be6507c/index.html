@@ -1354,6 +1354,16 @@
     modalBackdrop.classList.add('open');
   }
 
+  // Photo and video uploads save themselves the moment they finish, rather
+  // than waiting on the separate Save Player button: the upload is the
+  // expensive, easy to lose part, so it should not depend on a second click
+  // to actually stick on her record.
+  function autosavePlayerField(slug, field, value){
+    var body = { slug: slug };
+    body[field] = value;
+    return api('/admin-players', { method: 'POST', body: JSON.stringify(body) });
+  }
+
   document.getElementById('f_playerPhotoFile').addEventListener('change', function(e){
     var file = e.target.files && e.target.files[0];
     if(!file) return;
@@ -1379,7 +1389,12 @@
       }).then(function(res){
         document.getElementById('f_playerPhoto').value = res.url;
         setPhotoPreview(dataUrl);
-        photoStatus.textContent = 'Photo uploaded.';
+        photoStatus.textContent = 'Photo uploaded, saving...';
+        return autosavePlayerField(slugEl.value.trim(), 'playerPhoto', res.url).then(function(){
+          photoStatus.textContent = 'Photo uploaded and saved.';
+        }, function(err){
+          photoStatus.textContent = 'Photo uploaded, but saving it failed: ' + err.message + '. Click Save Player to try again.';
+        });
       }).catch(function(err){
         photoStatus.textContent = 'Error uploading photo: ' + err.message;
         e.target.value = '';
@@ -1442,7 +1457,12 @@
     }).then(function(result){
       document.getElementById('f_highlightVideo').value = result.url;
       setVideoPreview(result.url);
-      videoStatus.textContent = 'Video uploaded. Save the player to publish it.';
+      videoStatus.textContent = 'Video uploaded, saving...';
+      return autosavePlayerField(slug, 'highlightVideo', result.url).then(function(){
+        videoStatus.textContent = 'Video uploaded and saved.';
+      }, function(err){
+        videoStatus.textContent = 'Video uploaded, but saving it failed: ' + err.message + '. Click Save Player to try again.';
+      });
     }).catch(function(err){
       videoStatus.textContent = 'Error uploading video: ' + err.message;
       e.target.value = '';

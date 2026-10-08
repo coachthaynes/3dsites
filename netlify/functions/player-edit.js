@@ -280,6 +280,23 @@ exports.handler = async (event) => {
   var token = ${JSON.stringify(token)};
   var fieldIds = ${JSON.stringify(allFieldIds)};
 
+  // Uploads (photo, video) save themselves the moment they finish, instead
+  // of waiting on the separate Save Changes button below: the upload itself
+  // is the expensive, easy to lose part, so it shouldn't depend on a second
+  // click to actually stick.
+  function autosaveField(field, value){
+    var body = { slug: slug, token: token };
+    body[field] = value;
+    return fetch('/save-player', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    }).then(function(r){
+      if(!r.ok) return r.text().then(function(t){ throw new Error(t); });
+      return r.json();
+    });
+  }
+
   document.getElementById('f_playerPhotoFile').addEventListener('change', function(e){
     var file = e.target.files && e.target.files[0];
     if(!file) return;
@@ -299,7 +316,12 @@ exports.handler = async (event) => {
         document.getElementById('f_playerPhoto').value = res.url;
         document.getElementById('photoPreview').src = res.url;
         document.getElementById('photoPreview').style.display = 'block';
-        status.textContent = 'Photo uploaded.';
+        status.textContent = 'Photo uploaded, saving...';
+        return autosaveField('playerPhoto', res.url).then(function(){
+          status.textContent = 'Photo uploaded and saved. It is live on your page.';
+        }, function(err){
+          status.textContent = 'Photo uploaded, but saving it failed: ' + err.message + '. Click Save Changes below to try again.';
+        });
       }).catch(function(err){
         status.textContent = 'Error uploading photo: ' + err.message;
       });
@@ -364,7 +386,12 @@ exports.handler = async (event) => {
           var preview = document.getElementById('videoPreview');
           preview.src = result.url;
           preview.style.display = 'block';
-          status.textContent = 'Video uploaded. Click Save Changes to publish it.';
+          status.textContent = 'Video uploaded, saving...';
+          return autosaveField('highlightVideo', result.url).then(function(){
+            status.textContent = 'Video uploaded and saved. It is live on your page.';
+          }, function(err){
+            status.textContent = 'Video uploaded, but saving it failed: ' + err.message + '. Click Save Changes below to try again.';
+          });
         })
         .catch(function(err){
           status.textContent = 'Error uploading video: ' + err.message;
