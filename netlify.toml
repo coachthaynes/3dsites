@@ -6,13 +6,17 @@
 
 [[redirects]]
   from = "https://aiyanahaynes.elevateherhoopsreport.com/media/*"
-  to = "/aiyana-haynes/media/:splat"
+  to = "/media/players/aiyana-haynes/:splat"
   status = 200
   force = true
 
+# Aiyana was converted from a hand built static page to a dynamic player
+# record (see data/conversions/aiyana-haynes.json), so her old subdomain now
+# points at the same live, up to date page as her new bare root URL below,
+# instead of the now retired static file.
 [[redirects]]
   from = "https://aiyanahaynes.elevateherhoopsreport.com/*"
-  to = "/aiyana-haynes/index.html"
+  to = "/.netlify/functions/illumination?slug=aiyana-haynes"
   status = 200
   force = true
 
@@ -159,3 +163,31 @@
   to = "/.netlify/functions/player-articles"
   status = 200
   force = true
+
+# Aiyana was converted to a dynamic player record (see
+# data/conversions/aiyana-haynes.json). A real directory still sits at
+# aiyana-haynes/ in this repo, which would otherwise win over the unforced
+# catch-all below and keep serving her old, frozen static page, so these two
+# are forced to send her bare root URL to the live, dynamically rendered page
+# instead. Her media files moved to media/players/aiyana-haynes/.
+[[redirects]]
+  from = "/aiyana-haynes"
+  to = "/.netlify/functions/illumination?slug=aiyana-haynes"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/aiyana-haynes/"
+  to = "/.netlify/functions/illumination?slug=aiyana-haynes"
+  status = 200
+  force = true
+
+# Illumination players' bare root URL (elevateherhoopsreport.com/<slug>), kept
+# last so every more specific rule above still matches first. No `force`: a
+# real static file or directory at the request path must always win over this
+# redirect (CSS, JS, images, every other page's own assets), or this catch-all
+# would swallow the whole site's static assets, not just player slugs.
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/illumination?slug=:splat"
+  status = 200

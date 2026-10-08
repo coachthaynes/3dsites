@@ -4,8 +4,8 @@ import { listPlayers as listSitePlayers } from "./_lib/blobs.js";
 // GET /api/illumination-candidates
 // Illumination tier players that already exist on the main site (created by
 // the Illumination questionnaire or added by hand on the admin dashboard's
-// Illumination tab) but don't have a matching Madi catalog entry yet. Lets
-// the Madi dashboard's Add player site dialog offer these to pick from
+// Illumination tab) but don't have a matching Visual-Dashboard catalog entry yet. Lets
+// the Visual-Dashboard's Add player site dialog offer these to pick from
 // instead of her slug being typed in from scratch, which is how a mismatch
 // between the two records (and the Missing slug / not picked up bugs that
 // come from one) happens in the first place.

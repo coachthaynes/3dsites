@@ -1,6 +1,6 @@
 /* Elevate Her · Illumination package renderer.
    Reads window.SITE (from site.js) and builds the page. Media comes from the
-   Madi Visuals dashboard when SITE.media.dashboard is set, with the files in
+   Visual-Dashboard when SITE.media.dashboard is set, with the files in
    media/ as a fallback. Shared by every Illumination site: edit site.js, not this file. */
 (function () {
   const S = window.SITE;
@@ -11,9 +11,21 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const ease = t => 1 - Math.pow(1 - t, 3);
-  const easeIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
   const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  function youtubeEmbedUrl(url) {
+    if (!url) return "";
+    const patterns = [
+      /youtu\.be\/([a-zA-Z0-9_-]{6,})/,
+      /youtube\.com\/watch\?[^#]*v=([a-zA-Z0-9_-]{6,})/,
+      /youtube\.com\/embed\/([a-zA-Z0-9_-]{6,})/,
+      /youtube\.com\/shorts\/([a-zA-Z0-9_-]{6,})/,
+    ];
+    for (const re of patterns) {
+      const m = String(url).match(re);
+      if (m) return `https://www.youtube.com/embed/${m[1]}`;
+    }
+    return "";
+  }
   const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   const toDate = iso => { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d); };
@@ -26,7 +38,7 @@
   if (S.theme?.accent2) root.setProperty("--accent-2", S.theme.accent2);
   if (S.theme?.glow) root.setProperty("--accent-glow", S.theme.glow);
   document.title = `${fullName} #${P.number}`;
-  const desc = `${fullName}, #${P.number} ${P.position.toLowerCase()} for the ${P.team}, Class of ${P.classYear}. Highlights, stats, film, NIL partnerships and licensed photos.`;
+  const desc = `${fullName}, #${P.number} ${P.position.toLowerCase()} for the ${P.team}, Class of ${P.classYear}. Highlights, stats, film and photos.`;
   $('meta[name="description"]').content = desc;
   $('meta[property="og:title"]').content = `${fullName} #${P.number} | ${P.team}`;
   $('meta[property="og:description"]').content = desc;
@@ -35,7 +47,7 @@
   const binds = {
     number: P.number, team: P.team, first: P.first, last: P.last, bio: S.bio,
     testingNote: S.testingNote, academicsNote: S.academicsNote,
-    scheduleTitle: S.schedule.title, scheduleNote: S.schedule.note, nilIntro: S.nil.intro
+    scheduleTitle: S.schedule.title, scheduleNote: S.schedule.note
   };
   $$("[data-bind]").forEach(el => { el.textContent = binds[el.dataset.bind] ?? ""; });
   $("#name").setAttribute("aria-label", fullName);
@@ -81,9 +93,6 @@
     ? `<a class="link" href="${esc(l.url)}" target="_blank" rel="noopener"><div><b>${esc(l.name)}</b><span>${esc(l.desc)}</span></div>${arrow}</a>`
     : `<a class="link pending" aria-disabled="true"><div><b>${esc(l.name)}</b><span>Link coming soon</span></div>${arrow}</a>`).join("");
 
-  /* ---------- NIL ---------- */
-  $("#nilRules").innerHTML = S.nil.rules.map(r => `<li>${esc(r)}</li>`).join("");
-  $("#mailFallback").href = `mailto:${S.contact.email}?subject=${encodeURIComponent("NIL opportunity for " + fullName)}`;
 
   /* ---------- Contact (private, by request) ---------- */
   const lock = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
@@ -93,15 +102,40 @@
 
   /* ---------- Hero video availability ---------- */
   const heroVideo = $("#heroVideo"), filmVideo = $("#filmVideo");
-  const setBackdrop = url => { if (url) $("#backdrop").style.setProperty("--poster", `url("${String(url).replace(/"/g, "%22")}")`); };
-  setBackdrop(heroVideo.poster);
   let heroFailed = false;
   const noVideo = () => { heroFailed = true; document.body.classList.add("no-video"); };
+
+  /* ---------- Full game film: uploaded clip, else a YouTube embed, else "coming soon" ---------- */
+  const filmFrame = filmVideo.closest(".player-frame");
+  let filmYoutubeIframe = null;
+  function showFilmYoutube(embedUrl) {
+    if (!filmYoutubeIframe) {
+      filmYoutubeIframe = document.createElement("iframe");
+      filmYoutubeIframe.title = `${fullName} full game film`;
+      filmYoutubeIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      filmYoutubeIframe.allowFullscreen = true;
+      filmYoutubeIframe.loading = "lazy";
+      filmFrame.appendChild(filmYoutubeIframe);
+    }
+    filmYoutubeIframe.src = embedUrl;
+    filmVideo.style.display = "none";
+    $("#filmPh").style.display = "none";
+  }
+  function hideFilmYoutube() {
+    if (filmYoutubeIframe) filmYoutubeIframe.remove();
+    filmYoutubeIframe = null;
+  }
   // style.display is set directly rather than toggling .hidden: the .ph
   // placeholder's own CSS (display: grid, a class selector) outranks the
   // browser's built in [hidden] { display: none }, so .hidden alone leaves
   // it visibly stuck on screen even once marked hidden.
-  const noFilm = () => { filmVideo.style.display = "none"; $("#filmPh").style.display = ""; };
+  const noFilm = () => {
+    if (filmYoutubeIframe) return; // a YouTube embed already stands in for it
+    filmVideo.style.display = "none";
+    $("#filmPh").style.display = "";
+  };
+  const filmYoutubeEmbedUrl = youtubeEmbedUrl(S.film.youtubeUrl);
+  if (filmYoutubeEmbedUrl) showFilmYoutube(filmYoutubeEmbedUrl);
   function watchSources(video, onFail) {
     const last = video.querySelector("source:last-of-type");
     if (last) last.addEventListener("error", onFail);
@@ -115,7 +149,9 @@
   setTimeout(() => { if (dead(heroVideo)) noVideo(); if (dead(filmVideo)) noFilm(); }, 2500);
   function setSources(video, list, poster, onFail) {
     video.innerHTML = list.map(s => `<source src="${esc(s.url)}"${s.type ? ` type="${esc(s.type)}"` : ""}>`).join("");
-    if (poster) { video.poster = poster; if (video === heroVideo) setBackdrop(poster); }
+    // The hero never shows a poster image: it plays straight to video, no
+    // picture before it. The film player keeps its poster as before.
+    if (poster && video !== heroVideo) video.poster = poster;
     watchSources(video, onFail);
     video.load();
   }
@@ -128,84 +164,18 @@
     sound.setAttribute("aria-pressed", String(!heroVideo.muted));
   });
 
-  /* ---------- Split name into letters ---------- */
-  $$("[data-split]").forEach(el => {
-    const text = el.textContent;
-    el.textContent = "";
-    [...text].forEach(c => { const s = document.createElement("span"); s.className = "ch"; s.textContent = c; el.appendChild(s); });
-  });
-  const letters = $$(".name .ch"), metas = $$("#meta span");
-
-  /* ---------- Hero: opening + scroll ---------- */
-  const hero = $("#top"), reveal = $("#reveal"), ring = $("#ring"), spark = $("#spark");
-  const title = $("#title"), cue = $("#cue"), outro = $("#outro"), nav = $("#nav"), kicker = $("#kicker");
-  let open = reduce ? 1 : 0;
-  let introDone = reduce;
-  let W = innerWidth, H = innerHeight, halfDiag = Math.hypot(W, H) / 2;
-  addEventListener("resize", () => { W = innerWidth; H = innerHeight; halfDiag = Math.hypot(W, H) / 2; render(); });
-  const progress = () => clamp(-hero.getBoundingClientRect().top / (hero.offsetHeight - H));
-
-  function render() {
-    const p = progress();
-    const close = easeIO(clamp(p / 0.82));
-    const r = halfDiag * 1.02 * ease(open) * (1 - close);
-    reveal.style.clipPath = `circle(${r.toFixed(1)}px at 50% 50%)`;
-    reveal.style.opacity = String(1 - smooth(0.55, 0.9, p));
-    reveal.style.setProperty("--zoom", (1.08 + p * 0.25).toFixed(3));
-    const edge = (open < 1 ? Math.sin(open * Math.PI) : 0) + smooth(0.02, 0.2, p) * (1 - smooth(0.7, 0.86, p));
-    ring.style.width = ring.style.height = (r * 2).toFixed(1) + "px";
-    ring.style.opacity = String(clamp(edge));
-    const tFade = smooth(0, 0.35, p);
-    title.style.opacity = String(1 - tFade);
-    title.style.transform = `translateY(${(-p * 120).toFixed(1)}px) scale(${(1 - tFade * 0.08).toFixed(3)})`;
-    cue.style.opacity = introDone ? String(1 - smooth(0, 0.08, p)) : "0";
-    sound.style.opacity = introDone ? String(1 - smooth(0.3, 0.5, p)) : "0";
-    outro.style.opacity = String(smooth(0.86, 0.95, p) * (1 - smooth(0.97, 1, p)));
-    nav.classList.toggle("show", p > 0.96 || hero.getBoundingClientRect().bottom < H * 0.5);
-    if (p > 0.95) heroVideo.pause(); else if (heroVideo.paused && introDone && !heroFailed) heroVideo.play().catch(() => {});
+  /* ---------- Hero: static, nav shows once scrolled past it ---------- */
+  const hero = $("#top"), nav = $("#nav");
+  function syncNav() {
+    nav.classList.toggle("show", scrollY > hero.offsetHeight - 80);
   }
-
-  function intro() {
-    if (reduce) {
-      letters.forEach(l => { l.style.transform = "none"; l.style.opacity = 1; });
-      metas.forEach(m => { m.style.transform = "none"; m.style.opacity = 1; });
-      render();
-      return;
-    }
-    const t0 = performance.now(), SPARK = 700, OPEN = 1900;
-    function frame(now) {
-      const t = now - t0;
-      const s = clamp(t / SPARK);
-      spark.style.opacity = String(s < 1 ? s : Math.max(0, 1 - (t - SPARK) / 400));
-      spark.style.transform = `scale(${(0.4 + s * 0.8).toFixed(2)})`;
-      open = clamp((t - SPARK * 0.8) / OPEN);
-      const tt = t - SPARK - OPEN * 0.45;
-      letters.forEach((l, i) => {
-        const k = ease(clamp((tt - i * 45) / 700));
-        l.style.transform = `translateY(${(110 * (1 - k)).toFixed(1)}%)`;
-        l.style.opacity = String(k);
-      });
-      kicker.style.opacity = String(clamp((tt + 200) / 600));
-      metas.forEach((m, i) => {
-        const k = ease(clamp((tt - 500 - i * 110) / 600));
-        m.style.transform = `translateY(${(12 * (1 - k)).toFixed(1)}px)`;
-        m.style.opacity = String(k);
-      });
-      if (t > SPARK + OPEN + 1300) introDone = true;
-      render();
-      if (!introDone) requestAnimationFrame(frame);
-    }
-    kicker.style.opacity = 0;
-    requestAnimationFrame(frame);
-  }
-
-  let ticking = false;
+  let navTicking = false;
   addEventListener("scroll", () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => { render(); ticking = false; });
+    if (navTicking) return;
+    navTicking = true;
+    requestAnimationFrame(() => { syncNav(); navTicking = false; });
   }, { passive: true });
-  if (document.readyState === "complete") intro(); else addEventListener("load", intro);
+  syncNav();
 
   /* ---------- Reveal on view + count up ---------- */
   const io = new IntersectionObserver(entries => {
@@ -234,7 +204,7 @@
   if (!reduce && matchMedia("(pointer: fine)").matches) {
     addEventListener("pointermove", e => {
       glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-      glow.style.opacity = progress() >= 1 ? "1" : "0";
+      glow.style.opacity = scrollY > hero.offsetHeight ? "1" : "0";
     }, { passive: true });
     document.addEventListener("pointermove", e => {
       const c = e.target.closest?.(".card");
@@ -316,7 +286,6 @@
       const fig = document.createElement("figure");
       fig.className = "shot fade in " + (ph.size || "");
       fig.style.margin = 0;
-      fig.dataset.use = ph.use;
       const src = ph.thumb || ph.src;
       fig.innerHTML = `
         <div class="empty"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="4"/></svg>Photo coming soon</div>
@@ -331,7 +300,6 @@
         $("#lbImg").src = ph.large || ph.src;
         $("#lbImg").alt = img.alt;
         $("#lbTitle").textContent = ph.title;
-        $("#lbUse").textContent = ph.use === "nil" ? "NIL Ready: licensed partner use with a signed agreement" : "Editorial: media and recruiting use only";
         const dl = $("#lbDownload");
         dl.href = ph.download || ph.src;
         dl.setAttribute("download", `${P.first}_${P.last}_${(ph.title || "photo").replace(/\s+/g, "_")}`);
@@ -340,15 +308,7 @@
       });
       gallery.appendChild(fig);
     });
-    applyFilter();
   }
-  let filter = "all";
-  function applyFilter() { $$(".shot").forEach(s => s.style.display = (filter === "all" || s.dataset.use === filter) ? "" : "none"); }
-  $$(".filters button").forEach(b => b.addEventListener("click", () => {
-    filter = b.dataset.filter;
-    $$(".filters button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-    applyFilter();
-  }));
   renderGallery((S.photos || []).map(p => ({ ...p, src: p.url || "media/photos/" + p.file })));
   const closeLb = () => $("#lightbox").classList.remove("open");
   $("#lbClose").addEventListener("click", closeLb);
@@ -374,8 +334,8 @@
   }
   renderHighlights([]);
 
-  /* ---------- Madi Visuals dashboard media ----------
-     Pulls everything Madi has marked live for this player. Anything not in the
+  /* ---------- Visual-Dashboard media ----------
+     Pulls everything marked live for this player. Anything not in the
      dashboard keeps using the local media/ files. */
   async function loadDashboardMedia() {
     const m = S.media;
@@ -390,16 +350,22 @@
         heroFailed = false;
         document.body.classList.remove("no-video");
         setSources(heroVideo, data.hero, data.poster, noVideo);
-        if (introDone) heroVideo.play().catch(() => {});
-      } else if (data.poster) { heroVideo.poster = data.poster; setBackdrop(data.poster); }
+        heroVideo.play().catch(() => {});
+      } else {
+        noVideo();
+      }
       // No fallback to data.hero here: that is the muted teaser loop at the
       // top of the page, not a real game recording, so reusing it here would
       // show a hero clip labeled as full game film instead of honestly
       // saying none has been uploaded yet.
       if (data.film?.length) {
+        hideFilmYoutube();
         filmVideo.style.display = "";
         $("#filmPh").style.display = "none";
         setSources(filmVideo, data.film, data.poster, noFilm);
+      } else {
+        const dashboardFilmEmbed = youtubeEmbedUrl(data.filmYoutubeUrl);
+        if (dashboardFilmEmbed) showFilmYoutube(dashboardFilmEmbed);
       }
       if (data.highlights?.length) renderHighlights(data.highlights);
       if (data.portrait) {
@@ -433,8 +399,7 @@
       }
     });
   }
-  wireForm($("#nilForm"), $("#formStatus"), `Thank you. ${approver} will review your inquiry and be in touch soon.`, `NIL opportunity for ${fullName}`);
   wireForm($("#contactForm"), $("#contactStatus"), `Request received. ${approver} will review it and email you directly.`, `Contact request for ${fullName}`);
 
-  render();
+  syncNav();
 })();

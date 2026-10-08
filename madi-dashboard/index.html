@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Madi Visuals Dashboard</title>
+<title>Visual-Dashboard</title>
 <meta name="description" content="Media dashboard for Elevate Her Illumination player sites.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -140,7 +140,7 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
 <section class="login" id="loginView">
   <form id="loginForm">
     <div>
-      <div class="brandmark">Madi <em>Visuals</em></div>
+      <div class="brandmark">Visual-<em>Dashboard</em></div>
       <div class="tagline" style="margin-top:8px">Media dashboard for Elevate Her Illumination sites</div>
     </div>
     <label>Dashboard password<input type="password" name="password" required autocomplete="current-password" autofocus></label>
@@ -153,7 +153,7 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
 <div id="appView" class="hide">
   <header class="top">
     <div class="l">
-      <div class="brandmark">Madi <em>Visuals</em></div>
+      <div class="brandmark">Visual-<em>Dashboard</em></div>
       <span class="tagline">× Elevate Her Illumination</span>
     </div>
     <div class="r">
@@ -237,6 +237,7 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
     <label>Live site address<input name="siteUrl" type="url" placeholder="https://kennedyjeffress.netlify.app"></label>
     <label>School<input name="school" placeholder="Middleburg High School"></label>
     <label>Class<input name="classYear" placeholder="2029"></label>
+    <label>Full game film YouTube link <span class="hint">Embeds on her site in place of "coming soon" until a full game clip is uploaded above. An uploaded clip always takes priority over this link.</span><input name="filmYoutubeUrl" type="url" placeholder="https://youtube.com/watch?v=..."></label>
     <div style="display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap">
       <button class="btn danger small" type="button" id="deletePlayer">Delete site media</button>
       <div style="display:flex;gap:10px">
@@ -364,7 +365,7 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
     pf.slug.value = opt.value;
     pf.school.value = opt.dataset.school || "";
     pf.classYear.value = opt.dataset.classyear || "";
-    pf.siteUrl.value = `https://${opt.value}.elevateherhoopsreport.com`;
+    pf.siteUrl.value = `https://elevateherhoopsreport.com/${opt.value}`;
     pf.slug.readOnly = true;
   });
 
@@ -374,7 +375,7 @@ dialog .hint { color: var(--faint); font-size: 13px; text-transform: none; lette
     $("#deletePlayer").classList.toggle("hide", !p);
     $("#candidateField").classList.toggle("hide", !!p);
     if (p) {
-      for (const k of ["name", "slug", "siteUrl", "school", "classYear"]) pf[k].value = p[k] || "";
+      for (const k of ["name", "slug", "siteUrl", "school", "classYear", "filmYoutubeUrl"]) pf[k].value = p[k] || "";
     } else {
       $("#candidatePick").value = "";
       loadIlluminationCandidates();

@@ -1,5 +1,6 @@
 const { listPlayers, savePlayer, deletePlayer, getViews } = require("./_lib/blobs");
 const { checkAdminSecret } = require("./_lib/auth");
+const { sanitizeSlug } = require("./_lib/reserved-slugs");
 
 function slugify(name) {
   return String(name)
@@ -37,7 +38,7 @@ exports.handler = async (event) => {
     } catch (e) {
       return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "Invalid JSON" }) };
     }
-    if (!data.slug && data.playerName) data.slug = slugify(data.playerName);
+    if (!data.slug && data.playerName) data.slug = sanitizeSlug(slugify(data.playerName));
     if (!data.slug) return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "playerName or slug required" }) };
     if (!data.id) data.id = data.slug;
     const saved = await savePlayer(data);

@@ -1,4 +1,4 @@
-// Shared helpers for the Madi Visuals dashboard functions, ported into the
+// Shared helpers for the Visual-Dashboard functions, ported into the
 // main Elevate Her Hoops Report site so the dashboard and the Illumination
 // sites it feeds live in one deploy.
 import { getStore } from "@netlify/blobs";
@@ -21,6 +21,9 @@ export interface Player {
   siteUrl?: string;
   school?: string;
   classYear?: string;
+  // Embeds in place of "coming soon" for full game film until a real clip
+  // is uploaded; an uploaded clip always takes priority over this link.
+  filmYoutubeUrl?: string;
   created: string;
 }
 

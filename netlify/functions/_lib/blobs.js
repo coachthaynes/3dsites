@@ -34,6 +34,18 @@ function graphicsStore() {
   return makeStore("graphics");
 }
 
+// Essential (free) tier's single self-uploaded highlight clip. Metadata is
+// one JSON entry per upload id; the raw bytes are chunked across several
+// entries (<id>/<n>) so an upload fits inside the function payload limit,
+// same reasoning the Visual-Dashboard's media uploader documents for its own chunking.
+function highlightVideoAssetsStore() {
+  return makeStore("highlight-video-assets");
+}
+
+function highlightVideoChunksStore() {
+  return makeStore("highlight-video-chunks");
+}
+
 function tradingCardsStore() {
   return makeStore("trading-cards");
 }
@@ -159,6 +171,8 @@ module.exports = {
   submissionsStore,
   photosStore,
   graphicsStore,
+  highlightVideoAssetsStore,
+  highlightVideoChunksStore,
   tradingCardsStore,
   illuminationQueueStore,
   listIlluminationQueue,

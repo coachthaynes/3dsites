@@ -1,6 +1,6 @@
 /* Elevate Her · Illumination site config for Kennedy Jeffress.
    Everything on the page comes from this file. Photos and videos come from the
-   Madi Visuals dashboard (media.dashboard + media.slug), with files in media/ as a fallback.
+   Visual-Dashboard (media.dashboard + media.slug), with files in media/ as a fallback.
    Keep visible text free of hyphens and dashes. */
 window.SITE = {
   player: {
@@ -138,31 +138,6 @@ window.SITE = {
      { kind: "Scouting report", title: "...", source: "...", date: "2026-12-05", excerpt: "...", url: "https://..." } */
   writeups: [],
 
-  nil: {
-    intro: "Kennedy is open to NIL partnerships with local businesses and brands that share her values: hard work, community and showing young girls what is possible on the court. Every opportunity is reviewed with her family.",
-    why: [
-      { v: "#2", l: "Starting guard for the Lady Broncos" },
-      { v: "17.3", l: "Points per game as a freshman" },
-      { v: "4 yrs", l: "Of high school runway ahead through 2029" },
-      { v: "Clay Co.", l: "Rooted in the Middleburg community" }
-    ],
-    offers: [
-      { icon: "social", title: "Social content", text: "Sponsored posts, reels and stories featuring your product or business." },
-      { icon: "business", title: "Local business ads", text: "Print, digital and in store campaigns using licensed NIL ready photos." },
-      { icon: "appearance", title: "Appearances", text: "Grand openings, community events, autograph sessions and meet and greets." },
-      { icon: "camp", title: "Camps and clinics", text: "Youth skills camps and guest coaching for younger players." },
-      { icon: "product", title: "Product partners", text: "Gear, apparel, nutrition and training products she actually uses." },
-      { icon: "cause", title: "Community causes", text: "Charity drives and nonprofit campaigns that give back to Clay County." }
-    ],
-    rules: [
-      "Send an inquiry with the opportunity, dates and compensation.",
-      "Coach Haynes receives every inquiry and shares it with Kennedy's family, who make the final decision.",
-      "A simple written agreement is signed by a parent or guardian before any content goes live.",
-      "Partners receive licensed photos from the Photo Vault below for the agreed campaign.",
-      "Following FHSAA rules, partner content may not use Middleburg High School or Clay County District Schools names, logos, uniforms or facilities, and deals cannot be tied to recruiting or athletic performance."
-    ]
-  },
-
   contact: {
     approver: "Coach Haynes",
     email: "elevateherhoopsreport@gmail.com",
@@ -173,17 +148,17 @@ window.SITE = {
     ]
   },
 
-  /* Local fallback photos in media/photos/ (used until Madi uploads to the dashboard).
-     use: "nil" or "editorial". size: "tall", "wide" or "". */
+  /* Local fallback photos in media/photos/ (used until the Visual-Dashboard gets an upload).
+     size: "tall", "wide" or "". */
   photos: [
-    { file: "portrait.jpg", title: "Studio portrait", use: "nil", size: "tall" },
-    { file: "action_drive.jpg", title: "Drive to the rim", use: "editorial", size: "wide" },
-    { file: "ballhandling.jpg", title: "Handles", use: "nil", size: "" },
-    { file: "jumper.jpg", title: "Pull up jumper", use: "editorial", size: "" },
-    { file: "lifestyle.jpg", title: "Lifestyle", use: "nil", size: "tall" },
-    { file: "steal.jpg", title: "Lockdown defense", use: "editorial", size: "" },
-    { file: "brand_hold.jpg", title: "Product hold", use: "nil", size: "" },
-    { file: "headshot.jpg", title: "Headshot", use: "nil", size: "" },
-    { file: "celebration.jpg", title: "Bench energy", use: "editorial", size: "wide" }
+    { file: "portrait.jpg", title: "Studio portrait", size: "tall" },
+    { file: "action_drive.jpg", title: "Drive to the rim", size: "wide" },
+    { file: "ballhandling.jpg", title: "Handles", size: "" },
+    { file: "jumper.jpg", title: "Pull up jumper", size: "" },
+    { file: "lifestyle.jpg", title: "Lifestyle", size: "tall" },
+    { file: "steal.jpg", title: "Lockdown defense", size: "" },
+    { file: "brand_hold.jpg", title: "Product hold", size: "" },
+    { file: "headshot.jpg", title: "Headshot", size: "" },
+    { file: "celebration.jpg", title: "Bench energy", size: "wide" }
   ]
 };
