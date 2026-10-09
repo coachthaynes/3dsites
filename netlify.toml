@@ -32,9 +32,13 @@
   status = 200
   force = true
 
+# Kennedy's static page drifted out of sync with the shared Illumination
+# template (missing structural changes made since it was hand built), so
+# her old subdomain now points at the same live, dynamically rendered page
+# as her bare root URL below, instead of the frozen static file.
 [[redirects]]
   from = "https://kennedyjeffress.elevateherhoopsreport.com/*"
-  to = "/kennedy-jeffress/index.html"
+  to = "/.netlify/functions/illumination?slug=kennedy-jeffress"
   status = 200
   force = true
 
@@ -179,6 +183,21 @@
 [[redirects]]
   from = "/aiyana-haynes/"
   to = "/.netlify/functions/illumination?slug=aiyana-haynes"
+  status = 200
+  force = true
+
+# Same situation as Aiyana above: a real kennedy-jeffress/ directory sits in
+# this repo and would otherwise win over the unforced catch-all below,
+# keeping her stuck on the frozen, out of sync static page.
+[[redirects]]
+  from = "/kennedy-jeffress"
+  to = "/.netlify/functions/illumination?slug=kennedy-jeffress"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/kennedy-jeffress/"
+  to = "/.netlify/functions/illumination?slug=kennedy-jeffress"
   status = 200
   force = true
 
