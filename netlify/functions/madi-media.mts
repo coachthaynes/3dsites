@@ -3,6 +3,10 @@ import { media, lookupMedia } from "./_lib/madi-core.mts";
 
 // GET /madi-media/:id  public file delivery with byte range support so video can stream and seek.
 // Add ?download=1 to save the file instead of viewing it.
+// Most bytes a single range request serves, however much of the file was
+// actually asked for - keeps one invocation from having to stream an
+// entire large file's worth of chunks before responding.
+const MAX_RANGE_BYTES = 8 * 1024 * 1024;
 export default async (req: Request, context: Context) => {
   if (req.method !== "GET" && req.method !== "HEAD") return new Response("Method not allowed", { status: 405 });
   const a = await lookupMedia(context.params.id);
@@ -30,6 +34,16 @@ export default async (req: Request, context: Context) => {
     if (start >= a.size || start > end) {
       return new Response(null, { status: 416, headers: { ...headers, "Content-Range": `bytes */${a.size}` } });
     }
+    // A video element commonly asks for an open ended "bytes=X-" range,
+    // meaning "the rest of the file". Honoring that literally would make
+    // this one invocation await every remaining stored piece in sequence
+    // before it can return anything - fine for a short clip, but for a
+    // longer one that's enough sequential blob fetches to run past how
+    // long a mobile client (or the function itself) will wait, which
+    // surfaces as total playback failure rather than a slow stream.
+    // Cap how much a single request serves; the player just issues
+    // another range request to pick up where this one left off.
+    end = Math.min(end, start + MAX_RANGE_BYTES - 1);
     headers["Content-Range"] = `bytes ${start}-${end}/${a.size}`;
     headers["Content-Length"] = String(end - start + 1);
     if (req.method === "HEAD") return new Response(null, { status: 206, headers });
