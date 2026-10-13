@@ -46,15 +46,38 @@ export default async (req: Request, context: Context) => {
     if (start >= a.size || start > end) {
       return new Response(null, { status: 416, headers: { ...headers, "Content-Range": `bytes */${a.size}` } });
     }
-    const n = Math.floor(start / a.chunkSize);
-    const pieceStart = n * a.chunkSize;
-    end = Math.min(end, pieceStart + a.chunkSize - 1);
     headers["Content-Range"] = `bytes ${start}-${end}/${a.size}`;
     headers["Content-Length"] = String(end - start + 1);
     if (req.method === "HEAD") return new Response(null, { status: 206, headers });
-    const buf = await piece(n);
-    if (!buf) return new Response("Missing data", { status: 500 });
-    return new Response(buf.slice(start - pieceStart, end - pieceStart + 1), { status: 206, headers });
+    const firstPiece = Math.floor(start / a.chunkSize);
+    const lastPiece = Math.floor(end / a.chunkSize);
+    if (firstPiece === lastPiece) {
+      const pieceStart = firstPiece * a.chunkSize;
+      const buf = await piece(firstPiece);
+      if (!buf) return new Response("Missing data", { status: 500 });
+      return new Response(buf.slice(start - pieceStart, end - pieceStart + 1), { status: 206, headers });
+    }
+    // The requested range spans more than one stored piece (common for an
+    // open ended "bytes=X-" request a video player sends while buffering or
+    // seeking) - a player expecting the rest of the file and only getting
+    // one piece back has to make another round trip to keep going, which is
+    // exactly what made clips slow to start and stall partway through.
+    // Stream every piece the range touches in order, trimming only the
+    // first and last to the exact requested boundaries.
+    let n = firstPiece;
+    const body = new ReadableStream({
+      async pull(controller) {
+        if (n > lastPiece) { controller.close(); return; }
+        const buf = await piece(n);
+        if (!buf) { controller.error(new Error("Missing data")); return; }
+        const pieceStart = n * a.chunkSize;
+        const sliceStart = n === firstPiece ? start - pieceStart : 0;
+        const sliceEnd = n === lastPiece ? end - pieceStart + 1 : buf.byteLength;
+        controller.enqueue(new Uint8Array(buf.slice(sliceStart, sliceEnd)));
+        n++;
+      }
+    });
+    return new Response(body, { status: 206, headers });
   }
 
   headers["Content-Length"] = String(a.size);
