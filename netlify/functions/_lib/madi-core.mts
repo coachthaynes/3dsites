@@ -28,6 +28,11 @@ export interface Player {
   // Embeds in place of "coming soon" for full game film until a real clip
   // is uploaded; an uploaded clip always takes priority over this link.
   filmYoutubeUrl?: string;
+  // Up to 4 individual YouTube links, one per highlight clip slot. Unlike
+  // film, a link here takes priority over an uploaded highlight clip -
+  // self-hosted highlight video is fragile enough across mobile browsers
+  // that YouTube is the preferred path once a player has links set.
+  highlightYoutubeUrls?: string[];
   created: string;
 }
 

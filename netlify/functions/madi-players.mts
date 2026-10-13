@@ -21,6 +21,9 @@ export default async (req: Request) => {
       school: String(body?.school || "").trim(),
       classYear: String(body?.classYear || "").trim(),
       filmYoutubeUrl: String(body?.filmYoutubeUrl || "").trim(),
+      highlightYoutubeUrls: [1, 2, 3, 4]
+        .map(n => String(body?.[`highlightYoutubeUrl${n}`] || "").trim())
+        .filter(Boolean),
       created: existing?.created || new Date().toISOString()
     };
     await catalog().setJSON(`player/${slug}`, player);

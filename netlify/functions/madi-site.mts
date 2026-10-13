@@ -50,6 +50,7 @@ export default async (req: Request, context: Context) => {
     updated: new Date().toISOString(),
     hero: sources("hero"),
     highlights,
+    highlightYoutubeUrls: (player.highlightYoutubeUrls || []).filter(Boolean).slice(0, 4),
     film: sources("film"),
     filmYoutubeUrl: player.filmYoutubeUrl || "",
     poster: poster ? file(poster) : null,

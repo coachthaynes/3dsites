@@ -360,6 +360,9 @@
   $$(".fade").forEach(el => io.observe(el));
 
   /* ---------- Highlight clips (up to 4 separate videos) ---------- */
+  // A clip is either a YouTube embed ({ youtubeEmbed }) or a self-hosted
+  // file ({ url, type }); YouTube is the preferred path per slot, so the
+  // caller never mixes the two for the same clip.
   function renderHighlights(list) {
     const box = $("#highlights");
     if (!box) return;
@@ -367,7 +370,10 @@
       box.innerHTML = `<div class="player-frame small"><div class="ph">Highlight clips coming soon.</div></div>`;
       return;
     }
-    box.innerHTML = list.map(h => `
+    box.innerHTML = list.map(h => h.youtubeEmbed ? `
+      <div class="player-frame small">
+        <iframe src="${esc(h.youtubeEmbed)}" title="${esc(fullName)} highlight clip" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+      </div>` : `
       <div class="player-frame small">
         <video playsinline preload="metadata" controls onerror="this.style.display='none';this.nextElementSibling.hidden=false">
           <source src="${esc(h.url)}"${h.type ? ` type="${esc(h.type)}"` : ""}>
@@ -411,7 +417,9 @@
         const dashboardFilmEmbed = youtubeEmbedUrl(data.filmYoutubeUrl);
         if (dashboardFilmEmbed) showFilmYoutube(dashboardFilmEmbed);
       }
-      if (data.highlights?.length) renderHighlights(data.highlights);
+      const youtubeHighlights = (data.highlightYoutubeUrls || []).map(youtubeEmbedUrl).filter(Boolean).map(youtubeEmbed => ({ youtubeEmbed }));
+      if (youtubeHighlights.length) renderHighlights(youtubeHighlights);
+      else if (data.highlights?.length) renderHighlights(data.highlights);
       if (data.portrait) {
         let img = $("#portraitImg");
         if (!img) { img = document.createElement("img"); $(".portrait").prepend(img); }

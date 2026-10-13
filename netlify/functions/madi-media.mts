@@ -89,8 +89,11 @@ export default async (req: Request, context: Context) => {
   // for just the first slice. Accept-Ranges + Content-Range is enough for
   // every real video element to recognize and keep fetching the rest with
   // Range requests. An explicit download only ever asks for files small
-  // enough to not need this.
-  if (a.size > MAX_RANGE_BYTES && !new URL(req.url).searchParams.has("download")) {
+  // enough to not need this. Scoped to video: a plain GET for a photo
+  // comes from an <img> tag or the Image CDN, neither of which knows what
+  // to do with a 206 - they expect the complete file in one response, and
+  // a photo is never anywhere near the 20MB cap anyway.
+  if (a.type.startsWith("video/") && a.size > MAX_RANGE_BYTES && !new URL(req.url).searchParams.has("download")) {
     const end = MAX_RANGE_BYTES - 1;
     headers["Content-Range"] = `bytes 0-${end}/${a.size}`;
     headers["Content-Length"] = String(MAX_RANGE_BYTES);
