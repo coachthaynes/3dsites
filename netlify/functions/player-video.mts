@@ -94,10 +94,44 @@ export default async (req: Request, context: Context) => {
     return new Response(body, { status: 206, headers });
   }
 
+  // Netlify's own streamed-response cap (20MB) sits well under how big an
+  // uploaded clip can get, so a plain GET with no Range header - some
+  // browsers' very first request for a video, made before they've seen
+  // Accept-Ranges and switch to ranged fetches - can't honestly promise
+  // the whole file through a normal 200: Content-Length would claim the
+  // true size while the platform silently cuts the stream off at 20MB,
+  // which looks like a corrupted download to the browser. Answer it the
+  // same bounded, honest way an explicit range request already is: a 206
+  // for just the first slice. Accept-Ranges + Content-Range is enough for
+  // every real video element to recognize and keep fetching the rest with
+  // Range requests.
+  if (a.size > MAX_RANGE_BYTES) {
+    const end = MAX_RANGE_BYTES - 1;
+    headers["Content-Range"] = `bytes 0-${end}/${a.size}`;
+    headers["Content-Length"] = String(MAX_RANGE_BYTES);
+    if (req.method === "HEAD") return new Response(null, { status: 206, headers });
+    const lastPiece = Math.floor(end / a.chunkSize);
+    let n = 0;
+    const body = new ReadableStream({
+      async pull(controller) {
+        if (n > lastPiece) { controller.close(); return; }
+        const buf = await piece(n);
+        if (!buf) { controller.error(new Error("Missing data")); return; }
+        const sliceEnd = n === lastPiece ? end - n * a.chunkSize + 1 : buf.byteLength;
+        controller.enqueue(new Uint8Array(buf.slice(0, sliceEnd)));
+        n++;
+      }
+    });
+    return new Response(body, { status: 206, headers });
+  }
+
   headers["Content-Length"] = String(a.size);
   if (req.method === "HEAD") return new Response(null, { status: 200, headers });
   if (a.chunks === 1) return new Response(await piece(0), { status: 200, headers });
 
+  // Whole file: stream the pieces in order. Only reached for a file at or
+  // under MAX_RANGE_BYTES - anything bigger can't be delivered whole in
+  // one response given Netlify's 20MB streamed-response cap.
   let n = 0;
   const body = new ReadableStream({
     async pull(controller) {
