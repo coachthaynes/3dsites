@@ -369,9 +369,10 @@
     }
     box.innerHTML = list.map(h => `
       <div class="player-frame small">
-        <video playsinline preload="metadata" controls>
+        <video playsinline preload="metadata" controls onerror="this.style.display='none';this.nextElementSibling.hidden=false">
           <source src="${esc(h.url)}"${h.type ? ` type="${esc(h.type)}"` : ""}>
         </video>
+        <div class="ph" hidden>Can't play in this browser.<br><a href="${esc(h.url)}?download=1" style="color:inherit;text-decoration:underline;">Download this clip</a></div>
       </div>`).join("");
   }
   renderHighlights([]);
