@@ -107,8 +107,7 @@
 
   // Plays once sources are actually ready instead of a single blind attempt
   // right after load(), which can silently not stick (the hero sits paused
-  // showing the browser's own play button). Plays through once, no loop.
-  heroVideo.loop = false;
+  // showing the browser's own play button).
   function playWhenReady(video) {
     const tryPlay = () => video.play().catch(() => {});
     tryPlay();
@@ -165,6 +164,38 @@
     if (poster && video !== heroVideo) video.poster = poster;
     watchSources(video, onFail);
     video.load();
+  }
+
+  // Swapping a visible video's sources (setSources + load()) resets it
+  // immediately, so a clip that's already playing smoothly (the local
+  // fallback) gets yanked into a paused, half-buffered state the instant a
+  // live source is found, showing the browser's own play button until it
+  // catches up. This preloads the new source in an offscreen video first,
+  // and only swaps it into view once it can actually play, so the visible
+  // element either keeps playing what it already had or jumps straight to
+  // playing the new clip, never a visible loading stall in between.
+  function swapSourcesWhenReady(video, list, poster, onFail, onReady) {
+    if (!list.length) return;
+    const probe = document.createElement("video");
+    probe.muted = true;
+    probe.playsInline = true;
+    probe.preload = "auto";
+    probe.innerHTML = list.map(s => `<source src="${esc(s.url)}"${s.type ? ` type="${esc(s.type)}"` : ""}>`).join("");
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      setSources(video, list, poster, onFail);
+      if (onReady) onReady();
+    };
+    probe.addEventListener("canplay", finish, { once: true });
+    probe.addEventListener("error", () => { done = true; clearTimeout(timer); }, { once: true });
+    // If the new clip never buffers enough to fire canplay (slow or flaky
+    // connection), swap anyway after a while rather than leaving stale or
+    // placeholder content up forever.
+    const timer = setTimeout(finish, 12000);
+    probe.load();
   }
 
   const sound = $("#sound");
@@ -358,10 +389,11 @@
       if (!res.ok) return;
       const data = await res.json();
       if (data.hero?.length) {
-        heroFailed = false;
-        document.body.classList.remove("no-video");
-        setSources(heroVideo, data.hero, data.poster, noVideo);
-        playWhenReady(heroVideo);
+        swapSourcesWhenReady(heroVideo, data.hero, data.poster, noVideo, () => {
+          heroFailed = false;
+          document.body.classList.remove("no-video");
+          playWhenReady(heroVideo);
+        });
       } else {
         noVideo();
       }
