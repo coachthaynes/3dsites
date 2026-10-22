@@ -74,11 +74,6 @@
       <thead><tr><th scope="col">Per game</th>${st.table.columns.map(c => `<th scope="col">${esc(c)}</th>`).join("")}</tr></thead>
       <tbody>${st.table.rows.map(r => `<tr><th scope="row">${esc(r[0])}</th>${r.slice(1).map(v => v === "" || v == null ? `<td class="soon">Upcoming</td>` : `<td class="now">${esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
   }
-  if (st.splits) {
-    statsHtml += `<div class="subhead fade"><h3>${esc(st.splits.title)}</h3><small>${esc(st.splits.source || "")}</small></div>
-      <div class="bigstats fade" style="margin-top:18px">${st.splits.tiles.map(tile).join("")}</div>
-      <div class="split fade">${st.splits.meters.map(m => `<div class="meter"><div class="row"><span class="pct">${esc(m.pct)}%</span><span class="att">${esc(m.made)} of ${esc(m.att)}</span></div><div class="bar"><i data-w="${esc(m.pct)}"></i></div><div class="lbl">${esc(m.label)}</div></div>`).join("")}</div>`;
-  }
   $("#statsWrap").innerHTML = statsHtml;
 
   /* ---------- Measurables, testing, academics ---------- */
