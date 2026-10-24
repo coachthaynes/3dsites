@@ -78,27 +78,24 @@ module.exports = `
   }
   .data-note strong{color:var(--teal);}
 
-  .county-nav{display:flex;gap:10px;flex-wrap:wrap;margin:28px 0 6px;}
-  .county-pill{border:1.5px solid var(--teal);color:var(--teal);border-radius:999px;padding:8px 16px;font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:0.03em;}
-  .county-pill:hover{background:var(--teal);color:var(--violet-deep);}
-
-  section.county{padding:52px 0;}
-  .county-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
-  .county-head .display{font-size:clamp(24px,3.4vw,34px);color:var(--white);}
-  .county-count{font-family:'IBM Plex Mono',monospace;color:var(--dim);font-size:13px;}
-  .county-intro{color:var(--dim);font-size:14px;margin-bottom:30px;max-width:70ch;}
-
-  .school-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  @media (max-width:980px){ .school-grid{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:640px){ .school-grid{grid-template-columns:1fr;} }
-  .school-card{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
-  .school-card.has-live{border-color:var(--teal);box-shadow:0 0 30px rgba(0,245,212,0.12);flex-direction:column;align-items:flex-start;}
-  .school-name{font-family:'Fredoka',sans-serif;font-size:15.5px;font-weight:600;color:var(--white);}
-  .school-link{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--teal);white-space:nowrap;flex-shrink:0;}
-  .school-link:hover{color:var(--white);}
-  .live-block{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);width:100%;}
-  .live-block a{color:var(--teal);font-weight:700;font-size:14px;display:block;margin-top:8px;}
-  .live-block a:hover{color:var(--white);}
+  .player-directory{padding:40px 0 70px;}
+  .player-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media (max-width:980px){ .player-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:640px){ .player-grid{grid-template-columns:1fr;} }
+  .player-card{
+    display:flex;align-items:center;gap:14px;border:1px solid var(--line);background:var(--panel);
+    border-radius:16px;padding:16px 18px;transition:border-color .2s,transform .2s;
+  }
+  .player-card:hover,.player-card:focus-visible{border-color:var(--teal);transform:translateY(-2px);}
+  .school-logo-img{width:40px;height:40px;object-fit:contain;border-radius:10px;flex-shrink:0;background:rgba(255,255,255,0.06);}
+  .school-badge{
+    display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;flex-shrink:0;
+    background:rgba(0,245,212,0.14);color:var(--teal);font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;
+  }
+  .player-info{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .player-name{font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .player-school{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .empty-note{border:1px dashed var(--line);border-radius:16px;padding:40px 24px;text-align:center;color:var(--dim);font-size:14.5px;}
 
   footer{padding:56px 0 46px;border-top:1px solid var(--line);}
   .foot-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;color:var(--dim);font-size:12.5px;}

@@ -1,153 +1,46 @@
 const { shareTags } = require("./share-tags");
 const CSS = require("./directory-css");
-const { getCanonicalSchoolName } = require("./school-colors");
+const { getSchoolLogo, getSchoolInitials } = require("./school-colors");
 
 function esc(s) {
   if (s === undefined || s === null) return "";
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-const COUNTIES = [
-  {
-    id: "duval",
-    name: "Duval County",
-    intro: "Jacksonville area public high schools.",
-    schools: [
-      { name: "Andrew Jackson High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/andrew-jackson-tigers/basketball/girls/" },
-      { name: "Atlantic Coast High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/atlantic-coast-stingrays/basketball/girls/" },
-      { name: "Baldwin Middle-Senior High School", maxpreps: "https://www.maxpreps.com/fl/baldwin/baldwin-indians/basketball/girls/" },
-      { name: "Edward H. White High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/ed-white-commanders/basketball/girls/" },
-      { name: "Englewood High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/englewood-rams/basketball/girls/" },
-      { name: "First Coast High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/first-coast-buccaneers/basketball/girls/" },
-      { name: "Duncan U. Fletcher High School", maxpreps: "https://www.maxpreps.com/fl/neptune-beach/fletcher-senators/basketball/girls/" },
-      { name: "Mandarin High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/mandarin-mustangs/basketball/girls/" },
-      { name: "Paxon School for Advanced Studies", maxpreps: "https://www.maxpreps.com/fl/jacksonville/paxon-school-for-advanced-studies-golden-eagles/basketball/girls/" },
-      { name: "William M. Raines High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/raines-vikings/basketball/girls/" },
-      { name: "Jean Ribault High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/ribault-trojans/basketball/girls/" },
-      { name: "Riverside High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/riverside-generals/basketball/girls/" },
-      { name: "Sandalwood High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/sandalwood-mighty-saints/basketball/girls/" },
-      { name: "Stanton College Preparatory School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/stanton-blue-devils/basketball/girls/" },
-      { name: "Terry Parker High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/parker-braves/basketball/girls/" },
-      { name: "Westside High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/westside-wolverines/basketball/girls/" },
-      { name: "Samuel W. Wolfson High School", maxpreps: "https://www.maxpreps.com/fl/jacksonville/wolfson-wolfpack/basketball/girls/" },
-    ],
-  },
-  {
-    id: "clay",
-    name: "Clay County",
-    intro: "Green Cove Springs, Middleburg, and Orange Park area public high schools.",
-    schools: [
-      { name: "Clay High School", maxpreps: "https://www.maxpreps.com/fl/green-cove-springs/clay-blue-devils/basketball/girls/" },
-      { name: "Fleming Island High School", maxpreps: "https://www.maxpreps.com/fl/orange-park/fleming-island-golden-eagles/basketball/girls/" },
-      { name: "Keystone Heights Junior/Senior High School", maxpreps: "https://www.maxpreps.com/fl/keystone-heights/keystone-heights-indians/basketball/girls/" },
-      {
-        name: "Middleburg High School",
-        maxpreps: "https://www.maxpreps.com/fl/middleburg/middleburg-broncos/basketball/girls/",
-        extraLinks: [
-          { href: "/aiyana-haynes", label: "Aiyana Haynes" },
-          { href: "https://kennedyjeffress.elevateherhoopsreport.com", label: "Kennedy Jeffress" },
-        ],
-      },
-      { name: "Oakleaf High School", maxpreps: "https://www.maxpreps.com/fl/orange-park/oakleaf-knights/basketball/girls/" },
-      { name: "Orange Park High School", maxpreps: "https://www.maxpreps.com/fl/orange-park/orange-park-raiders/basketball/girls/" },
-      { name: "Ridgeview High School", maxpreps: "https://www.maxpreps.com/fl/orange-park/ridgeview-panthers/basketball/girls/" },
-    ],
-  },
-  {
-    id: "stjohns",
-    name: "St. Johns County",
-    intro: "St. Augustine and Ponte Vedra area public high schools.",
-    schools: [
-      { name: "Allen D. Nease High School", maxpreps: "https://www.maxpreps.com/fl/ponte-vedra/nease-panthers/basketball/girls/" },
-      { name: "Bartram Trail High School", maxpreps: "https://www.maxpreps.com/fl/st-johns/bartram-trail-bears/basketball/girls/" },
-      { name: "Beachside High School", maxpreps: "https://www.maxpreps.com/fl/st-johns/beachside-barracudas/basketball/girls/" },
-      { name: "Creekside High School", maxpreps: "https://www.maxpreps.com/fl/st-johns/creekside-knights/basketball/girls/" },
-      { name: "Pedro Menendez High School", maxpreps: "https://www.maxpreps.com/fl/st-augustine/menendez-falcons/basketball/girls/" },
-      { name: "Ponte Vedra High School", maxpreps: "https://www.maxpreps.com/fl/ponte-vedra/ponte-vedra-sharks/basketball/girls/" },
-      { name: "St. Augustine High School", maxpreps: "https://www.maxpreps.com/fl/st-augustine/st-augustine-yellow-jackets/basketball/girls/" },
-      { name: "Tocoi Creek High School", maxpreps: "https://www.maxpreps.com/fl/st-augustine/tocoi-creek-toros/basketball/girls/" },
-    ],
-  },
-];
-
-function schoolCard(school, playersBySchool) {
-  const livePlayers = playersBySchool[school.name] || [];
-  const extraLinks = school.extraLinks || [];
-  const hasLive = livePlayers.length > 0 || extraLinks.length > 0;
-
-  const links = [
-    ...extraLinks.map((l) => `          <a href="${esc(l.href)}">${esc(l.label)} &#8599;</a>`),
-    ...livePlayers.map((p) => `          <a href="players/${esc(p.slug)}">${esc(p.playerName)} &#8599;</a>`),
-  ].join("\n");
-
-  if (!hasLive) {
-    return `      <div class="school-card"><span class="school-name">${esc(school.name)}</span><a class="school-link" href="${esc(school.maxpreps)}" target="_blank" rel="noopener">Team page &#8599;</a></div>`;
-  }
-
-  return `      <div class="school-card has-live">
-        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-          <span class="school-name">${esc(school.name)}</span>
-          <a class="school-link" href="${esc(school.maxpreps)}" target="_blank" rel="noopener">Team page &#8599;</a>
-        </div>
-        <div class="live-block">
-${links}
-        </div>
-      </div>`;
+function playerCard(p) {
+  const school = p.highSchool || "";
+  const schoolLogo = getSchoolLogo(school);
+  const badge = schoolLogo
+    ? `<img class="school-logo-img" src="${esc(schoolLogo)}" alt="${esc(school)} logo">`
+    : `<span class="school-badge">${esc(getSchoolInitials(school))}</span>`;
+  return `      <a class="player-card" href="players/${esc(p.slug)}">
+        ${badge}
+        <span class="player-info">
+          <span class="player-name">${esc(p.playerName)}</span>
+          <span class="player-school">${esc(school || "School not set yet")}</span>
+        </span>
+      </a>`;
 }
 
 function renderDirectory(players) {
   const published = (players || []).filter(
     (p) => p.status !== "draft" && p.playerName && p.tier !== "elite" && p.tier !== "illumination"
   );
+  published.sort((a, b) => a.playerName.localeCompare(b.playerName));
 
-  const playersBySchool = {};
-  const unmatched = [];
-  for (const p of published) {
-    const canonical = getCanonicalSchoolName(p.highSchool);
-    if (canonical) {
-      (playersBySchool[canonical] = playersBySchool[canonical] || []).push(p);
-    } else {
-      unmatched.push(p);
-    }
-  }
-
-  const countySections = COUNTIES.map((county) => {
-    const cards = county.schools.map((school) => schoolCard(school, playersBySchool)).join("\n\n");
-    return `<section class="county" id="${esc(county.id)}">
+  const playerGrid = published.length
+    ? `<section class="player-directory">
   <div class="wrap">
-    <div class="county-head">
-      <div class="display">${esc(county.name)}</div>
-      <span class="county-count mono">${county.schools.length} schools</span>
-    </div>
-    <p class="county-intro">${esc(county.intro)}</p>
-    <div class="school-grid">
-${cards}
-    </div>
-  </div>
-</section>`;
-  }).join("\n\n");
-
-  const unmatchedBlock = unmatched.length
-    ? `<section class="county" id="other">
-  <div class="wrap">
-    <div class="county-head">
-      <div class="display">Other Schools</div>
-      <span class="county-count mono">${unmatched.length} player${unmatched.length === 1 ? "" : "s"}</span>
-    </div>
-    <p class="county-intro">Not yet matched to a school in the three counties above.</p>
-    <div class="school-grid">
-      <div class="school-card has-live">
-        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-          <span class="school-name">Unlisted</span>
-        </div>
-        <div class="live-block">
-${unmatched.map((p) => `          <a href="players/${esc(p.slug)}">${esc(p.playerName)}, ${esc(p.highSchool || "school not set")} &#8599;</a>`).join("\n")}
-        </div>
-      </div>
+    <div class="player-grid">
+${published.map(playerCard).join("\n")}
     </div>
   </div>
 </section>`
-    : "";
+    : `<section class="player-directory">
+  <div class="wrap">
+    <div class="empty-note">Players will show up here as they join Elevate Her.</div>
+  </div>
+</section>`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -155,8 +48,8 @@ ${unmatched.map((p) => `          <a href="players/${esc(p.slug)}">${esc(p.playe
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Player Directory, Elevate Her Hoops Report</title>
-<meta name="description" content="Public high schools with girls varsity basketball programs in Duval, Clay, and St. Johns counties, Florida. Player profiles go live here as they join Elevate Her.">
-${shareTags({ title: "Player Directory | Elevate Her Hoops Report", description: "Girls basketball players and programs in Duval, Clay and St. Johns counties, Florida. Profiles go live here as players join Elevate Her.", url: "/players-directory.html" })}
+<meta name="description" content="Girls varsity basketball players from across Florida, each linked to her own Elevate Her recruiting profile.">
+${shareTags({ title: "Player Directory | Elevate Her Hoops Report", description: "Girls basketball players from across Florida, each linked to her own Elevate Her recruiting profile.", url: "/players-directory.html" })}
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏀</text></svg>">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -214,22 +107,15 @@ ${shareTags({ title: "Player Directory | Elevate Her Hoops Report", description:
 <div class="wrap">
   <div class="page-head">
     <div class="eyebrow">Player Directory</div>
-    <div class="display">Girls Varsity Basketball, Duval, Clay, And St. Johns Counties</div>
-    <p>A working directory of public high schools with girls varsity basketball programs across three Northeast Florida counties. As players join Elevate Her, their profile goes live under their school, like Aiyana Haynes and Kennedy Jeffress at Middleburg below.</p>
+    <div class="display">Girls Varsity Basketball Players</div>
+    <p>A directory of every player using Elevate Her, from across Florida. Tap a name to see her full recruiting profile.</p>
     <div class="data-note">
-      <strong>About this page.</strong> School names are pulled from official district sources and cross checked against FHSAA and MaxPreps. We are not publishing individual student roster names here. Each school links out to its own public MaxPreps team page. Any player name listed under a school has signed up for an Elevate Her package.
-    </div>
-    <div class="county-nav">
-      <a class="county-pill" href="#duval">Duval County, 17 Schools</a>
-      <a class="county-pill" href="#clay">Clay County, 7 Schools</a>
-      <a class="county-pill" href="#stjohns">St. Johns County, 8 Schools</a>
+      <strong>About this page.</strong> Every player listed here has signed up for an Elevate Her package. Each card shows her school, with a team logo when we have one on file.
     </div>
   </div>
 </div>
 
-${countySections}
-
-${unmatchedBlock}
+${playerGrid}
 
 <footer>
   <div class="wrap">
