@@ -335,7 +335,7 @@ function renderEssentialPlayerV2(p, articles) {
 
   const linkPills = [
     filmLinks,
-    `<a class="film-link" href="players-directory.html"><span class="dot"></span>Elevate Her Hoops &#8599;</a>`,
+    `<a class="film-link" href="/players-directory.html"><span class="dot"></span>Elevate Her Hoops &#8599;</a>`,
   ].filter(Boolean).join("\n");
 
   const recruitingCard = hasOffers
@@ -397,7 +397,7 @@ ${shareTags({ title: `${name} | ${team}`, description: shareDesc, image: p.playe
 
 <nav>
   <div class="nav-inner">
-    <a href="players-directory.html" class="brand">
+    <a href="/players-directory.html" class="brand">
       <span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ehLogo"></use></svg></span>
       <span class="brand-text">
         <span class="brand-name">Elevate Her</span>
