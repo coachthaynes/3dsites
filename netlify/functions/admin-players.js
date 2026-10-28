@@ -1,4 +1,4 @@
-const { listPlayers, savePlayer, deletePlayer, getViews } = require("./_lib/blobs");
+const { listPlayers, savePlayer, deletePlayer, getPlayer, getViews } = require("./_lib/blobs");
 const { checkAdminSecret } = require("./_lib/auth");
 const { sanitizeSlug } = require("./_lib/reserved-slugs");
 
@@ -38,6 +38,44 @@ exports.handler = async (event) => {
     } catch (e) {
       return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "Invalid JSON" }) };
     }
+
+    // Moves a player to a new slug instead of the usual create-or-update,
+    // since the slug doubles as her record's storage key. Her photo and
+    // highlight clip are stored at independent, already-issued URLs (not
+    // slug-prefixed lookups), so only the player record itself needs to
+    // move; nothing else has to be touched. The old slug is freed up, so
+    // whatever served it before (typically a netlify.toml redirect to the
+    // new slug) is responsible for keeping the old link working.
+    if (data.action === "rename") {
+      const oldSlug = String(data.slug || "").trim();
+      const requestedSlug = String(data.newSlug || "").trim();
+      if (!oldSlug || !requestedSlug) {
+        return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "slug and newSlug are required" }) };
+      }
+      const newSlug = sanitizeSlug(slugify(requestedSlug));
+      if (!newSlug) {
+        return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "newSlug is invalid" }) };
+      }
+      if (newSlug === oldSlug) {
+        return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "newSlug matches the current slug" }) };
+      }
+      const player = await getPlayer(oldSlug);
+      if (!player) {
+        return { statusCode: 404, headers: cors, body: JSON.stringify({ error: "Player not found" }) };
+      }
+      if (await getPlayer(newSlug)) {
+        return { statusCode: 409, headers: cors, body: JSON.stringify({ error: "A player already uses that slug" }) };
+      }
+      const renamed = Object.assign({}, player, {
+        slug: newSlug,
+        id: newSlug,
+        playerName: data.playerName ? String(data.playerName).trim() : player.playerName,
+      });
+      await savePlayer(renamed);
+      await deletePlayer(oldSlug);
+      return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ player: renamed }) };
+    }
+
     if (!data.slug && data.playerName) data.slug = sanitizeSlug(slugify(data.playerName));
     if (!data.slug) return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "playerName or slug required" }) };
     if (!data.id) data.id = data.slug;

@@ -102,6 +102,15 @@
   status = 200
   force = true
 
+# Andrea Brady's slug was originally misspelled "andra-brady"; her record
+# has moved to the correct slug, keep the old link working for anyone who
+# already has it.
+[[redirects]]
+  from = "/players/andra-brady"
+  to = "/players/andrea-brady"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/players/*"
   to = "/.netlify/functions/player?slug=:splat"

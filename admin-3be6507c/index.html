@@ -307,6 +307,13 @@
     <h3 id="modalTitle">Edit Player</h3>
     <form id="playerForm">
       <input type="hidden" id="f_slug">
+      <div class="form-field" id="slugUrlField" style="display:none;">
+        <label>Player Page URL</label>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <code id="slugUrlDisplay" style="font-size:13px;"></code>
+          <button type="button" class="btn small" id="btnRenameSlug">Fix URL</button>
+        </div>
+      </div>
       <div class="section-title">Player Info</div>
       <div class="form-grid">
         <div class="form-field"><label>Player Full Name</label><input id="f_playerName" required></div>
@@ -1340,6 +1347,13 @@
         el.value = el.defaultValue || '';
       }
     });
+    var slugUrlField = document.getElementById('slugUrlField');
+    if(player && player.slug){
+      slugUrlField.style.display = '';
+      document.getElementById('slugUrlDisplay').textContent = '/players/' + player.slug;
+    } else {
+      slugUrlField.style.display = 'none';
+    }
     document.getElementById('f_playerPhotoFile').value = '';
     document.getElementById('photoStatus').textContent = '';
     setPhotoPreview(player && player.playerPhoto);
@@ -1466,6 +1480,34 @@
     }).catch(function(err){
       videoStatus.textContent = 'Error uploading video: ' + err.message;
       e.target.value = '';
+    });
+  });
+
+  // Moves a player to a corrected slug instead of the usual create-or-update
+  // save, since the slug is her record's storage key, not just a cosmetic
+  // field. Her photo and highlight clip keep working without any change -
+  // only the player record itself moves - but add a netlify.toml redirect
+  // from the old URL to the new one afterward so any link already handed
+  // out still works, and resend her a fresh player-login link, since the
+  // slug in that link changes too.
+  document.getElementById('btnRenameSlug').addEventListener('click', function(){
+    var slugEl = document.getElementById('f_slug');
+    var oldSlug = slugEl.value.trim();
+    if(!oldSlug) return;
+    var nameEl = document.getElementById('f_playerName');
+    var suggested = nameEl.value.trim() ? slugify(nameEl.value) : oldSlug;
+    var input = window.prompt('New URL slug for /players/...', suggested);
+    if(!input) return;
+    var newSlug = slugify(input);
+    if(!newSlug || newSlug === oldSlug) return;
+    if(!confirm('Move this player from /players/' + oldSlug + ' to /players/' + newSlug + '?\n\nAdd a redirect from the old URL to netlify.toml afterward so existing links keep working, and resend her a fresh player-login link.')) return;
+    api('/admin-players', { method: 'POST', body: JSON.stringify({ action: 'rename', slug: oldSlug, newSlug: newSlug }) }).then(function(res){
+      slugEl.value = res.player.slug;
+      document.getElementById('slugUrlDisplay').textContent = '/players/' + res.player.slug;
+      toast('Moved to /players/' + res.player.slug + '. Add a redirect from the old URL and resend her login link.');
+      loadPlayers();
+    }).catch(function(err){
+      alert('Could not rename: ' + err.message);
     });
   });
 
