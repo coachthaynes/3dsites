@@ -374,6 +374,15 @@
           </select>
         </div>
       </div>
+      <div class="form-grid full" id="upgradeToEliteField" style="display:none;">
+        <div class="form-field">
+          <label>Upgrade</label>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <button type="button" class="btn small" id="btnUpgradeToElite">Upgrade to Elite</button>
+            <span style="font-size:12px;" class="hint">Switches her Package Tier to Elite, carries her highlight clip over to Elite's video field, and moves her page to /elite/&lt;slug&gt; (her old /players/ link will redirect there automatically).</span>
+          </div>
+        </div>
+      </div>
       <div class="form-grid full">
         <div class="form-field"><label>Live URL <span style="font-weight:400;text-transform:none;letter-spacing:0;">(only for a hand built page, like a subdomain, overrides the View button and skips this player's own dynamic site)</span></label><input id="f_liveUrl" placeholder="https://"></div>
       </div>
@@ -1350,10 +1359,13 @@
     var slugUrlField = document.getElementById('slugUrlField');
     if(player && player.slug){
       slugUrlField.style.display = '';
-      document.getElementById('slugUrlDisplay').textContent = '/players/' + player.slug;
+      var urlPrefix = player.tier === 'elite' ? '/elite/' : '/players/';
+      document.getElementById('slugUrlDisplay').textContent = urlPrefix + player.slug;
     } else {
       slugUrlField.style.display = 'none';
     }
+    var upgradeField = document.getElementById('upgradeToEliteField');
+    upgradeField.style.display = (player && player.slug && player.tier !== 'elite' && player.tier !== 'illumination') ? '' : 'none';
     document.getElementById('f_playerPhotoFile').value = '';
     document.getElementById('photoStatus').textContent = '';
     setPhotoPreview(player && player.playerPhoto);
@@ -1503,11 +1515,32 @@
     if(!confirm('Move this player from /players/' + oldSlug + ' to /players/' + newSlug + '?\n\nAdd a redirect from the old URL to netlify.toml afterward so existing links keep working, and resend her a fresh player-login link.')) return;
     api('/admin-players', { method: 'POST', body: JSON.stringify({ action: 'rename', slug: oldSlug, newSlug: newSlug }) }).then(function(res){
       slugEl.value = res.player.slug;
-      document.getElementById('slugUrlDisplay').textContent = '/players/' + res.player.slug;
-      toast('Moved to /players/' + res.player.slug + '. Add a redirect from the old URL and resend her login link.');
+      var newPrefix = res.player.tier === 'elite' ? '/elite/' : '/players/';
+      document.getElementById('slugUrlDisplay').textContent = newPrefix + res.player.slug;
+      toast('Moved to ' + newPrefix + res.player.slug + '. Add a redirect from the old URL and resend her login link.');
       loadPlayers();
     }).catch(function(err){
       alert('Could not rename: ' + err.message);
+    });
+  });
+
+  // Flips her Package Tier to Elite and carries her highlight clip over to
+  // Elite's differently named video field so her new page isn't empty.
+  // Her old /players/<slug> link keeps working on its own afterward -
+  // player.js now forwards an elite tier record to /elite/<slug> instead
+  // of 404ing - so nothing else needs to change here.
+  document.getElementById('btnUpgradeToElite').addEventListener('click', function(){
+    var slug = document.getElementById('f_slug').value.trim();
+    if(!slug) return;
+    if(!confirm('Upgrade this player to Elite?\n\nHer Package Tier changes to Elite, her highlight clip carries over to the Elite video field, and her page moves to /elite/' + slug + '. Her old link will redirect there automatically.')) return;
+    api('/admin-players', { method: 'POST', body: JSON.stringify({ action: 'upgradeToElite', slug: slug }) }).then(function(res){
+      document.getElementById('f_tier').value = res.player.tier;
+      document.getElementById('slugUrlDisplay').textContent = '/elite/' + res.player.slug;
+      document.getElementById('upgradeToEliteField').style.display = 'none';
+      toast('Upgraded to Elite. Her page is now at /elite/' + res.player.slug + '.');
+      loadPlayers();
+    }).catch(function(err){
+      alert('Could not upgrade: ' + err.message);
     });
   });
 

@@ -76,6 +76,29 @@ exports.handler = async (event) => {
       return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ player: renamed }) };
     }
 
+    // Moves a player from Essential to Elite. The tier flip alone would
+    // leave her Elite page looking empty: Essential's single highlight clip
+    // lives in a differently named field (highlightVideo) than Elite's
+    // multi clip list (playerVideo), so copy it across under the new name.
+    // Her photo needs no migration - elite.js already treats a lone
+    // playerPhoto string as a one item list, same field name either way.
+    if (data.action === "upgradeToElite") {
+      const slug = String(data.slug || "").trim();
+      if (!slug) {
+        return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "slug is required" }) };
+      }
+      const player = await getPlayer(slug);
+      if (!player) {
+        return { statusCode: 404, headers: cors, body: JSON.stringify({ error: "Player not found" }) };
+      }
+      const upgraded = Object.assign({}, player, { tier: "elite" });
+      if (player.highlightVideo && !(Array.isArray(player.playerVideo) && player.playerVideo.length)) {
+        upgraded.playerVideo = [player.highlightVideo];
+      }
+      await savePlayer(upgraded);
+      return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ player: upgraded }) };
+    }
+
     if (!data.slug && data.playerName) data.slug = sanitizeSlug(slugify(data.playerName));
     if (!data.slug) return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "playerName or slug required" }) };
     if (!data.id) data.id = data.slug;

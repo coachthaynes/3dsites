@@ -17,9 +17,16 @@ exports.handler = async (event) => {
   if (!player) {
     return { statusCode: 404, body: "Player not found" };
   }
-  if (player.tier === "elite" || player.tier === "illumination") {
-    // Elite/Illumination players have their own dedicated site; this
-    // dynamic template is only for Essential-tier players.
+  if (player.tier === "elite") {
+    // She's since been upgraded off Essential; forward to her real page
+    // instead of 404ing, so a /players/<slug> link already handed out
+    // (texted, bookmarked, printed) keeps working no matter how many more
+    // times her tier changes later.
+    return { statusCode: 301, headers: { Location: `/elite/${slug}` }, body: "" };
+  }
+  if (player.tier === "illumination") {
+    // Illumination players have their own dedicated site; this dynamic
+    // template is only for Essential-tier players.
     return { statusCode: 404, body: "Player not found" };
   }
   try {
