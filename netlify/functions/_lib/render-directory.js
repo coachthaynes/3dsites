@@ -7,13 +7,23 @@ function esc(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
+// Mirrors the admin dashboard's own View button: a hand built page's Live
+// URL always wins, otherwise each tier lives at a different path - Elite
+// under /elite/, Illumination at the bare root, Essential under /players/.
+function playerUrl(p) {
+  if (p.liveUrl) return p.liveUrl;
+  if (p.tier === "elite") return `elite/${p.slug}`;
+  if (p.tier === "illumination") return p.slug;
+  return `players/${p.slug}`;
+}
+
 function playerCard(p) {
   const school = p.highSchool || "";
   const schoolLogo = getSchoolLogo(school);
   const badge = schoolLogo
     ? `<img class="school-logo-img" src="${esc(schoolLogo)}" alt="${esc(school)} logo">`
     : `<span class="school-badge">${esc(getSchoolInitials(school))}</span>`;
-  return `      <a class="player-card" href="players/${esc(p.slug)}">
+  return `      <a class="player-card" href="${esc(playerUrl(p))}">
         ${badge}
         <span class="player-info">
           <span class="player-name">${esc(p.playerName)}</span>
@@ -23,9 +33,7 @@ function playerCard(p) {
 }
 
 function renderDirectory(players) {
-  const published = (players || []).filter(
-    (p) => p.status !== "draft" && p.playerName && p.tier !== "elite" && p.tier !== "illumination"
-  );
+  const published = (players || []).filter((p) => p.status !== "draft" && p.playerName);
   published.sort((a, b) => a.playerName.localeCompare(b.playerName));
 
   const playerGrid = published.length
