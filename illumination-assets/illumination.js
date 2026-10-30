@@ -161,6 +161,32 @@
     video.load();
   }
 
+  // Swapping a visible, already playing video's sources (setSources calls
+  // .load()) resets it immediately, so switching the hero straight to the
+  // live upload interrupts the local fallback clip mid play and restarts
+  // buffering from scratch - a visible stall for however long the live
+  // file takes to catch up. Preload the live source in a hidden, offscreen
+  // probe first and only swap once it can actually play, so the visible
+  // hero never dips below what it already had. If the live source never
+  // buffers enough to fire canplay, the local fallback just keeps playing
+  // for that visit instead of being interrupted for nothing - there's no
+  // deadline forcing a swap that isn't ready yet.
+  function swapHeroWhenReady(list, poster) {
+    if (!list.length) return;
+    const probe = document.createElement("video");
+    probe.muted = true;
+    probe.playsInline = true;
+    probe.preload = "auto";
+    probe.innerHTML = list.map(s => `<source src="${esc(s.url)}"${s.type ? ` type="${esc(s.type)}"` : ""}>`).join("");
+    probe.addEventListener("canplay", () => {
+      setSources(heroVideo, list, poster, noVideo);
+      heroFailed = false;
+      document.body.classList.remove("no-video");
+      playWhenReady(heroVideo);
+    }, { once: true });
+    probe.load();
+  }
+
   const sound = $("#sound");
   sound.addEventListener("click", () => {
     heroVideo.muted = !heroVideo.muted;
@@ -359,18 +385,7 @@
       if (!res.ok) return;
       const data = await res.json();
       if (data.hero?.length) {
-        // Preloading the live source in a hidden probe before ever
-        // swapping it in was meant to avoid interrupting the local
-        // fallback that's already playing, but on a slow connection the
-        // probe itself competes for bandwidth with the visible video and
-        // can take a long time (or never) to fire, which left the hero
-        // not autoplaying at all. Swapping immediately is a strict
-        // improvement: worst case a brief paused frame while it buffers,
-        // instead of a long stall or no video at all.
-        setSources(heroVideo, data.hero, data.poster, noVideo);
-        heroFailed = false;
-        document.body.classList.remove("no-video");
-        playWhenReady(heroVideo);
+        swapHeroWhenReady(data.hero, data.poster);
       } else {
         noVideo();
       }
