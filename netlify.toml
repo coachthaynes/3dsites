@@ -48,6 +48,15 @@
   status = 200
   force = true
 
+# Elite got its own separate questionnaire file merged into the Illumination
+# one (now a single form with a package choice at the top), so anyone who
+# already has this link lands on the same place with Elite preselected.
+[[redirects]]
+  from = "/elite-questionnaire.html"
+  to = "/illumination-questionnaire.html?tier=elite"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/nyla-parsons.html"
   to = "/.netlify/functions/player?slug=nyla-parsons"

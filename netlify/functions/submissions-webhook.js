@@ -60,10 +60,11 @@ exports.handler = async (event) => {
     createdAt: payload.created_at || new Date().toISOString(),
   });
 
-  // any of the player questionnaires also auto-creates/updates a
-  // live player record; elite/illumination forms carry their own
-  // hidden tier field so those land in the right tier straight away.
-  const QUESTIONNAIRE_FORMS = ["player-questionnaire", "elite-questionnaire", "illumination-questionnaire"];
+  // any of the player questionnaires also auto-creates/updates a live
+  // player record; illumination-questionnaire now covers both Illumination
+  // and Elite with a package radio in the form itself (name="tier"), so
+  // whichever one she picks lands in the right tier straight away.
+  const QUESTIONNAIRE_FORMS = ["player-questionnaire", "illumination-questionnaire"];
   if (QUESTIONNAIRE_FORMS.includes(formName) && data.playerName) {
     const slug = sanitizeSlug(slugify(data.playerName));
     await savePlayer(Object.assign({}, unwrapFileFields(data), { id: slug, slug, status: "published" }));
