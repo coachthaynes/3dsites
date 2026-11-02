@@ -442,8 +442,6 @@
   .footer-brand{display:flex;align-items:center;gap:12px;}
   .footer-brand .logo-icon-wrap{width:42px;height:42px;flex-shrink:0;}
   .footer-tagline{max-width:34ch;color:var(--dim);font-size:14.5px;line-height:1.6;margin:0;}
-  .footer-video-card{width:112px;flex-shrink:0;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--violet-deep);aspect-ratio:9/16;}
-  .footer-video{width:100%;height:100%;display:block;object-fit:cover;object-position:center;}
   .footer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-bottom:40px;}
   .footer-col h4{font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;letter-spacing:0.02em;color:var(--white);margin:0 0 14px;text-transform:uppercase;}
   .footer-col a{display:block;color:var(--dim);font-size:14px;margin-bottom:10px;transition:color .2s;}
@@ -537,9 +535,9 @@
     </div>
   </div>
 
-  <div class="story-card" data-reveal data-tilt aria-label="Illustrative example of what a signup can change">
-    <div class="story-eyebrow">What Changes After She Signs Up</div>
-    <div class="story-quote">&ldquo;No one was answering, until a coach emailed <em>her</em> first.&rdquo;</div>
+  <div class="story-card" data-reveal data-tilt aria-label="A real player's numbers after signing up">
+    <div class="story-eyebrow">A Real Player, Real Numbers</div>
+    <div class="story-quote" style="font-style:normal;">Before Elevate Her, no coach outside her own gym knew <em>her</em> name.</div>
     <div class="story-stats">
       <div class="story-stat">
         <span class="story-num story-num-text">Before</span>
@@ -547,11 +545,11 @@
       </div>
       <div class="story-stat-arrow" aria-hidden="true">&#8594;</div>
       <div class="story-stat">
-        <span class="story-num" data-count-to="12">0</span>
-        <span class="story-label">Coach Emails Sent For Her</span>
+        <span class="story-num" data-count-to="751">0</span>
+        <span class="story-label">Emails Sent For Her</span>
       </div>
     </div>
-    <p class="story-caption">An example of what the free website plus the email drip is built to do: get her seen, then get her replied to.</p>
+    <p class="story-caption">Aiyana Haynes, Class of 2027 &mdash; her real numbers from Elevate Her's email drip. <a href="#cases" style="color:var(--teal);font-weight:600;">See her full story below</a>.</p>
   </div>
 </div>
 
@@ -800,11 +798,6 @@
         </span>
       </div>
       <p class="footer-tagline">A free website and a planned year of coach emails, built one player at a time.</p>
-      <div class="footer-video-card">
-        <video id="footerVideo" class="footer-video" src="assets/footer-video.mp4"
-               muted playsinline preload="auto"
-               disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
-      </div>
     </div>
     <div class="footer-grid">
       <div class="footer-col">
@@ -1141,24 +1134,6 @@
     }
   }
 
-  /* footer video: plays once when scrolled into view, then holds on its final frame */
-  var footerVideo = document.getElementById('footerVideo');
-  if(footerVideo && !reduceMotion){
-    function playFooterVideo(){
-      if(footerVideo.ended) return;
-      var attempt = footerVideo.play();
-      if(attempt && attempt.catch){ attempt.catch(function(){}); }
-    }
-
-    if('IntersectionObserver' in window){
-      var footerVideoIo = new IntersectionObserver(function(entries){
-        if(entries[0].isIntersecting){ playFooterVideo(); }
-      }, {threshold:0.2});
-      footerVideoIo.observe(footerVideo);
-    } else {
-      playFooterVideo();
-    }
-  }
 })();
 </script>
 
