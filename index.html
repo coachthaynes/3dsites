@@ -429,6 +429,10 @@
     font-family:'IBM Plex Mono',monospace;letter-spacing:0.03em;
   }
   .player-link:hover{color:var(--white);}
+  .player-stats{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);}
+  .player-stat{display:flex;flex-direction:column;align-items:center;gap:2px;}
+  .player-num{font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:700;color:var(--teal);}
+  .player-stat-label{font-size:10px;color:var(--dim);text-align:center;letter-spacing:0.02em;}
   .players-note{text-align:center;color:var(--dim);font-size:13px;margin-top:34px;}
   @media (max-width:860px){ .players-grid{grid-template-columns:1fr;max-width:340px;margin:40px auto 0;} }
 
@@ -640,6 +644,20 @@
         <div class="player-info">
           <div class="player-name">Aiyana Haynes</div>
           <div class="player-position">Guard, Middleburg High School, Class of 2027</div>
+          <div class="player-stats">
+            <div class="player-stat">
+              <span class="player-num" data-count-to="751">0</span>
+              <span class="player-stat-label">Emails Sent</span>
+            </div>
+            <div class="player-stat">
+              <span class="player-num" data-count-to="419">0</span>
+              <span class="player-stat-label">Schools</span>
+            </div>
+            <div class="player-stat">
+              <span class="player-num" data-count-to="235">0</span>
+              <span class="player-stat-label">Profile Views</span>
+            </div>
+          </div>
           <a class="player-link" href="/aiyana-haynes" target="_blank" rel="noopener">View Live Profile &#8599;</a>
         </div>
       </div>
@@ -651,6 +669,20 @@
         <div class="player-info">
           <div class="player-name">Ella Crowe</div>
           <div class="player-position">Shooting Guard, Fleming Island High School, Class of 2028</div>
+          <div class="player-stats">
+            <div class="player-stat">
+              <span class="player-num" data-count-to="322">0</span>
+              <span class="player-stat-label">Emails Sent</span>
+            </div>
+            <div class="player-stat">
+              <span class="player-num" data-count-to="100">0</span>
+              <span class="player-stat-label">Schools</span>
+            </div>
+            <div class="player-stat">
+              <span class="player-num" data-count-to="57">0</span>
+              <span class="player-stat-label">Profile Views</span>
+            </div>
+          </div>
           <a class="player-link" href="https://elevateherhoopsreport.com/players/ella-michelle-crowe" target="_blank" rel="noopener">View Live Profile &#8599;</a>
         </div>
       </div>
