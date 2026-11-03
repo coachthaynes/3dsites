@@ -276,7 +276,7 @@
   <section class="panel" id="panel-illumination">
     <div class="card">
       <h3>Illumination Media</h3>
-      <p>Upload her opening video, highlight clips, full game film, photos and marketing kit here, mark what's live, then publish her site when it's ready. Same login as the rest of this dashboard.</p>
+      <p>Covers both Elite and Illumination players, they're the same site. Upload her opening video, highlight clips, full game film, photos and marketing kit here, mark what's live, then publish her site when it's ready. Elite sites are always live once her tier is set, so there's no publish step for her. Same login as the rest of this dashboard.</p>
     </div>
     <div class="illum-layout">
       <div class="illum-sidebar">
@@ -984,12 +984,16 @@
   function renderIllumination(){
     var list = document.getElementById('illumPlayerList');
     if(!list) return;
-    var illumination = playersCache.filter(function(p){ return p.tier === 'illumination'; });
+    // Elite and Illumination render on the same template now (the only
+    // real difference is who uploads her media), so both tiers are
+    // managed from here.
+    var illumination = playersCache.filter(function(p){ return p.tier === 'illumination' || p.tier === 'elite'; });
     if(illumination.length === 0){
-      list.innerHTML = '<li class="tagline" style="padding:6px;color:var(--dim);font-size:12.5px;">No Illumination players yet. Set a player\'s Package Tier to Illumination in her edit form.</li>';
+      list.innerHTML = '<li class="tagline" style="padding:6px;color:var(--dim);font-size:12.5px;">No Elite or Illumination players yet. Set a player\'s Package Tier in her edit form.</li>';
     } else {
       list.innerHTML = illumination.map(function(p){
-        var meta = [p.highSchool, p.gradYear ? 'Class of ' + p.gradYear : ''].filter(Boolean).join(' · ') || p.slug;
+        var tierLabel = p.tier === 'elite' ? 'Elite' : 'Illumination';
+        var meta = [tierLabel, p.highSchool, p.gradYear ? 'Class of ' + p.gradYear : ''].filter(Boolean).join(' · ') || p.slug;
         return '<li><button type="button" data-illum-slug="' + esc(p.slug) + '" aria-current="' + (illumCurrent && illumCurrent.slug === p.slug) + '">' +
           '<b>' + esc(p.playerName || p.slug) + '</b><span>' + esc(meta) + '</span>' +
         '</button></li>';
@@ -1007,12 +1011,20 @@
   }
 
   function renderIllumHeader(){
+    var isElite = illumCurrent.tier === 'elite';
     document.getElementById('illumPlayerName').textContent = illumCurrent.playerName || illumCurrent.slug;
-    document.getElementById('illumPlayerMeta').textContent = [illumCurrent.highSchool, illumCurrent.gradYear ? 'Class of ' + illumCurrent.gradYear : '', 'slug: ' + illumCurrent.slug].filter(Boolean).join(' · ');
-    document.getElementById('illumViewSite').href = '/' + illumCurrent.slug;
+    document.getElementById('illumPlayerMeta').textContent = [isElite ? 'Elite' : 'Illumination', illumCurrent.highSchool, illumCurrent.gradYear ? 'Class of ' + illumCurrent.gradYear : '', 'slug: ' + illumCurrent.slug].filter(Boolean).join(' · ');
+    document.getElementById('illumViewSite').href = isElite ? '/elite/' + illumCurrent.slug : '/' + illumCurrent.slug;
     var btn = document.getElementById('illumPublishToggle');
-    btn.textContent = illumCurrent.illuminationApproved ? 'Unpublish Her Site' : 'Publish Her Site';
-    btn.className = illumCurrent.illuminationApproved ? 'btn' : 'btn primary';
+    // Elite has no approval gate - she's live the moment her tier is set to
+    // Elite, same as always, so there's nothing for this button to toggle.
+    if(isElite){
+      btn.style.display = 'none';
+    } else {
+      btn.style.display = '';
+      btn.textContent = illumCurrent.illuminationApproved ? 'Unpublish Her Site' : 'Publish Her Site';
+      btn.className = illumCurrent.illuminationApproved ? 'btn' : 'btn primary';
+    }
   }
 
   function openIllumPlayer(slug){

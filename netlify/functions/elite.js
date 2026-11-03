@@ -1,5 +1,5 @@
 const { getPlayerPublic } = require("./_lib/blobs");
-const { renderEliteSite } = require("./_lib/render-elite");
+const { renderIlluminationSite } = require("./_lib/render-illumination");
 
 function slugFromPath(path) {
   // /elite/kennedy-jeffress -> kennedy-jeffress
@@ -41,21 +41,39 @@ exports.handler = async (event) => {
     };
   }
 
-  // Elite is self serve: built straight from what she uploaded on her own
-  // questionnaire, no designer or approval step in the way, up to 15 photos
-  // and 4 videos (highlights and full game footage both fit in that cap).
-  const photos = toUrlList(player.playerPhoto).slice(0, 15);
-  const videos = toUrlList(player.playerVideo).slice(0, 4);
-  const poster = photos[0] || "";
-  const feed = {
-    portrait: poster,
-    poster,
-    heroPhotos: photos.slice(1, 4),
-    photos: photos.map((url) => ({ src: url, thumb: url, large: url })),
-    film: videos.map((url) => ({ url, type: guessVideoType(url) })),
-  };
+  // Elite now renders on the same template as Illumination (same site, the
+  // only difference is who uploads her media: a family uploads her own
+  // photo/clip through the questionnaire for Elite, a professional shoot
+  // gets uploaded through the Illumination tab for Illumination). No
+  // approval gate here, unlike illumination.js - Elite has always been
+  // self serve and live the moment her tier is set, and that doesn't change
+  // just because the page design did.
+  //
+  // Her uploaded media loads client side from the same Illumination media
+  // library as any other player's (madi-site.mts doesn't check tier), so an
+  // Elite player who's never had anything uploaded there yet would show
+  // nothing. Her questionnaire's own single photo/clip fields fill that gap
+  // as the same kind of local-fallback media an Illumination player gets
+  // from a converted hand built page, shown until the library has
+  // something to replace it with.
+  let renderPlayer = player;
+  if (!player.localMedia) {
+    const photos = toUrlList(player.playerPhoto).slice(0, 15);
+    const videos = toUrlList(player.playerVideo).slice(0, 4);
+    if (photos.length || videos.length) {
+      renderPlayer = Object.assign({}, player, {
+        localMedia: {
+          poster: photos[0] || "",
+          portrait: photos[0] || "",
+          hero: videos.slice(0, 1).map((url) => ({ url, type: guessVideoType(url) })),
+          film: videos.slice(0, 1).map((url) => ({ url, type: guessVideoType(url) })),
+          photos: photos.map((url) => ({ url })),
+        },
+      });
+    }
+  }
 
-  const html = renderEliteSite(player, feed);
+  const html = renderIlluminationSite(renderPlayer);
 
   return {
     statusCode: 200,
