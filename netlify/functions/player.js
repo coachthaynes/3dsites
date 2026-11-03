@@ -1,0 +1,49 @@
+const { getPlayerPublic, incrementViews, listArticles } = require("./_lib/blobs");
+const { renderEssentialPlayerV2 } = require("./_lib/render-essential-v2");
+
+function slugFromPath(path) {
+  // /players/nyla-parsons -> nyla-parsons
+  const segments = (path || "").split("/").filter(Boolean);
+  return segments[segments.length - 1] || "";
+}
+
+exports.handler = async (event) => {
+  const qsSlug = event.queryStringParameters && event.queryStringParameters.slug;
+  const slug = qsSlug && qsSlug !== ":splat" ? qsSlug : slugFromPath(event.path);
+  if (!slug) {
+    return { statusCode: 400, body: "Missing slug" };
+  }
+  const player = await getPlayerPublic(slug);
+  if (!player) {
+    return { statusCode: 404, body: "Player not found" };
+  }
+  if (player.tier === "elite") {
+    // She's since been upgraded off Essential; forward to her real page
+    // instead of 404ing, so a /players/<slug> link already handed out
+    // (texted, bookmarked, printed) keeps working no matter how many more
+    // times her tier changes later.
+    return { statusCode: 301, headers: { Location: `/elite/${slug}` }, body: "" };
+  }
+  if (player.tier === "illumination") {
+    // Illumination players have their own dedicated site; this dynamic
+    // template is only for Essential-tier players.
+    return { statusCode: 404, body: "Player not found" };
+  }
+  try {
+    await incrementViews(slug);
+  } catch (e) {
+    // never fail the page load over a view-count write
+  }
+  let articles = [];
+  try {
+    articles = (await listArticles(slug)).filter((a) => a.published);
+  } catch (e) {
+    // never fail the page load over the news feed
+  }
+  const html = renderEssentialPlayerV2(player, articles);
+  return {
+    statusCode: 200,
+    headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=0, must-revalidate" },
+    body: html,
+  };
+};

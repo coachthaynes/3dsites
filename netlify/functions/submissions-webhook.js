@@ -1,0 +1,74 @@
+const { submissionsStore, savePlayer } = require("./_lib/blobs");
+const { sanitizeSlug } = require("./_lib/reserved-slugs");
+
+function slugify(name) {
+  return String(name)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+// Netlify sends file upload fields as {filename, type, size, url} instead
+// of a plain string, so any field shaped like that needs unwrapping to
+// just its url before it's usable as an <img>/<video> src. A `multiple`
+// file input comes back as an array of those objects, one per file.
+function unwrapFile(value) {
+  if (value && typeof value === "object" && typeof value.url === "string") {
+    return value.url;
+  }
+  return value;
+}
+
+function unwrapFileFields(data) {
+  const out = {};
+  for (const key of Object.keys(data)) {
+    const value = data[key];
+    out[key] = Array.isArray(value) ? value.map(unwrapFile) : unwrapFile(value);
+  }
+  return out;
+}
+
+exports.handler = async (event) => {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method not allowed" };
+  }
+
+  let body;
+  try {
+    body = JSON.parse(event.body || "{}");
+  } catch (e) {
+    return { statusCode: 400, body: "Invalid JSON" };
+  }
+
+  // Netlify's forms notification payload nests under `payload`, but be lenient.
+  const payload = body.payload || body;
+  const formName = payload.form_name || payload.formName;
+  const data = payload.data || {};
+
+  if (!formName) {
+    return { statusCode: 400, body: "Missing form_name" };
+  }
+
+  // archive every submission, regardless of form
+  const store = submissionsStore();
+  const id = `${formName}-${payload.id || Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  await store.setJSON(id, {
+    id,
+    formName,
+    data,
+    createdAt: payload.created_at || new Date().toISOString(),
+  });
+
+  // any of the player questionnaires also auto-creates/updates a live
+  // player record; illumination-questionnaire now covers both Illumination
+  // and Elite with a package radio in the form itself (name="tier"), so
+  // whichever one she picks lands in the right tier straight away.
+  const QUESTIONNAIRE_FORMS = ["player-questionnaire", "illumination-questionnaire"];
+  if (QUESTIONNAIRE_FORMS.includes(formName) && data.playerName) {
+    const slug = sanitizeSlug(slugify(data.playerName));
+    await savePlayer(Object.assign({}, unwrapFileFields(data), { id: slug, slug, status: "published" }));
+  }
+
+  return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+};

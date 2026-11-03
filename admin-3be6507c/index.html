@@ -1,0 +1,2238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Dashboard, Elevate Her Hoops Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&family=Anton&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#1E1035; --violet-deep:#150a28; --panel:#241640; --panel-2:#2c1a4d;
+    --line:rgba(255,255,255,0.12); --white:#FFFFFF; --dim:rgba(255,255,255,0.68);
+    --magenta:#FF2E93; --magenta-deep:#c81f70; --teal:#00F5D4; --amber:#FFB020;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--violet);color:var(--white);font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  .display{font-family:'Fredoka',sans-serif;font-weight:600;}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+  header{border-bottom:1px solid var(--line);padding:22px 0;background:rgba(21,10,40,0.9);position:sticky;top:0;z-index:10;}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+  .brand{font-family:'Fredoka',sans-serif;font-weight:700;font-size:19px;}
+  .brand span{color:var(--teal);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;display:block;font-weight:600;}
+  .brand-row{display:flex;align-items:center;gap:12px;}
+  .live-link{font-size:12.5px;color:var(--dim);border:1px solid var(--line);padding:8px 14px;border-radius:999px;}
+  .live-link:hover{color:var(--white);border-color:var(--teal);}
+
+  .tabs{display:flex;gap:6px;padding:16px 0 0;flex-wrap:wrap;}
+  .tab-btn{
+    background:none;border:1px solid var(--line);color:var(--dim);padding:10px 18px;border-radius:999px 999px 0 0;
+    font-family:'Poppins',sans-serif;font-weight:600;font-size:13.5px;cursor:pointer;border-bottom:none;
+  }
+  .tab-btn.active{background:var(--panel);color:var(--white);border-color:var(--line);}
+
+  main{padding:28px 0 80px;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+  @media (max-width:860px){ .stat-grid{grid-template-columns:repeat(2,1fr);} }
+  .stat-card{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:20px;}
+  .stat-num{font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:700;color:var(--teal);}
+  .stat-label{font-size:12.5px;color:var(--dim);margin-top:4px;}
+
+  .card{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:22px;margin-bottom:20px;}
+  .card h3{font-family:'Fredoka',sans-serif;margin:0 0 12px;font-size:17px;}
+  .card p{color:var(--dim);font-size:13.5px;line-height:1.6;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{text-align:left;color:var(--dim);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;padding:10px 12px;border-bottom:1px solid var(--line);}
+  td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  .status-pill{font-size:10.5px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;padding:4px 10px;border-radius:999px;font-weight:700;}
+  .status-pill.published{background:rgba(0,245,212,0.15);color:var(--teal);}
+  .status-pill.draft{background:rgba(255,176,32,0.15);color:var(--amber);}
+
+  .btn{display:inline-block;padding:9px 16px;font-weight:700;font-size:12.5px;border-radius:999px;border:1.5px solid var(--line);background:none;color:var(--white);cursor:pointer;text-decoration:none;font-family:'Poppins',sans-serif;}
+  .btn:hover{border-color:var(--teal);color:var(--teal);}
+  .btn.primary{background:var(--magenta);border-color:var(--magenta);color:var(--white);}
+  .btn.primary:hover{background:var(--magenta-deep);border-color:var(--magenta-deep);color:var(--white);}
+  .btn.small{padding:6px 12px;font-size:11.5px;}
+  .btn.danger:hover{border-color:#ff4d4d;color:#ff4d4d;}
+
+  .row-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+  .modal-backdrop{position:fixed;inset:0;background:rgba(10,5,20,0.7);display:none;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;z-index:50;}
+  .modal-backdrop.open{display:flex;}
+  .modal{background:var(--violet-deep);border:1px solid var(--line);border-radius:18px;padding:28px;max-width:720px;width:100%;}
+  .modal h3{font-family:'Fredoka',sans-serif;margin-top:0;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+  .form-grid.full{grid-template-columns:1fr;}
+  .form-field{display:flex;flex-direction:column;gap:5px;}
+  .form-field label{font-size:11.5px;color:var(--dim);font-weight:600;}
+  .form-field input,.form-field select,.form-field textarea{
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--white);font-family:'Poppins',sans-serif;font-size:13.5px;
+  }
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;}
+  .section-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin:22px 0 4px;}
+  .section-sub{font-size:12px;color:var(--dim);margin-bottom:4px;}
+  .stat-table-wrap{margin-top:12px;overflow-x:auto;border:1px solid var(--line);border-radius:14px;}
+  table.stat-table{border-collapse:collapse;width:100%;min-width:560px;}
+  table.stat-table th,table.stat-table td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:left;}
+  table.stat-table th{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:var(--teal);font-weight:600;background:var(--panel);}
+  table.stat-table th:first-child,table.stat-table td:first-child{position:sticky;left:0;background:var(--panel-2);font-weight:600;font-size:12.5px;min-width:90px;}
+  table.stat-table td input{width:100%;background:var(--violet-deep);border:1px solid var(--line);border-radius:8px;padding:6px 7px;color:var(--white);font-size:12.5px;font-family:'IBM Plex Mono',monospace;}
+  table.stat-table tr:last-child td{border-bottom:none;}
+
+  .marketing-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+  @media (max-width:760px){ .marketing-grid{grid-template-columns:1fr;} }
+  .tool-card{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:22px;}
+  .tool-card h4{font-family:'Fredoka',sans-serif;margin:0 0 6px;}
+  .tool-card .tool-status{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;display:block;}
+
+  .empty-note{color:var(--dim);font-size:13.5px;padding:20px;text-align:center;}
+
+  /* ILLUMINATION MEDIA */
+  .illum-layout{display:grid;grid-template-columns:240px 1fr;gap:20px;align-items:start;}
+  @media (max-width:860px){ .illum-layout{grid-template-columns:1fr;} }
+  .illum-sidebar{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:16px;}
+  .illum-sidebar h4{margin:0 0 10px;font-family:'Fredoka',sans-serif;font-size:14px;}
+  .illum-player-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;}
+  .illum-player-list button{
+    width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:10px;
+    padding:9px 10px;color:var(--white);cursor:pointer;font-family:'Poppins',sans-serif;
+  }
+  .illum-player-list button:hover{border-color:var(--line);}
+  .illum-player-list button[aria-current="true"]{background:var(--violet-deep);border-color:var(--teal);}
+  .illum-player-list button b{display:block;font-size:13.5px;}
+  .illum-player-list button span{display:block;font-size:11px;color:var(--dim);margin-top:2px;}
+  .illum-checklist{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:4px;}
+  .illum-checklist > div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--dim);}
+  .illum-checklist > div.ok{border-color:var(--teal);color:var(--white);}
+  .illum-checklist i{color:var(--teal);font-style:normal;margin-right:4px;}
+  .illum-checklist small{display:block;color:var(--dim);font-size:10.5px;margin-top:2px;}
+  .illum-upload{display:grid;grid-template-columns:1fr 240px;gap:18px;margin-top:10px;}
+  @media (max-width:760px){ .illum-upload{grid-template-columns:1fr;} }
+  .illum-drop{
+    border:2px dashed var(--line);border-radius:14px;padding:26px 18px;text-align:center;cursor:pointer;
+  }
+  .illum-drop b{display:block;font-family:'Fredoka',sans-serif;margin-bottom:4px;}
+  .illum-drop span{display:block;font-size:12px;color:var(--dim);}
+  .illum-drop.over{border-color:var(--teal);}
+  .illum-queue{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .illum-queue li{display:flex;align-items:center;gap:10px;font-size:12px;}
+  .illum-queue li .illum-bar{flex:1;height:5px;border-radius:999px;background:var(--violet-deep);overflow:hidden;}
+  .illum-queue li .illum-bar i{display:block;height:100%;background:var(--teal);width:0%;}
+  .illum-queue li.done .illum-bar i{background:var(--teal);width:100% !important;}
+  .illum-upload-opts{display:flex;flex-direction:column;gap:10px;font-size:13px;}
+  .illum-upload-opts select{background:var(--violet-deep);color:var(--white);border:1px solid var(--line);border-radius:8px;padding:6px 8px;}
+  .illum-group{margin-top:22px;}
+  .illum-group h4{font-family:'Fredoka',sans-serif;margin:0 0 2px;font-size:14px;}
+  .illum-group p{margin:0 0 10px;color:var(--dim);font-size:12px;}
+  .illum-asset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;}
+  .illum-asset{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--violet-deep);}
+  .illum-asset.live{border-color:var(--teal);}
+  .illum-asset .illum-thumb{position:relative;height:110px;background:var(--panel-2);}
+  .illum-asset .illum-thumb img, .illum-asset .illum-thumb video{width:100%;height:100%;object-fit:cover;display:block;}
+  .illum-asset .illum-thumb .illum-doc{display:flex;align-items:center;justify-content:center;height:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);}
+  .illum-asset .illum-status{position:absolute;top:6px;left:6px;background:rgba(10,4,24,0.72);color:var(--white);font-size:10px;padding:2px 8px;border-radius:999px;font-family:'IBM Plex Mono',monospace;}
+  .illum-asset .illum-body{padding:10px;display:flex;flex-direction:column;gap:6px;}
+  .illum-asset input, .illum-asset select{background:var(--panel);color:var(--white);border:1px solid var(--line);border-radius:7px;padding:5px 7px;font-size:11.5px;width:100%;}
+  .illum-asset .illum-row{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+  .illum-asset .illum-meta{font-size:10px;color:var(--dim);word-break:break-all;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:18px;}
+  .card-tile{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:16px;}
+  .card-tile canvas{width:100%;height:auto;border-radius:10px;display:block;background:#000;}
+  .card-tile h4{font-family:'Fredoka',sans-serif;margin:12px 0 2px;}
+  .card-tile .card-status{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:10px;}
+  .card-tile .card-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  #toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid var(--teal);color:var(--white);padding:12px 18px;border-radius:12px;font-size:13.5px;display:none;z-index:60;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand-row">
+      <div class="brand">Elevate Her<span>Internal Dashboard</span></div>
+    </div>
+    <a class="live-link" href="../index.html" target="_blank" rel="noopener">View Live Site &#8599;</a>
+  </div>
+  <div class="wrap tabs">
+    <button class="tab-btn active" data-tab="overview">Overview</button>
+    <button class="tab-btn" data-tab="players">Players</button>
+    <button class="tab-btn" data-tab="articles">Articles</button>
+    <button class="tab-btn" data-tab="fulfillment">Fulfillment</button>
+    <button class="tab-btn" data-tab="illumination">Illumination</button>
+    <button class="tab-btn" data-tab="forms">Forms</button>
+    <button class="tab-btn" data-tab="marketing">Marketing</button>
+    <button class="tab-btn" data-tab="cards">Trading Cards</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="panel active" id="panel-overview">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" id="statPlayers">-</div><div class="stat-label">Essential Players</div></div>
+      <div class="stat-card"><div class="stat-num" id="statPublished">-</div><div class="stat-label">Published</div></div>
+      <div class="stat-card"><div class="stat-num" id="statSubmissions">-</div><div class="stat-label">Form Submissions</div></div>
+      <div class="stat-card"><div class="stat-num" id="statInquiries">-</div><div class="stat-label">Package Inquiries</div></div>
+    </div>
+    <div class="card">
+      <h3>What this dashboard does</h3>
+      <p>Essential and Elite player pages are generated live from the data below &mdash; edit a player here and her page updates immediately, no rebuild needed. Illumination pages pull her data from here too, plus her live media from the Visual-Dashboard.</p>
+      <p>New questionnaire submissions automatically create or update a player's page, already tagged with the right Package Tier. Package inquiry and questionnaire form submissions both show up under the Forms tab.</p>
+    </div>
+    <div class="card">
+      <h3>Templates &amp; Tiers Key</h3>
+      <p>Quick reference for which players use which page design and how to tell them apart. There are three tiers now, nothing else.</p>
+      <ul style="margin:10px 0 0;padding-left:18px;line-height:1.8;font-size:13.5px;color:var(--dim);">
+        <li><strong style="color:var(--white);">Essential</strong> (free) &mdash; auto generated from the free questionnaire, violet/teal design (<a href="../essential-mockup.html" target="_blank" rel="noopener">see the sample</a>).</li>
+        <li><strong style="color:var(--white);">Elite</strong> ($249) &mdash; auto generated from her own uploaded photos and video, dark red/black design in her school colors.</li>
+        <li><strong style="color:var(--white);">Illumination</strong> ($649) &mdash; same dark red/black design as Elite, built by the Visual-Dashboard team instead of self uploaded.</li>
+      </ul>
+      <p style="margin-top:10px;font-size:12px;">A player's tier is set on the Players tab and controls the Articles, Fulfillment, and Illumination tabs.</p>
+      <p style="margin-top:10px;font-size:12px;">Kennedy Jeffress is Illumination tier but hand built as a standalone page rather than run through this dashboard's Elite/Illumination pipeline. Her player record has a Live URL set so the View button on the Players tab opens her real page. Aiyana Haynes was converted to a normal dynamic Illumination page, so if her Live URL field still has something in it from before, it can be cleared.</p>
+    </div>
+    <div class="card">
+      <h3>Test the auto update pipeline</h3>
+      <p>Creates a throwaway player, opens her live page in a new tab so you can see it update instantly, then lets you remove it again.</p>
+      <div class="row-actions">
+        <button class="btn primary" id="btnCreateTest">Create Test Player &amp; Open Live Page</button>
+        <button class="btn danger" id="btnDeleteTest">Delete Test Player</button>
+      </div>
+      <p id="testStatus" class="mono" style="margin-top:10px;font-size:12px;"></p>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-players">
+    <div class="row-actions" style="margin-bottom:16px;">
+      <button class="btn primary" id="btnAddPlayer">Add Player</button>
+    </div>
+    <div class="card" id="bulkUpgradeCard" style="display:none;">
+      <h3 style="margin:0 0 6px;">Bulk upgrade a school to Elite</h3>
+      <p style="margin:0 0 12px;font-size:13px;color:var(--gray);">Upgrades every Essential player at the chosen school to Elite in one go, same as the Upgrade to Elite button on each profile.</p>
+      <div class="row-actions" style="align-items:center;">
+        <select id="bulkSchoolSelect" style="min-width:260px;"></select>
+        <button class="btn primary" id="btnBulkUpgrade">Upgrade School to Elite</button>
+      </div>
+    </div>
+    <div class="card" id="conversionsCard" style="display:none;">
+      <h3 style="margin:0 0 6px;">Convert hand built pages</h3>
+      <p style="margin:0 0 12px;font-size:13px;color:var(--gray);">Turns a hand built player page into an editable Illumination page. Her photos and videos stay in the Visual-Dashboard. Anything you already edited for her here is kept.</p>
+      <div id="conversionsList"></div>
+    </div>
+    <div class="card" style="padding:0;overflow-x:auto;">
+      <table>
+        <thead><tr><th>Name</th><th>School</th><th>Status</th><th>Views</th><th>MaxPreps</th><th></th></tr></thead>
+        <tbody id="playersTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-articles">
+    <div class="card">
+      <h3>Generate a recap article</h3>
+      <p>Writes an original recap article from a player's on-file stats. Optionally tries pulling a bit more from her MaxPreps page first, that part is experimental and falls back to her saved stats if it doesn't find anything usable.</p>
+      <p style="color:var(--dim);font-size:13px;">Only available for Elite and Illumination players, since that's what their package promises.</p>
+      <div class="form-grid" style="margin-top:12px;">
+        <div class="form-field">
+          <label>Player</label>
+          <select id="articlePlayerSelect"></select>
+        </div>
+        <div class="form-field">
+          <label>&nbsp;</label>
+          <label style="font-weight:400;display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <input type="checkbox" id="articleUseMaxPreps" style="width:auto;"> Try MaxPreps first (experimental)
+          </label>
+        </div>
+      </div>
+      <button class="btn primary" id="btnGenerateArticle" style="margin-top:14px;">Generate Article</button>
+      <div id="articleGenStatus" class="mono" style="margin-top:10px;font-size:12px;"></div>
+    </div>
+    <div class="card" style="padding:0;overflow-x:auto;">
+      <table>
+        <thead><tr><th>Player</th><th>Headline</th><th>Created</th><th>Status</th><th></th></tr></thead>
+        <tbody id="articlesTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-fulfillment">
+    <div class="card">
+      <h3>Elite &amp; Illumination fulfillment</h3>
+      <p>What's actually promised on each paid package, so nothing gets missed. Pulled straight from the pricing page.</p>
+    </div>
+    <div id="fulfillmentList"></div>
+  </section>
+
+  <section class="panel" id="panel-illumination">
+    <div class="card">
+      <h3>Illumination Media</h3>
+      <p>Covers both Elite and Illumination players, they're the same site. Upload her opening video, highlight clips, full game film, photos and marketing kit here, mark what's live, then publish her site when it's ready. Elite sites are always live once her tier is set, so there's no publish step for her. Same login as the rest of this dashboard.</p>
+    </div>
+    <div class="illum-layout">
+      <div class="illum-sidebar">
+        <h4>Illumination Players</h4>
+        <ul class="illum-player-list" id="illumPlayerList"></ul>
+      </div>
+      <div>
+        <div class="empty-note" id="illumEmpty">Pick a player on the left to manage her media.</div>
+        <div id="illumPlayerView" style="display:none;">
+          <div class="card">
+            <div class="row-actions" style="justify-content:space-between;align-items:center;">
+              <div>
+                <h3 id="illumPlayerName" style="margin:0;"></h3>
+                <p id="illumPlayerMeta" style="margin:4px 0 0;color:var(--dim);font-size:12.5px;"></p>
+              </div>
+              <div class="row-actions">
+                <button class="btn small" id="illumEditProfile" type="button">Edit Profile</button>
+                <a class="btn small" id="illumViewSite" href="#" target="_blank" rel="noopener">View Live Site &#8599;</a>
+                <button class="btn primary" id="illumPublishToggle" type="button"></button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Site Readiness</h3>
+            <div class="illum-checklist" id="illumChecklist"></div>
+          </div>
+          <div class="card">
+            <h3>Upload</h3>
+            <div class="illum-upload">
+              <div>
+                <div class="illum-drop" id="illumDrop" tabindex="0" role="button" aria-label="Choose files to upload">
+                  <b>Drop files here</b>
+                  <span>or click to choose. JPG, PNG, WEBP, MP4, MOV, WEBM and PDF. Large videos are fine.</span>
+                </div>
+                <input type="file" id="illumFileInput" multiple accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm,video/quicktime,application/pdf" style="display:none;">
+                <ul class="illum-queue" id="illumQueue"></ul>
+              </div>
+              <div class="illum-upload-opts">
+                <label>Upload as
+                  <select id="illumUpRole"></select>
+                </label>
+                <label class="row-actions" style="align-items:center;gap:8px;"><input type="checkbox" id="illumUpLive" checked> Make live right away</label>
+                <p style="margin:0;color:var(--dim);font-size:12px;line-height:1.6;">Decide for me puts videos in Highlight reel, PDFs in Marketing kit and photos in Photo Gallery. You can move anything after it uploads.</p>
+              </div>
+            </div>
+          </div>
+          <div id="illumGroups"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-forms">
+    <div class="row-actions" style="margin-bottom:16px;">
+      <button class="btn" id="btnExportCsv">Download Leads CSV</button>
+      <button class="btn" id="btnRefreshSubs">Refresh</button>
+    </div>
+    <div class="card" style="padding:0;overflow-x:auto;">
+      <table>
+        <thead><tr><th>Form</th><th>Submitted</th><th>Name</th><th>Contact</th><th></th></tr></thead>
+        <tbody id="submissionsTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-marketing">
+    <div class="card">
+      <h3>Marketing tools</h3>
+      <p>These are set up as placeholders. Connecting a real account needs its API key stored as a Netlify environment variable, then a small function added here to call it &mdash; tell me when you have an account ready and I'll wire it up for real.</p>
+    </div>
+    <div class="marketing-grid">
+      <div class="tool-card">
+        <span class="tool-status">Not Connected</span>
+        <h4>Email Marketing</h4>
+        <p>Mailchimp, Constant Contact, or Flodesk. Once connected, every new lead from the forms below could auto-add to a list.</p>
+        <button class="btn" disabled>Connect Email Platform</button>
+      </div>
+      <div class="tool-card">
+        <span class="tool-status">Not Connected</span>
+        <h4>Buffer</h4>
+        <p>Schedule and publish social posts (weekly stat graphics, commitment announcements) straight from here.</p>
+        <button class="btn" disabled>Connect Buffer</button>
+      </div>
+      <div class="tool-card">
+        <span class="tool-status">Available Now</span>
+        <h4>Lead Export</h4>
+        <p>Every form submission as a CSV, ready to import into any email platform's list.</p>
+        <button class="btn" id="btnExportCsv2">Download Leads CSV</button>
+      </div>
+      <div class="tool-card">
+        <span class="tool-status">Available Now</span>
+        <h4>QR Code For Tryouts</h4>
+        <p>A QR code linking to the free player questionnaire, handed out at tryouts or games, so families can sign up on the spot.</p>
+        <img src="/assets/qr-player-signup.png" alt="QR code linking to the free player questionnaire" style="width:160px;height:160px;display:block;margin:12px 0;border-radius:8px;background:#fff;padding:8px;">
+        <a class="btn" href="/assets/qr-player-signup.png" download="elevate-her-signup-qr.png">Download QR Code</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-cards">
+    <div class="card">
+      <h3>Trading Cards</h3>
+      <p>A shareable trading card for every player, built automatically from her stats and portrait on file, in the neon pink and cyan style. Generate a card below, then Publish it to save a stable link you can download and email to her whenever you're ready. Nothing is sent to her automatically.</p>
+    </div>
+    <div class="cards-grid" id="cardsGrid"></div>
+  </section>
+
+</main>
+
+<div class="modal-backdrop" id="playerModalBackdrop">
+  <div class="modal">
+    <h3 id="modalTitle">Edit Player</h3>
+    <form id="playerForm">
+      <input type="hidden" id="f_slug">
+      <div class="form-field" id="slugUrlField" style="display:none;">
+        <label>Player Page URL</label>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <code id="slugUrlDisplay" style="font-size:13px;"></code>
+          <button type="button" class="btn small" id="btnRenameSlug">Fix URL</button>
+        </div>
+      </div>
+      <div class="section-title">Player Info</div>
+      <div class="form-grid">
+        <div class="form-field"><label>Player Full Name</label><input id="f_playerName" required></div>
+        <div class="form-field"><label>Jersey Number</label><input id="f_jerseyNumber"></div>
+        <div class="form-field"><label>High School</label>
+          <select id="f_highSchool">
+            <optgroup label="Duval County">
+              <option>Andrew Jackson High School</option>
+              <option>Atlantic Coast High School</option>
+              <option>Baldwin Middle-Senior High School</option>
+              <option>Edward H. White High School</option>
+              <option>Englewood High School</option>
+              <option>First Coast High School</option>
+              <option>Duncan U. Fletcher High School</option>
+              <option>Mandarin High School</option>
+              <option>Paxon School for Advanced Studies</option>
+              <option>William M. Raines High School</option>
+              <option>Jean Ribault High School</option>
+              <option>Riverside High School</option>
+              <option>Sandalwood High School</option>
+              <option>Stanton College Preparatory School</option>
+              <option>Terry Parker High School</option>
+              <option>Westside High School</option>
+              <option>Samuel W. Wolfson High School</option>
+            </optgroup>
+            <optgroup label="Clay County">
+              <option>Clay High School</option>
+              <option>Fleming Island High School</option>
+              <option>Keystone Heights Junior/Senior High School</option>
+              <option selected>Middleburg High School</option>
+              <option>Oakleaf High School</option>
+              <option>Orange Park High School</option>
+              <option>Ridgeview High School</option>
+            </optgroup>
+            <optgroup label="St. Johns County">
+              <option>Allen D. Nease High School</option>
+              <option>Bartram Trail High School</option>
+              <option>Beachside High School</option>
+              <option>Creekside High School</option>
+              <option>Pedro Menendez High School</option>
+              <option>Ponte Vedra High School</option>
+              <option>St. Augustine High School</option>
+              <option>Tocoi Creek High School</option>
+            </optgroup>
+            <option value="Other">Other, Not Listed</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Class Of</label><input id="f_gradYear"></div>
+        <div class="form-field"><label>Position</label><input id="f_position"></div>
+        <div class="form-field"><label>Status</label>
+          <select id="f_status"><option value="published">Published</option><option value="draft">Draft</option></select>
+        </div>
+        <div class="form-field"><label>Package Tier</label>
+          <select id="f_tier">
+            <option value="essential">Essential</option>
+            <option value="elite">Elite</option>
+            <option value="illumination">Illumination</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid full" id="upgradeToEliteField" style="display:none;">
+        <div class="form-field">
+          <label>Upgrade</label>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <button type="button" class="btn small" id="btnUpgradeToElite">Upgrade to Elite</button>
+            <span style="font-size:12px;" class="hint">Switches her Package Tier to Elite, carries her highlight clip over to Elite's video field, and moves her page to /elite/&lt;slug&gt; (her old /players/ link will redirect there automatically).</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-grid full">
+        <div class="form-field"><label>Live URL <span style="font-weight:400;text-transform:none;letter-spacing:0;">(only for a hand built page, like a subdomain, overrides the View button and skips this player's own dynamic site)</span></label><input id="f_liveUrl" placeholder="https://"></div>
+      </div>
+      <div class="section-title">Contact Information</div>
+      <div class="form-grid">
+        <div class="form-field"><label>Player Phone</label><input id="f_playerPhone"></div>
+        <div class="form-field"><label>Player Email</label><input id="f_playerEmail"></div>
+        <div class="form-field"><label>Parent Or Guardian Name</label><input id="f_guardianName"></div>
+        <div class="form-field"><label>Parent Or Guardian Phone</label><input id="f_guardianPhone"></div>
+        <div class="form-field"><label>Parent Or Guardian Email</label><input id="f_guardianEmail"></div>
+      </div>
+      <div class="section-title">Academic Info</div>
+      <div class="form-grid">
+        <div class="form-field"><label>GPA</label><input id="f_gpa"></div>
+        <div class="form-field"><label>SAT</label><input id="f_sat"></div>
+        <div class="form-field"><label>ACT</label><input id="f_act"></div>
+        <div class="form-field"><label>Dual Enrollment</label><input id="f_dualEnrollment" placeholder="Classes or credits, if any"></div>
+      </div>
+      <div class="section-title">Measurables</div>
+      <div class="form-grid">
+        <div class="form-field"><label>Height</label><input id="f_height" placeholder="5'8&quot;"></div>
+        <div class="form-field"><label>Weight</label><input id="f_weight"></div>
+        <div class="form-field"><label>Standing Reach</label><input id="f_standingReach"></div>
+        <div class="form-field"><label>Wingspan</label><input id="f_wingspan"></div>
+        <div class="form-field"><label>Shoe Size</label><input id="f_shoeSize"></div>
+      </div>
+      <div class="section-title">Athletic Testing</div>
+      <div class="form-grid">
+        <div class="form-field"><label>Standing Vertical</label><input id="f_standingVertical"></div>
+        <div class="form-field"><label>Max Vertical</label><input id="f_maxVertical"></div>
+        <div class="form-field"><label>Bench / Squat / Deadlift</label><input id="f_benchDeadliftSquat" placeholder="115/100/185"></div>
+        <div class="form-field"><label>Lane Agility</label><input id="f_laneAgility"></div>
+        <div class="form-field"><label>Shuttle Run (3/4 Court)</label><input id="f_shuttleRun"></div>
+        <div class="form-field"><label>Three Qtr Sprint</label><input id="f_threeQtrSprint"></div>
+      </div>
+      <div class="section-title">Season Stats</div>
+      <div class="section-sub">Leave any year blank if she hasn't played it yet.</div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+        <button type="button" class="btn" id="btnPullMaxPrepsStats">Try Pull Every Season From MaxPreps</button>
+        <span id="maxPrepsStatsStatus" style="font-size:12.5px;color:var(--dim);"></span>
+      </div>
+      <div id="maxPrepsStatsFound"></div>
+      <div class="stat-table-wrap">
+        <table class="stat-table">
+          <thead><tr><th>Season</th><th>PPG</th><th>Rebounds</th><th>Steals</th><th>Blocks</th><th>Assists</th><th>Total Points</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Freshman</td>
+              <td><input id="f_statFreshmanPPG"></td>
+              <td><input id="f_statFreshmanRebounds"></td>
+              <td><input id="f_statFreshmanSteals"></td>
+              <td><input id="f_statFreshmanBlocks"></td>
+              <td><input id="f_statFreshmanAssists"></td>
+              <td><input id="f_statFreshmanTotalPoints"></td>
+            </tr>
+            <tr>
+              <td>Sophomore</td>
+              <td><input id="f_statSophomorePPG"></td>
+              <td><input id="f_statSophomoreRebounds"></td>
+              <td><input id="f_statSophomoreSteals"></td>
+              <td><input id="f_statSophomoreBlocks"></td>
+              <td><input id="f_statSophomoreAssists"></td>
+              <td><input id="f_statSophomoreTotalPoints"></td>
+            </tr>
+            <tr>
+              <td>Junior</td>
+              <td><input id="f_statJuniorPPG"></td>
+              <td><input id="f_statJuniorRebounds"></td>
+              <td><input id="f_statJuniorSteals"></td>
+              <td><input id="f_statJuniorBlocks"></td>
+              <td><input id="f_statJuniorAssists"></td>
+              <td><input id="f_statJuniorTotalPoints"></td>
+            </tr>
+            <tr>
+              <td>Senior</td>
+              <td><input id="f_statSeniorPPG"></td>
+              <td><input id="f_statSeniorRebounds"></td>
+              <td><input id="f_statSeniorSteals"></td>
+              <td><input id="f_statSeniorBlocks"></td>
+              <td><input id="f_statSeniorAssists"></td>
+              <td><input id="f_statSeniorTotalPoints"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="section-title">Film &amp; Social Links</div>
+      <div class="form-grid">
+        <div class="form-field"><label>MaxPreps</label><input id="f_maxpreps" placeholder="https://"></div>
+        <div class="form-field"><label>Hudl</label><input id="f_hudl" placeholder="https://"></div>
+        <div class="form-field"><label>FieldLevel</label><input id="f_fieldlevel" placeholder="https://"></div>
+        <div class="form-field"><label>Prep Girls Hoops</label><input id="f_prepgirlshoops" placeholder="https://"></div>
+        <div class="form-field"><label>Instagram</label><input id="f_instagram" placeholder="https://"></div>
+        <div class="form-field"><label>X / Twitter</label><input id="f_twitter" placeholder="https://"></div>
+      </div>
+      <div class="form-grid full">
+        <div class="form-field"><label>YouTube (Highlights / Game Film)</label><input id="f_youtube" placeholder="https://"></div>
+      </div>
+      <div class="section-title">Illumination YouTube Embeds <span style="font-weight:400;text-transform:none;letter-spacing:0;">(Illumination players only, specific video links, not a channel link, used until a clip is uploaded in the Illumination tab)</span></div>
+      <div class="form-grid full">
+        <div class="form-field"><label>Full Game Film</label><input id="f_filmYoutubeUrl" placeholder="https://www.youtube.com/watch?v=..."></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-field"><label>Highlight Clip 1</label><input id="f_highlightYoutubeUrl1" placeholder="https://www.youtube.com/watch?v=..."></div>
+        <div class="form-field"><label>Highlight Clip 2</label><input id="f_highlightYoutubeUrl2" placeholder="https://www.youtube.com/watch?v=..."></div>
+        <div class="form-field"><label>Highlight Clip 3</label><input id="f_highlightYoutubeUrl3" placeholder="https://www.youtube.com/watch?v=..."></div>
+        <div class="form-field"><label>Highlight Clip 4</label><input id="f_highlightYoutubeUrl4" placeholder="https://www.youtube.com/watch?v=..."></div>
+      </div>
+      <div class="section-title">Coach Contact</div>
+      <div class="form-grid">
+        <div class="form-field"><label>Coach Name</label><input id="f_coachName" value="Tenise Haynes"></div>
+        <div class="form-field"><label>Coach Phone</label><input id="f_coachPhone" value="904 290 0261"></div>
+        <div class="form-field"><label>Coach Email</label><input id="f_coachEmail" value="coachthaynes@gmail.com"></div>
+      </div>
+      <div class="section-title">College Interest</div>
+      <div class="form-grid full">
+        <div class="form-field"><label>Current Offers <span style="font-weight:400;text-transform:none;letter-spacing:0;">(one per line)</span></label><textarea id="f_currentOffers" rows="3"></textarea></div>
+        <div class="form-field"><label>NCAA ID Number</label><input id="f_ncaaId"></div>
+      </div>
+      <div class="section-title">Photo</div>
+      <div class="form-grid full">
+        <div class="form-field">
+          <label>Upload One Photo <span style="font-weight:400;text-transform:none;letter-spacing:0;">(JPG or PNG, this is the photo used on her profile)</span></label>
+          <input type="hidden" id="f_playerPhoto">
+          <input type="file" id="f_playerPhotoFile" accept="image/*">
+          <img id="photoPreview" style="display:none;max-width:160px;margin-top:10px;border-radius:10px;border:1px solid var(--line);">
+          <div id="photoStatus" style="font-size:12px;color:var(--dim);margin-top:6px;"></div>
+        </div>
+      </div>
+      <div class="section-title">Highlight Video <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);">(Essential tier only)</span></div>
+      <div class="form-grid full">
+        <div class="form-field">
+          <label>Upload One Clip <span style="font-weight:400;text-transform:none;letter-spacing:0;">(MP4, MOV, or WEBM, about 3 minutes or less works best, 80MB max)</span></label>
+          <input type="hidden" id="f_highlightVideo">
+          <input type="file" id="f_highlightVideoFile" accept="video/mp4,video/webm,video/quicktime">
+          <video id="videoPreview" controls style="display:none;max-width:280px;margin-top:10px;border-radius:10px;border:1px solid var(--line);"></video>
+          <div id="videoProgressWrap" style="background:var(--panel-2);border-radius:999px;height:8px;overflow:hidden;margin-top:10px;display:none;max-width:280px;"><div id="videoProgressBar" style="background:var(--teal);height:100%;width:0%;"></div></div>
+          <div id="videoStatus" style="font-size:12px;color:var(--dim);margin-top:6px;"></div>
+        </div>
+      </div>
+      <div class="section-title">Accolades and Awards</div>
+      <div class="form-grid full">
+        <div class="form-field"><label>Accolades and Awards</label><textarea id="f_message" rows="3"></textarea></div>
+      </div>
+      <div class="section-title">Illumination Extras <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);">(Elite only, makes her auto-built site feel hand written)</span></div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+        <button type="button" class="btn" id="btnAutoFillProfile">Auto-Fill Bio, Tags &amp; Skills</button>
+        <label style="font-size:12.5px;color:var(--dim);display:flex;align-items:center;gap:6px;" title="Google Search grounding has its own small free quota, separate from and much stricter than plain generation, so leave this off unless you need it.">
+          <input type="checkbox" id="f_autoFillWebSearch"> Also search the web for real coverage of her (uses a separate, smaller Google quota)
+        </label>
+        <span id="autoFillProfileStatus" style="font-size:12.5px;color:var(--dim);"></span>
+      </div>
+      <div id="autoFillProfileFound"></div>
+      <div class="form-grid full">
+        <div class="form-field"><label>About Paragraph 1</label><textarea id="f_aboutParagraph1" rows="2"></textarea></div>
+        <div class="form-field"><label>About Paragraph 2</label><textarea id="f_aboutParagraph2" rows="2"></textarea></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-field"><label>Tag 1</label><input id="f_tag1" placeholder="e.g. Three And D"></div>
+        <div class="form-field"><label>Tag 2</label><input id="f_tag2"></div>
+        <div class="form-field"><label>Tag 3</label><input id="f_tag3"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-field"><label>Skill 1 Title</label><input id="f_skill1Title" placeholder="Identity"></div>
+        <div class="form-field"><label>Skill 1 Body</label><input id="f_skill1Body"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-field"><label>Skill 2 Title</label><input id="f_skill2Title" placeholder="Signature"></div>
+        <div class="form-field"><label>Skill 2 Body</label><input id="f_skill2Body"></div>
+      </div>
+
+      <div class="section-title">Season Schedule <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);">(Illumination only)</span></div>
+      <div class="form-grid full">
+        <div class="form-field"><label>Schedule Title</label><input id="f_scheduleTitle" placeholder="Season Schedule"></div>
+        <div class="form-field"><label>MaxPreps Schedule Link <span style="font-weight:400;text-transform:none;letter-spacing:0;">(usually her team's schedule page, a different link than her MaxPreps stats page above)</span></label><input id="f_maxprepsSchedule" placeholder="https://"></div>
+      </div>
+      <div id="scheduleRows"></div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:24px;flex-wrap:wrap;">
+        <button type="button" class="btn" id="btnAddGame">Add Game</button>
+        <button type="button" class="btn" id="btnPullMaxPreps">Try Pull From MaxPreps</button>
+        <span id="maxPrepsPullStatus" style="font-size:12.5px;color:var(--dim);"></span>
+      </div>
+
+      <div class="section-title">Writeups And News <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--dim);">(Illumination only, type up what she sends you from a screenshot or link)</span></div>
+      <div id="writeupRows"></div>
+      <button type="button" class="btn" id="btnAddWriteup" style="margin-bottom:24px;">Add Writeup</button>
+
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnCancelModal">Cancel</button>
+        <button type="submit" class="btn primary">Save Player</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var API = "/.netlify/functions";
+  var ADMIN_SECRET = localStorage.getItem('ehAdminKey') || '';
+  if(!ADMIN_SECRET){
+    ADMIN_SECRET = window.prompt('Enter the dashboard access key:') || '';
+    if(ADMIN_SECRET) localStorage.setItem('ehAdminKey', ADMIN_SECRET);
+  }
+
+  function api(path, opts){
+    opts = opts || {};
+    opts.headers = Object.assign({"X-Admin-Secret": ADMIN_SECRET, "Content-Type":"application/json"}, opts.headers || {});
+    return fetch(API + path, opts).then(function(r){
+      if(r.status === 401){
+        localStorage.removeItem('ehAdminKey');
+        throw new Error('401 Unauthorized on ' + path + ' — access key was rejected, refresh to re-enter it.');
+      }
+      if(!r.ok){
+        return r.text().then(function(t){
+          var detail = t;
+          try { detail = JSON.parse(t).error || t; } catch(e){}
+          throw new Error(r.status + ' ' + r.statusText + ' on ' + path + (detail ? ': ' + detail : ''));
+        });
+      }
+      return r.json();
+    }).catch(function(err){
+      if(err instanceof TypeError){
+        throw new Error('Network error calling ' + path + ' (' + err.message + '). Check the function is deployed and reachable.');
+      }
+      throw err;
+    });
+  }
+
+  var toastQueue = [];
+  var toastShowing = false;
+  function toast(msg){
+    console.error('[dashboard]', msg);
+    toastQueue.push(msg);
+    if(toastShowing) return;
+    showNextToast();
+  }
+  function showNextToast(){
+    var msg = toastQueue.shift();
+    if(msg === undefined){ toastShowing = false; return; }
+    toastShowing = true;
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    setTimeout(function(){
+      t.style.display = 'none';
+      setTimeout(showNextToast, 200);
+    }, 4200);
+  }
+
+  /* tabs */
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      tabBtns.forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  var playersCache = [];
+  var submissionsCache = [];
+
+  function loadPlayers(){
+    return api('/admin-players').then(function(res){
+      playersCache = res.players || [];
+      renderPlayers();
+      renderBulkSchoolOptions();
+      loadConversions();
+      renderOverview();
+      renderArticlePlayerSelect();
+      renderFulfillment();
+      renderArticles();
+      renderIllumination();
+    }).catch(function(e){ toast('Error loading players: ' + e.message); });
+  }
+
+  function loadConversions(){
+    api('/admin-import-handbuilt').then(function(res){
+      var list = res.conversions || [];
+      var card = document.getElementById('conversionsCard');
+      if(!list.length){ card.style.display = 'none'; return; }
+      card.style.display = '';
+      document.getElementById('conversionsList').innerHTML = list.map(function(c){
+        return '<div class="row-actions" style="margin-bottom:8px;align-items:center;">' +
+          (c.imported
+            ? '<span style="font-size:13px;">' + esc(c.playerName) + ' is converted.</span> <a class="btn" href="' + esc(c.url) + '" target="_blank" rel="noopener">Open her page</a> <button class="btn" data-convert="' + esc(c.slug) + '">Convert again</button>'
+            : '<button class="btn primary" data-convert="' + esc(c.slug) + '">Convert ' + esc(c.playerName) + '</button>') +
+          '</div>';
+      }).join('');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-convert]'), function(b){
+        b.addEventListener('click', function(){
+          b.disabled = true;
+          api('/admin-import-handbuilt', { method: 'POST', body: JSON.stringify({ slug: b.getAttribute('data-convert') }) }).then(function(r){
+            toast('Converted. Opening her editable page.');
+            window.open(r.url, '_blank');
+            loadPlayers();
+          }).catch(function(e){ b.disabled = false; toast('Could not convert: ' + e.message); });
+        });
+      });
+    }).catch(function(){ /* nothing to convert */ });
+  }
+
+  function loadSubmissions(){
+    return api('/submissions-list').then(function(res){
+      submissionsCache = res.submissions || [];
+      renderSubmissions();
+      renderOverview();
+    }).catch(function(e){ toast('Error loading submissions: ' + e.message); });
+  }
+
+  var articlesCache = [];
+
+  function loadArticles(){
+    return api('/admin-articles').then(function(res){
+      articlesCache = res.articles || [];
+      renderArticles();
+    }).catch(function(e){ toast('Error loading articles: ' + e.message); });
+  }
+
+  function renderArticlePlayerSelect(){
+    var sel = document.getElementById('articlePlayerSelect');
+    if(!sel) return;
+    var current = sel.value;
+    var eligible = playersCache.filter(function(p){ return p.tier === 'elite' || p.tier === 'illumination'; });
+    if(eligible.length === 0){
+      sel.innerHTML = '<option value="" disabled selected>No Elite or Illumination players yet</option>';
+    } else {
+      sel.innerHTML = eligible.map(function(p){
+        return '<option value="' + esc(p.slug) + '">' + esc(p.playerName || p.slug) + ' (' + esc(p.tier) + ')</option>';
+      }).join('');
+    }
+    if(current) sel.value = current;
+  }
+
+  function renderArticles(){
+    var tbody = document.getElementById('articlesTableBody');
+    if(!tbody) return;
+    if(articlesCache.length === 0){
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-note">No articles yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = articlesCache.map(function(a){
+      var player = playersCache.find(function(p){ return p.slug === a.playerSlug; });
+      var when = a.createdAt ? new Date(a.createdAt).toLocaleDateString() : '';
+      return '<tr>' +
+        '<td>' + esc(player ? player.playerName : a.playerSlug) + '</td>' +
+        '<td>' + esc(a.headline) + '</td>' +
+        '<td>' + esc(when) + '</td>' +
+        '<td><span class="status-pill ' + (a.published ? 'published' : 'draft') + '">' + (a.published ? 'published' : 'draft') + '</span></td>' +
+        '<td class="row-actions">' +
+          '<button class="btn small" onclick="window.__viewArticle(\'' + esc(a.id) + '\')">View / Edit</button>' +
+          '<button class="btn small" onclick="window.__togglePublishArticle(\'' + esc(a.id) + '\', ' + !a.published + ')">' + (a.published ? 'Unpublish' : 'Publish') + '</button>' +
+          '<button class="btn small danger" onclick="window.__deleteArticle(\'' + esc(a.id) + '\')">Delete</button>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  window.__viewArticle = function(id){
+    var a = articlesCache.find(function(x){ return x.id === id; });
+    if(!a) return;
+    var newHeadline = prompt('Headline:', a.headline);
+    if(newHeadline === null) return;
+    var newBody = prompt('Body (edit as needed):', a.body);
+    if(newBody === null) return;
+    api('/admin-articles', { method:'POST', body: JSON.stringify({ id: a.id, headline: newHeadline, body: newBody }) }).then(function(){
+      toast('Article updated');
+      loadArticles();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  };
+  window.__togglePublishArticle = function(id, publish){
+    api('/admin-articles', { method:'POST', body: JSON.stringify({ id: id, published: publish }) }).then(function(){
+      toast(publish ? 'Published' : 'Unpublished');
+      loadArticles();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  };
+  window.__deleteArticle = function(id){
+    if(!confirm('Delete this article?')) return;
+    api('/admin-articles?id=' + encodeURIComponent(id), { method:'DELETE' }).then(function(){
+      toast('Deleted');
+      loadArticles();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  };
+
+  document.getElementById('btnGenerateArticle').addEventListener('click', function(){
+    var sel = document.getElementById('articlePlayerSelect');
+    var slug = sel.value;
+    var useMaxPreps = document.getElementById('articleUseMaxPreps').checked;
+    var status = document.getElementById('articleGenStatus');
+    if(!slug){ status.textContent = 'Pick a player first.'; return; }
+    status.textContent = 'Generating... this can take a few seconds.';
+    api('/admin-generate-article', { method:'POST', body: JSON.stringify({ slug: slug, useMaxPreps: useMaxPreps }) }).then(function(res){
+      var note = '';
+      if(useMaxPreps){
+        note = res.maxPrepsFoundStats ? ' Used stats found on MaxPreps.' : ' MaxPreps fetch did not find usable stats, used her saved stats instead.';
+      }
+      status.textContent = 'Article generated as a draft.' + note;
+      loadArticles();
+    }).catch(function(e){ status.textContent = 'Error: ' + e.message; });
+  });
+
+  var FULFILLMENT_ITEMS = {
+    elite: [
+      ['eliteWebsiteBuilt', 'Elite player website built'],
+      ['mediaReceived', "Her own videos and photos received"],
+      ['videoEmbedded', 'Video and photos embedded'],
+      ['weeklyGraphicLastSent', 'Weekly stat / accolade graphic sent this week', 'date'],
+      ['commitmentGraphic', 'Commitment graphic delivered (when she commits)'],
+    ],
+    illumination: [
+      ['madiSiteBuilt', 'Illumination site built from the Visual-Dashboard'],
+      ['fullGameFootage', 'Full game / highlight video footage delivered'],
+      ['photoShoot', 'Player photo shoot completed'],
+      ['weeklyGraphicLastSent', 'Weekly stat / accolade graphic sent this week', 'date'],
+      ['commitmentGraphic', 'Commitment graphic delivered (when she commits)'],
+      ['socialPhotos', 'Social media / marketing photos delivered'],
+    ],
+  };
+
+  function renderFulfillment(){
+    var container = document.getElementById('fulfillmentList');
+    if(!container) return;
+    var paying = playersCache.filter(function(p){ return p.tier === 'elite' || p.tier === 'illumination'; });
+    if(paying.length === 0){
+      container.innerHTML = '<div class="card"><p>No Elite or Illumination players yet. Set a player\'s Package Tier in her edit form to track her here.</p></div>';
+      return;
+    }
+    container.innerHTML = paying.map(function(p){
+      var items = FULFILLMENT_ITEMS[p.tier] || [];
+      var fulfillment = p.fulfillment || {};
+      var rows = items.map(function(item){
+        var key = item[0], label = item[1], type = item[2];
+        if(type === 'date'){
+          var val = fulfillment[key] || '';
+          return '<div class="form-field"><label>' + esc(label) + '</label>' +
+            '<input type="date" data-fkey="' + esc(key) + '" data-slug="' + esc(p.slug) + '" value="' + esc(val) + '" class="fulfillment-date"></div>';
+        }
+        var checked = fulfillment[key] ? 'checked' : '';
+        return '<label style="display:flex;align-items:center;gap:8px;font-size:13.5px;margin-bottom:10px;">' +
+          '<input type="checkbox" data-fkey="' + esc(key) + '" data-slug="' + esc(p.slug) + '" class="fulfillment-check" ' + checked + ' style="width:auto;"> ' + esc(label) +
+        '</label>';
+      }).join('');
+      return '<div class="card">' +
+        '<h3>' + esc(p.playerName || p.slug) + ' <span class="tool-status">' + esc(p.tier) + '</span></h3>' +
+        rows +
+      '</div>';
+    }).join('');
+
+    container.querySelectorAll('.fulfillment-check').forEach(function(el){
+      el.addEventListener('change', function(){
+        saveFulfillment(el.getAttribute('data-slug'), el.getAttribute('data-fkey'), el.checked);
+      });
+    });
+    container.querySelectorAll('.fulfillment-date').forEach(function(el){
+      el.addEventListener('change', function(){
+        saveFulfillment(el.getAttribute('data-slug'), el.getAttribute('data-fkey'), el.value);
+      });
+    });
+  }
+
+  function saveFulfillment(slug, key, value){
+    var p = playersCache.find(function(x){ return x.slug === slug; });
+    var fulfillment = Object.assign({}, (p && p.fulfillment) || {});
+    fulfillment[key] = value;
+    api('/admin-players', { method:'POST', body: JSON.stringify({ slug: slug, fulfillment: fulfillment }) }).then(function(){
+      toast('Saved');
+      loadPlayers();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  }
+
+  /* ---------- Illumination media ---------- */
+  var ILLUM_ROLES = [
+    { id: "hero", label: "Opening video", help: "Plays inside the circle reveal at the top of the site. Muted loop, landscape, 10 to 30 seconds." },
+    { id: "highlight", label: "Highlight clip", help: "A single short highlight clip, with sound. Upload up to 4, each its own separate clip." },
+    { id: "film", label: "Full game film", help: "One complete game, for coaches who want to watch more than the highlights." },
+    { id: "poster", label: "Poster still", help: "Shows while the video loads and as the preview image when the link is shared." },
+    { id: "portrait", label: "Portrait", help: "Profile section photo. Vertical, 4 by 5 works best." },
+    { id: "photo", label: "Photo Gallery", help: "Photos of her for her own social media, shown together in one gallery on her site." },
+    { id: "kit", label: "Marketing kit", help: "Flyers, social graphics and PDFs. Available in the media feed, not shown on the site." }
+  ];
+  // Older assets may still be tagged "nil" or "editorial" from before the
+  // site's Photo Gallery was unified; they group and display exactly like
+  // "photo" everywhere below so nothing already uploaded needs to change.
+  var ILLUM_PHOTO_ROLES = ["photo", "nil", "editorial"];
+  var illumRoleSelect = document.getElementById('illumUpRole');
+  if(illumRoleSelect){
+    illumRoleSelect.innerHTML = '<option value="">Decide for me</option>' +
+      ILLUM_ROLES.map(function(r){ return '<option value="' + r.id + '">' + esc(r.label) + '</option>'; }).join('');
+  }
+
+  var illumCurrent = null, illumAssets = [];
+
+  // Same admin key as everything else on this dashboard, just sent to the
+  // Illumination media functions' own paths (/api/...) instead of
+  // /.netlify/functions/admin-*.
+  function illumApi(path, opts){
+    opts = opts || {};
+    opts.headers = Object.assign({"X-Admin-Secret": ADMIN_SECRET}, opts.headers || {});
+    return fetch(path, opts).then(function(r){
+      if(r.status === 401){ throw new Error('401 Unauthorized on ' + path + ' — access key was rejected.'); }
+      if(r.status === 204) return {};
+      return r.json().then(function(data){
+        if(!r.ok) throw new Error(data.error || (r.status + ' ' + r.statusText + ' on ' + path));
+        return data;
+      });
+    });
+  }
+  var illumSend = function(path, method, body){
+    return illumApi(path, { method: method, headers: {"Content-Type":"application/json"}, body: JSON.stringify(body) });
+  };
+
+  function renderIllumination(){
+    var list = document.getElementById('illumPlayerList');
+    if(!list) return;
+    // Elite and Illumination render on the same template now (the only
+    // real difference is who uploads her media), so both tiers are
+    // managed from here.
+    var illumination = playersCache.filter(function(p){ return p.tier === 'illumination' || p.tier === 'elite'; });
+    if(illumination.length === 0){
+      list.innerHTML = '<li class="tagline" style="padding:6px;color:var(--dim);font-size:12.5px;">No Elite or Illumination players yet. Set a player\'s Package Tier in her edit form.</li>';
+    } else {
+      list.innerHTML = illumination.map(function(p){
+        var tierLabel = p.tier === 'elite' ? 'Elite' : 'Illumination';
+        var meta = [tierLabel, p.highSchool, p.gradYear ? 'Class of ' + p.gradYear : ''].filter(Boolean).join(' · ') || p.slug;
+        return '<li><button type="button" data-illum-slug="' + esc(p.slug) + '" aria-current="' + (illumCurrent && illumCurrent.slug === p.slug) + '">' +
+          '<b>' + esc(p.playerName || p.slug) + '</b><span>' + esc(meta) + '</span>' +
+        '</button></li>';
+      }).join('');
+      list.querySelectorAll('[data-illum-slug]').forEach(function(btn){
+        btn.addEventListener('click', function(){ openIllumPlayer(btn.getAttribute('data-illum-slug')); });
+      });
+    }
+    // Keep the open player's header (name, publish state) in sync whenever
+    // the player list reloads, e.g. right after a profile edit is saved.
+    if(illumCurrent){
+      var fresh = playersCache.find(function(p){ return p.slug === illumCurrent.slug; });
+      if(fresh){ illumCurrent = fresh; renderIllumHeader(); }
+    }
+  }
+
+  function renderIllumHeader(){
+    var isElite = illumCurrent.tier === 'elite';
+    document.getElementById('illumPlayerName').textContent = illumCurrent.playerName || illumCurrent.slug;
+    document.getElementById('illumPlayerMeta').textContent = [isElite ? 'Elite' : 'Illumination', illumCurrent.highSchool, illumCurrent.gradYear ? 'Class of ' + illumCurrent.gradYear : '', 'slug: ' + illumCurrent.slug].filter(Boolean).join(' · ');
+    document.getElementById('illumViewSite').href = isElite ? '/elite/' + illumCurrent.slug : '/' + illumCurrent.slug;
+    var btn = document.getElementById('illumPublishToggle');
+    // Elite has no approval gate - she's live the moment her tier is set to
+    // Elite, same as always, so there's nothing for this button to toggle.
+    if(isElite){
+      btn.style.display = 'none';
+    } else {
+      btn.style.display = '';
+      btn.textContent = illumCurrent.illuminationApproved ? 'Unpublish Her Site' : 'Publish Her Site';
+      btn.className = illumCurrent.illuminationApproved ? 'btn' : 'btn primary';
+    }
+  }
+
+  function openIllumPlayer(slug){
+    illumCurrent = playersCache.find(function(p){ return p.slug === slug; });
+    if(!illumCurrent) return;
+    document.querySelectorAll('#illumPlayerList [data-illum-slug]').forEach(function(b){
+      b.setAttribute('aria-current', String(b.getAttribute('data-illum-slug') === slug));
+    });
+    document.getElementById('illumEmpty').style.display = 'none';
+    document.getElementById('illumPlayerView').style.display = '';
+    renderIllumHeader();
+    loadIllumAssets();
+  }
+
+  document.getElementById('illumEditProfile').addEventListener('click', function(){
+    if(illumCurrent) window.__editPlayer(illumCurrent.slug);
+  });
+
+  document.getElementById('illumPublishToggle').addEventListener('click', function(){
+    if(!illumCurrent) return;
+    var nowApproved = !illumCurrent.illuminationApproved;
+    if(nowApproved && !window.confirm('Publish her Illumination site? It becomes visible at /' + illumCurrent.slug + ' right away.')) return;
+    if(!nowApproved && !window.confirm('Unpublish her Illumination site? /' + illumCurrent.slug + ' will 404 until you publish again.')) return;
+    api('/admin-players', { method: 'POST', body: JSON.stringify({
+      slug: illumCurrent.slug,
+      illuminationApproved: nowApproved,
+      illuminationApprovedAt: new Date().toISOString()
+    }) }).then(function(){
+      toast(nowApproved ? 'Published. Her site is live.' : 'Unpublished.');
+      loadPlayers();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  });
+
+  function loadIllumAssets(){
+    illumApi('/api/assets?slug=' + encodeURIComponent(illumCurrent.slug)).then(function(res){
+      illumAssets = res.assets || [];
+      renderIllumAssets();
+    }).catch(function(e){ toast('Error loading media: ' + e.message); });
+  }
+
+  var illumFileUrl = function(a){ return '/madi-media/' + a.id; };
+  var illumThumbUrl = function(a){ return '/.netlify/images?url=' + encodeURIComponent(illumFileUrl(a)) + '&w=480&q=70'; };
+  var illumSizeText = function(n){ return n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; };
+
+  function renderIllumChecklist(){
+    var live = illumAssets.filter(function(a){ return a.live && a.status === 'ready'; });
+    var count = function(r){ return live.filter(function(a){ return a.role === r; }).length; };
+    var gallery = count('photo') + count('nil') + count('editorial');
+    var items = [
+      ['Opening video', count('hero') > 0, 'Top of the site'],
+      ['Highlight clips', count('highlight') > 0, count('highlight') + ' live (up to 4 shown)'],
+      ['Full game film', count('film') > 0, 'Full game film section'],
+      ['Poster still', count('poster') > 0, 'Loading and share image'],
+      ['Portrait', count('portrait') > 0, 'Profile section'],
+      ['Photo Gallery', gallery >= 6, gallery + ' live (aim for at least 6)'],
+      ['Marketing kit', count('kit') > 0, count('kit') + ' files']
+    ];
+    document.getElementById('illumChecklist').innerHTML = items.map(function(it){
+      return '<div class="' + (it[1] ? 'ok' : '') + '"><i>' + (it[1] ? '✓' : '') + '</i>' + esc(it[0]) + '<small>' + esc(it[2]) + '</small></div>';
+    }).join('');
+  }
+
+  function illumPreview(a){
+    if(a.status !== 'ready') return '<div class="illum-doc">Incomplete</div>';
+    if(a.type.indexOf('image/') === 0) return '<img src="' + esc(illumThumbUrl(a)) + '" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'' + esc(illumFileUrl(a)) + '\';">';
+    if(a.type.indexOf('video/') === 0) return '<video src="' + esc(illumFileUrl(a)) + '#t=0.5" preload="metadata" muted playsinline></video>';
+    return '<div class="illum-doc">PDF</div>';
+  }
+
+  function illumCard(a){
+    var photo = ILLUM_PHOTO_ROLES.indexOf(a.role) !== -1;
+    return '<article class="illum-asset' + (a.live && a.status === 'ready' ? ' live' : '') + '" data-id="' + esc(a.id) + '">' +
+      '<div class="illum-thumb">' + illumPreview(a) + '<span class="illum-status">' + (a.status !== 'ready' ? 'Upload failed' : a.live ? 'Live' : 'Draft') + '</span></div>' +
+      '<div class="illum-body">' +
+        '<input data-f="title" value="' + esc(a.title) + '" aria-label="Title">' +
+        '<select data-f="role" aria-label="Where it goes">' + ILLUM_ROLES.map(function(r){
+          return '<option value="' + r.id + '"' + (r.id === a.role || (r.id === 'photo' && photo) ? ' selected' : '') + '>' + esc(r.label) + '</option>';
+        }).join('') + '</select>' +
+        (photo ? '<select data-f="layout" aria-label="Grid size"><option value=""' + (a.layout === '' ? ' selected' : '') + '>Standard tile</option><option value="tall"' + (a.layout === 'tall' ? ' selected' : '') + '>Tall tile</option><option value="wide"' + (a.layout === 'wide' ? ' selected' : '') + '>Wide tile</option></select>' : '') +
+        '<div class="illum-row">' +
+          '<label style="display:flex;align-items:center;gap:6px;font-size:11.5px;"><input type="checkbox" data-f="live"' + (a.live ? ' checked' : '') + (a.status !== 'ready' ? ' disabled' : '') + '> Live</label>' +
+          '<div class="row-actions">' +
+            (a.status === 'ready' ? '<a class="btn small" href="' + esc(illumFileUrl(a)) + '?download=1">Download</a>' : '') +
+            '<button class="btn small" type="button" data-illum-act="delete">Delete</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="illum-meta">' + esc(a.name) + ' &middot; ' + illumSizeText(a.size) + '</div>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function renderIllumAssets(){
+    renderIllumChecklist();
+    var groups = document.getElementById('illumGroups');
+    groups.innerHTML = ILLUM_ROLES.map(function(r){
+      var list = illumAssets.filter(function(a){ return r.id === 'photo' ? ILLUM_PHOTO_ROLES.indexOf(a.role) !== -1 : a.role === r.id; });
+      return '<section class="illum-group"><h4>' + esc(r.label) + ' (' + list.length + ')</h4><p>' + esc(r.help) + '</p>' +
+        (list.length ? '<div class="illum-asset-grid">' + list.map(illumCard).join('') + '</div>' : '<p class="empty-note">Nothing here yet</p>') +
+      '</section>';
+    }).join('');
+  }
+
+  function illumPatchAsset(id, fields){
+    var body = Object.assign({ slug: illumCurrent.slug, id: id }, fields);
+    illumSend('/api/assets', 'PATCH', body).then(function(res){
+      illumAssets = illumAssets.map(function(a){ return a.id === id ? res.asset : a; });
+      renderIllumAssets();
+    }).catch(function(e){ toast('Error: ' + e.message); loadIllumAssets(); });
+  }
+
+  document.getElementById('illumGroups').addEventListener('change', function(e){
+    var el = e.target.closest('[data-f]');
+    var card = e.target.closest('.illum-asset');
+    if(!el || !card) return;
+    var f = el.getAttribute('data-f');
+    var fields = {};
+    fields[f] = f === 'live' ? el.checked : el.value;
+    illumPatchAsset(card.getAttribute('data-id'), fields);
+  });
+  document.getElementById('illumGroups').addEventListener('click', function(e){
+    var b = e.target.closest('[data-illum-act="delete"]');
+    if(!b) return;
+    var id = b.closest('.illum-asset').getAttribute('data-id');
+    var a = illumAssets.find(function(x){ return x.id === id; });
+    if(!window.confirm('Delete ' + (a ? a.title : 'this file') + '? It will disappear from the live site.')) return;
+    illumApi('/api/assets?slug=' + encodeURIComponent(illumCurrent.slug) + '&id=' + encodeURIComponent(id), { method: 'DELETE' }).then(function(){
+      illumAssets = illumAssets.filter(function(x){ return x.id !== id; });
+      renderIllumAssets();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  });
+
+  /* Upload */
+  var illumDrop = document.getElementById('illumDrop');
+  var illumFileInput = document.getElementById('illumFileInput');
+  if(illumDrop){
+    illumDrop.addEventListener('click', function(){ illumFileInput.click(); });
+    illumDrop.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); illumFileInput.click(); } });
+    illumDrop.addEventListener('dragover', function(e){ e.preventDefault(); illumDrop.classList.add('over'); });
+    illumDrop.addEventListener('dragleave', function(){ illumDrop.classList.remove('over'); });
+    illumDrop.addEventListener('drop', function(e){ e.preventDefault(); illumDrop.classList.remove('over'); illumUploadAll(Array.prototype.slice.call(e.dataTransfer.files)); });
+    illumFileInput.addEventListener('change', function(){ illumUploadAll(Array.prototype.slice.call(illumFileInput.files)); illumFileInput.value = ''; });
+  }
+
+  function illumUploadAll(files){
+    if(!illumCurrent || !files.length) return;
+    var slug = illumCurrent.slug;
+    var role = document.getElementById('illumUpRole').value;
+    var live = document.getElementById('illumUpLive').checked;
+    var chain = Promise.resolve();
+    files.forEach(function(f){ chain = chain.then(function(){ return illumUploadOne(f, slug, role, live); }); });
+    chain.then(function(){ if(illumCurrent && illumCurrent.slug === slug) loadIllumAssets(); });
+  }
+
+  function illumUploadOne(file, slug, role, live){
+    var li = document.createElement('li');
+    li.innerHTML = '<span>' + esc(file.name) + '</span><span class="illum-pct">0%</span><div class="illum-bar"><i></i></div>';
+    var queue = document.getElementById('illumQueue');
+    queue.insertBefore(li, queue.firstChild);
+    var setPct = function(p){ li.querySelector('.illum-pct').textContent = p + '%'; li.querySelector('.illum-bar i').style.width = p + '%'; };
+    var type = file.type || (/\.mov$/i.test(file.name) ? 'video/quicktime' : '');
+    var assetId = null;
+    return illumSend('/api/upload/start', 'POST', { slug: slug, name: file.name, type: type, size: file.size, role: role || undefined })
+      .then(function(start){
+        var chunkSize = start.chunkSize, chunks = start.chunks;
+        assetId = start.id;
+        var next = 0, done = 0;
+        function uploadChunk(n, attempt){
+          var part = file.slice(n * chunkSize, Math.min(file.size, (n + 1) * chunkSize));
+          return illumApi('/api/upload/chunk?slug=' + encodeURIComponent(slug) + '&id=' + assetId + '&n=' + n, {
+            method: 'PUT', headers: {'Content-Type':'application/octet-stream'}, body: part
+          }).catch(function(err){
+            if(attempt >= 3) throw err;
+            return new Promise(function(r){ setTimeout(r, 1000 * attempt); }).then(function(){ return uploadChunk(n, attempt + 1); });
+          });
+        }
+        function worker(){
+          if(next >= chunks) return Promise.resolve();
+          var n = next++;
+          return uploadChunk(n, 1).then(function(){
+            done++;
+            setPct(Math.round(done / chunks * 100));
+            return worker();
+          });
+        }
+        var workers = [];
+        for(var w = 0; w < Math.min(3, chunks); w++) workers.push(worker());
+        return Promise.all(workers).then(function(){ return illumSend('/api/upload/finish', 'POST', { slug: slug, id: assetId }); });
+      })
+      .then(function(){
+        return live ? illumSend('/api/assets', 'PATCH', { slug: slug, id: assetId, live: true }) : Promise.resolve();
+      })
+      .then(function(){
+        li.classList.add('done');
+        li.querySelector('.illum-pct').textContent = live ? 'Live' : 'Uploaded';
+      })
+      .catch(function(err){
+        li.querySelector('.illum-pct').textContent = 'Failed';
+        toast(file.name + ': ' + err.message);
+      });
+  }
+
+  function renderOverview(){
+    document.getElementById('statPlayers').textContent = playersCache.length;
+    document.getElementById('statPublished').textContent = playersCache.filter(function(p){ return p.status !== 'draft'; }).length;
+    document.getElementById('statSubmissions').textContent = submissionsCache.length;
+    document.getElementById('statInquiries').textContent = submissionsCache.filter(function(s){ return s.formName === 'package-inquiry'; }).length;
+  }
+
+  function renderPlayers(){
+    var tbody = document.getElementById('playersTableBody');
+    if(playersCache.length === 0){
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-note">No players yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = playersCache.map(function(p){
+      var status = p.status === 'draft' ? 'draft' : 'published';
+      var viewHref = p.liveUrl ? p.liveUrl
+        : p.tier === 'elite' ? '/elite/' + esc(p.slug)
+        : p.tier === 'illumination' ? '/' + esc(p.slug)
+        : '/players/' + esc(p.slug);
+      return '<tr>' +
+        '<td><strong>' + esc(p.playerName || '(unnamed)') + '</strong></td>' +
+        '<td>' + esc(p.highSchool || '') + '</td>' +
+        '<td><span class="status-pill ' + status + '">' + status + '</span></td>' +
+        '<td>' + (p.views || 0) + '</td>' +
+        '<td>' + (p.maxpreps ? '<a href="' + esc(p.maxpreps) + '" target="_blank" rel="noopener" class="mono" style="font-size:11px;color:var(--teal);">link &#8599;</a>' : '') + '</td>' +
+        '<td class="row-actions">' +
+          '<a class="btn small" href="' + viewHref + '" target="_blank" rel="noopener">View</a>' +
+          '<button class="btn small" onclick="window.__editPlayer(\'' + esc(p.slug) + '\')">Edit</button>' +
+          '<button class="btn small" onclick="window.__copyEditLink(\'' + esc(p.slug) + '\')">Copy Her Edit Link</button>' +
+          '<button class="btn small danger" onclick="window.__deletePlayer(\'' + esc(p.slug) + '\')">Delete</button>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function renderBulkSchoolOptions(){
+    var card = document.getElementById('bulkUpgradeCard');
+    var sel = document.getElementById('bulkSchoolSelect');
+    var schools = {};
+    playersCache.forEach(function(p){
+      if(!p.highSchool || p.tier === 'elite' || p.tier === 'illumination') return;
+      schools[p.highSchool] = (schools[p.highSchool] || 0) + 1;
+    });
+    var names = Object.keys(schools).sort();
+    if(!names.length){ card.style.display = 'none'; return; }
+    card.style.display = '';
+    sel.innerHTML = names.map(function(n){
+      return '<option value="' + esc(n) + '">' + esc(n) + ' (' + schools[n] + ' Essential)</option>';
+    }).join('');
+  }
+
+  // Runs the same upgrade action as the single player button, once per
+  // Essential player at the chosen school, one at a time rather than all
+  // at once so a slow or failed save doesn't collide with the next.
+  document.getElementById('btnBulkUpgrade').addEventListener('click', function(){
+    var school = document.getElementById('bulkSchoolSelect').value;
+    if(!school) return;
+    var targets = playersCache.filter(function(p){
+      return p.highSchool === school && p.tier !== 'elite' && p.tier !== 'illumination';
+    });
+    if(!targets.length){ toast('No Essential players at that school'); return; }
+    if(!confirm('Upgrade ' + targets.length + ' player' + (targets.length === 1 ? '' : 's') + ' at ' + school + ' to Elite?\n\n' + targets.map(function(p){ return p.playerName || p.slug; }).join(', '))) return;
+    var btn = document.getElementById('btnBulkUpgrade');
+    btn.disabled = true;
+    var done = 0, failed = [];
+    function next(){
+      if(done >= targets.length){
+        btn.disabled = false;
+        toast('Upgraded ' + (targets.length - failed.length) + ' of ' + targets.length + ' to Elite' + (failed.length ? '. Failed: ' + failed.join(', ') : '.'));
+        loadPlayers();
+        return;
+      }
+      var p = targets[done];
+      api('/admin-players', { method: 'POST', body: JSON.stringify({ action: 'upgradeToElite', slug: p.slug }) }).then(function(){
+        done++;
+        next();
+      }).catch(function(){
+        failed.push(p.playerName || p.slug);
+        done++;
+        next();
+      });
+    }
+    next();
+  });
+
+  function renderSubmissions(){
+    var tbody = document.getElementById('submissionsTableBody');
+    if(submissionsCache.length === 0){
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-note">No form submissions yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = submissionsCache.map(function(s, i){
+      var d = s.data || {};
+      var name = d.playerName || d.name || '(no name)';
+      var contact = d.playerEmail || d.email || d.guardianEmail || '';
+      var when = s.createdAt ? new Date(s.createdAt).toLocaleString() : '';
+      return '<tr>' +
+        '<td class="mono" style="font-size:11.5px;">' + esc(s.formName) + '</td>' +
+        '<td>' + esc(when) + '</td>' +
+        '<td>' + esc(name) + '</td>' +
+        '<td>' + esc(contact) + '</td>' +
+        '<td><button class="btn small" onclick="window.__toggleRawSubmission(' + i + ')">View Raw</button></td>' +
+      '</tr>' +
+      '<tr id="rawSub' + i + '" style="display:none;"><td colspan="5"><pre class="mono" style="white-space:pre-wrap;word-break:break-all;font-size:11px;max-height:340px;overflow:auto;margin:0;">' + esc(formatRawSubmission(d)) + '</pre></td></tr>';
+    }).join('');
+  }
+
+  function formatRawSubmission(d){
+    var out = {};
+    Object.keys(d).forEach(function(k){
+      var v = d[k];
+      if(typeof v === 'string' && v.length > 300){
+        out[k] = v.slice(0, 300) + '... (truncated, ' + v.length + ' chars total)';
+      } else {
+        out[k] = v;
+      }
+    });
+    return JSON.stringify(out, null, 2);
+  }
+
+  window.__toggleRawSubmission = function(i){
+    var row = document.getElementById('rawSub' + i);
+    if(row) row.style.display = row.style.display === 'none' ? '' : 'none';
+  };
+
+  function esc(s){
+    if(s === undefined || s === null) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* modal / edit form */
+  var modalBackdrop = document.getElementById('playerModalBackdrop');
+  var fields = ['slug','playerName','jerseyNumber','highSchool','gradYear','position','status','tier','liveUrl',
+    'playerPhone','playerEmail','guardianName','guardianPhone','guardianEmail',
+    'gpa','sat','act','dualEnrollment',
+    'height','weight','standingReach','wingspan','shoeSize',
+    'standingVertical','maxVertical','benchDeadliftSquat','laneAgility','shuttleRun','threeQtrSprint',
+    'statFreshmanPPG','statFreshmanRebounds','statFreshmanSteals','statFreshmanBlocks','statFreshmanAssists','statFreshmanTotalPoints',
+    'statSophomorePPG','statSophomoreRebounds','statSophomoreSteals','statSophomoreBlocks','statSophomoreAssists','statSophomoreTotalPoints',
+    'statJuniorPPG','statJuniorRebounds','statJuniorSteals','statJuniorBlocks','statJuniorAssists','statJuniorTotalPoints',
+    'statSeniorPPG','statSeniorRebounds','statSeniorSteals','statSeniorBlocks','statSeniorAssists','statSeniorTotalPoints',
+    'maxpreps','maxprepsSchedule','hudl','fieldlevel','prepgirlshoops','instagram','twitter','youtube',
+    'filmYoutubeUrl','highlightYoutubeUrl1','highlightYoutubeUrl2','highlightYoutubeUrl3','highlightYoutubeUrl4',
+    'coachName','coachPhone','coachEmail',
+    'currentOffers','ncaaId','playerPhoto','highlightVideo','message',
+    'aboutParagraph1','aboutParagraph2','tag1','tag2','tag3',
+    'skill1Title','skill1Body','skill2Title','skill2Body','scheduleTitle'];
+
+  /* Schedule games and writeups are lists, not simple fields, so they are
+     tracked separately and merged into the save payload by hand. */
+  var scheduleGames = [];
+  var writeups = [];
+  var LOCATIONS = ['Home','Away','TBD'];
+
+  function renderScheduleRows(){
+    var container = document.getElementById('scheduleRows');
+    if(scheduleGames.length === 0){
+      container.innerHTML = '<p class="empty-note">No games yet. Add her season schedule below.</p>';
+      return;
+    }
+    container.innerHTML = scheduleGames.map(function(g, i){
+      return '<div class="form-grid" style="border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;">' +
+        '<div class="form-field"><label>Date</label><input type="date" data-gk="date" data-gi="' + i + '" value="' + esc(g.date || '') + '"></div>' +
+        '<div class="form-field"><label>Opponent</label><input data-gk="opp" data-gi="' + i + '" value="' + esc(g.opp || '') + '"></div>' +
+        '<div class="form-field"><label>Location</label><select data-gk="loc" data-gi="' + i + '">' +
+          LOCATIONS.map(function(o){ return '<option' + (g.loc === o ? ' selected' : '') + '>' + o + '</option>'; }).join('') +
+        '</select></div>' +
+        '<div class="form-field"><label>Time</label><input data-gk="time" data-gi="' + i + '" value="' + esc(g.time || '') + '" placeholder="7:30 PM"></div>' +
+        '<div class="form-field"><label>Note</label><input data-gk="note" data-gi="' + i + '" value="' + esc(g.note || '') + '" placeholder="JV 6:00"></div>' +
+        '<div class="form-field"><label>Tag</label><input data-gk="tag" data-gi="' + i + '" value="' + esc(g.tag || '') + '" placeholder="Senior Night"></div>' +
+        '<div class="form-field"><label>Result</label><input data-gk="result" data-gi="' + i + '" value="' + esc(g.result || '') + '" placeholder="W 54 41"></div>' +
+        '<div class="form-field" style="justify-content:flex-end;"><button type="button" class="btn small danger" data-gremove="' + i + '">Remove Game</button></div>' +
+      '</div>';
+    }).join('');
+    container.querySelectorAll('[data-gk]').forEach(function(el){
+      el.addEventListener('input', function(){
+        var i = parseInt(el.getAttribute('data-gi'), 10);
+        scheduleGames[i][el.getAttribute('data-gk')] = el.value;
+      });
+    });
+    container.querySelectorAll('[data-gremove]').forEach(function(el){
+      el.addEventListener('click', function(){
+        scheduleGames.splice(parseInt(el.getAttribute('data-gremove'), 10), 1);
+        renderScheduleRows();
+      });
+    });
+  }
+  document.getElementById('btnAddGame').addEventListener('click', function(){
+    scheduleGames.push({ date: '', opp: '', loc: 'Home', time: '', note: '', tag: '', result: '' });
+    renderScheduleRows();
+  });
+  document.getElementById('btnPullMaxPreps').addEventListener('click', function(){
+    var url = document.getElementById('f_maxprepsSchedule').value.trim() || document.getElementById('f_maxpreps').value.trim();
+    var status = document.getElementById('maxPrepsPullStatus');
+    if(!url){ status.textContent = 'Add her MaxPreps Schedule link above first (or her MaxPreps stats link, if that is the only one you have).'; return; }
+    status.textContent = 'Trying MaxPreps, this can take a few seconds and often finds nothing...';
+    api('/admin-maxpreps-schedule', { method: 'POST', body: JSON.stringify({ maxprepsUrl: url }) }).then(function(res){
+      var games = res.games || [];
+      if(games.length === 0){
+        status.textContent = 'Could not read a schedule from that page. Add her games by hand below.';
+        return;
+      }
+      scheduleGames = scheduleGames.concat(games);
+      renderScheduleRows();
+      status.textContent = 'Added ' + games.length + ' game' + (games.length === 1 ? '' : 's') + '. Check every row before saving, this is a best effort guess.';
+    }).catch(function(e){ status.textContent = 'Error: ' + e.message; });
+  });
+
+  var MAXPREPS_KNOWN_STATS = { ppg: 'PPG', rebounds: 'Rebounds', assists: 'Assists', steals: 'Steals', blocks: 'Blocks', totalPoints: 'TotalPoints' };
+  var MAXPREPS_SEASON_ROWS = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
+
+  function guessMaxPrepsSeasonRow(label){
+    if(!label) return '';
+    var l = String(label).toLowerCase();
+    if(/fresh|\bfr\.?(?:\s|$)/.test(l)) return 'Freshman';
+    if(/soph|\bso\.?(?:\s|$)/.test(l)) return 'Sophomore';
+    if(/junior|\bjr\.?(?:\s|$)/.test(l)) return 'Junior';
+    if(/senior|\bsr\.?(?:\s|$)/.test(l)) return 'Senior';
+    return '';
+  }
+
+  function applyMaxPrepsSeason(season, stats){
+    var filled = [];
+    Object.keys(MAXPREPS_KNOWN_STATS).forEach(function(key){
+      if(stats[key] === undefined || stats[key] === null || stats[key] === '') return;
+      var el = document.getElementById('f_stat' + season + MAXPREPS_KNOWN_STATS[key]);
+      if(el){ el.value = stats[key]; filled.push(MAXPREPS_KNOWN_STATS[key]); }
+    });
+    return filled;
+  }
+
+  function renderMaxPrepsStatsFound(seasons){
+    var box = document.getElementById('maxPrepsStatsFound');
+    if(seasons.length === 0){ box.innerHTML = ''; return; }
+    box.innerHTML = '<div class="card" style="margin-bottom:16px;">' +
+      '<p style="font-size:12.5px;color:var(--dim);margin:0 0 10px;">Found ' + seasons.length + ' season' + (seasons.length === 1 ? '' : 's') + ' on MaxPreps. Pick which row each one is and apply it, or apply all at once. Always double check the numbers after.</p>' +
+      seasons.map(function(s, i){
+        var known = Object.keys(MAXPREPS_KNOWN_STATS).filter(function(k){ return s[k] !== undefined && s[k] !== null && s[k] !== ''; });
+        var leftover = Object.keys(s).filter(function(k){ return k !== 'source' && k !== 'label' && !MAXPREPS_KNOWN_STATS[k]; });
+        var summary = known.map(function(k){ return s[k] + ' ' + MAXPREPS_KNOWN_STATS[k]; }).join(' &middot; ') || 'No recognizable numbers';
+        var leftoverNote = leftover.length ? '<br><span style="font-size:11.5px;color:var(--amber);">Also found: ' + leftover.map(function(k){ return k + ' = ' + s[k]; }).join(', ') + '</span>' : '';
+        var guess = guessMaxPrepsSeasonRow(s.label);
+        return '<div class="row-actions" style="justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:10px 0;">' +
+          '<div><strong>' + esc(s.label || ('Season ' + (i + 1))) + '</strong>: ' + summary + leftoverNote + '</div>' +
+          '<div class="row-actions">' +
+            '<select data-maxpreps-season-pick="' + i + '">' +
+              '<option value="">Pick a row&hellip;</option>' +
+              MAXPREPS_SEASON_ROWS.map(function(r){ return '<option value="' + r + '"' + (r === guess ? ' selected' : '') + '>' + r + '</option>'; }).join('') +
+            '</select>' +
+            '<button type="button" class="btn small" data-maxpreps-apply="' + i + '">Apply</button>' +
+          '</div>' +
+        '</div>';
+      }).join('') +
+    '</div>';
+
+    box.querySelectorAll('[data-maxpreps-apply]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var i = Number(btn.getAttribute('data-maxpreps-apply'));
+        var select = box.querySelector('[data-maxpreps-season-pick="' + i + '"]');
+        var season = select.value;
+        if(!season){ toast('Pick which row this season goes in first.'); return; }
+        var filled = applyMaxPrepsSeason(season, seasons[i]);
+        toast(filled.length ? 'Filled ' + season + ' ' + filled.join(', ') + '.' : 'Nothing recognizable to fill for that season.');
+      });
+    });
+  }
+
+  document.getElementById('btnPullMaxPrepsStats').addEventListener('click', function(){
+    var url = document.getElementById('f_maxpreps').value.trim();
+    var status = document.getElementById('maxPrepsStatsStatus');
+    if(!url){ status.textContent = 'Add her MaxPreps link above first.'; return; }
+    var urlWarning = /basketball/i.test(url) ? '' : ' Heads up: that link does not say "basketball" in it, double check it is her basketball page and not a general profile or a different sport before trusting these numbers.';
+    status.textContent = 'Trying MaxPreps, this can take a few seconds and often finds nothing...';
+    document.getElementById('maxPrepsStatsFound').innerHTML = '';
+    api('/admin-maxpreps-stats', { method: 'POST', body: JSON.stringify({ maxprepsUrl: url }) }).then(function(res){
+      var seasons = res.seasons || [];
+      if(seasons.length === 0){
+        status.textContent = 'Could not read any seasons from that page. Enter her numbers by hand below.' + urlWarning;
+        return;
+      }
+      status.textContent = 'Found ' + seasons.length + ' season' + (seasons.length === 1 ? '' : 's') + ' below. This is a best effort guess, check it against the real page.' + urlWarning;
+      renderMaxPrepsStatsFound(seasons);
+    }).catch(function(e){ status.textContent = 'Error: ' + e.message; });
+  });
+
+  function collectPlayerFormData(){
+    var data = {};
+    fields.forEach(function(f){
+      var el = document.getElementById('f_' + f);
+      if(el) data[f] = el.value;
+    });
+    data.scheduleGames = scheduleGames.filter(function(g){ return g.date && g.opp; });
+    data.writeups = writeups.filter(function(w){ return w.title; });
+    return data;
+  }
+
+  function applyProfileContent(content){
+    var keys = ['aboutParagraph1','aboutParagraph2','tag1','tag2','tag3','skill1Title','skill1Body','skill2Title','skill2Body'];
+    var filled = [];
+    keys.forEach(function(k){
+      var el = document.getElementById('f_' + k);
+      if(el && content[k]){ el.value = content[k]; filled.push(k); }
+    });
+    return filled;
+  }
+
+  function renderAutoFillProfileFound(content){
+    var box = document.getElementById('autoFillProfileFound');
+    var sources = content.sources || [];
+    var sourcesHtml = sources.length
+      ? '<p style="font-size:11.5px;color:var(--dim);margin:6px 0 0;">Sources checked: ' +
+          sources.map(function(s){ return '<a href="' + esc(s.uri) + '" target="_blank" rel="noopener">' + esc(s.title) + '</a>'; }).join(', ') +
+        '</p>'
+      : '';
+    box.innerHTML = '<div class="card" style="margin-bottom:16px;">' +
+      '<p style="font-size:12.5px;color:var(--dim);margin:0 0 10px;">Already filled into the fields below. Read every word, this is a draft, not a fact checked article. Edit anything before saving.</p>' +
+      '<p><strong>Paragraph 1:</strong> ' + esc(content.aboutParagraph1 || '') + '</p>' +
+      '<p><strong>Paragraph 2:</strong> ' + esc(content.aboutParagraph2 || '') + '</p>' +
+      '<p><strong>Tags:</strong> ' + [content.tag1, content.tag2, content.tag3].filter(Boolean).map(esc).join(', ') + '</p>' +
+      '<p><strong>' + esc(content.skill1Title || 'Skill 1') + ':</strong> ' + esc(content.skill1Body || '') + '</p>' +
+      '<p><strong>' + esc(content.skill2Title || 'Skill 2') + ':</strong> ' + esc(content.skill2Body || '') + '</p>' +
+      sourcesHtml +
+    '</div>';
+  }
+
+  document.getElementById('btnAutoFillProfile').addEventListener('click', function(){
+    var status = document.getElementById('autoFillProfileStatus');
+    var data = collectPlayerFormData();
+    if(!data.playerName){ status.textContent = 'Enter her name first.'; return; }
+    var useWebSearch = document.getElementById('f_autoFillWebSearch').checked;
+    status.textContent = 'Writing her bio, tags, and skills, this can take several seconds...';
+    document.getElementById('autoFillProfileFound').innerHTML = '';
+    api('/admin-generate-profile-content', { method: 'POST', body: JSON.stringify({ player: data, useMaxPreps: true, useWebSearch: useWebSearch }) }).then(function(res){
+      var content = res.content || {};
+      var filled = applyProfileContent(content);
+      renderAutoFillProfileFound(content);
+      status.textContent = filled.length
+        ? 'Filled ' + filled.length + ' field' + (filled.length === 1 ? '' : 's') + ' below. Review every word before saving.'
+        : 'Did not get anything usable back, try again.';
+    }).catch(function(e){ status.textContent = 'Error: ' + e.message; });
+  });
+
+  function renderWriteupRows(){
+    var container = document.getElementById('writeupRows');
+    if(writeups.length === 0){
+      container.innerHTML = '<p class="empty-note">No writeups yet. Add one when she sends a link or a screenshot.</p>';
+      return;
+    }
+    container.innerHTML = writeups.map(function(w, i){
+      return '<div class="form-grid full" style="border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;">' +
+        '<div class="form-grid">' +
+          '<div class="form-field"><label>Kind</label><input data-wk="kind" data-wi="' + i + '" value="' + esc(w.kind || '') + '" placeholder="Article, Scouting Report, Interview"></div>' +
+          '<div class="form-field"><label>Title</label><input data-wk="title" data-wi="' + i + '" value="' + esc(w.title || '') + '"></div>' +
+          '<div class="form-field"><label>Source</label><input data-wk="source" data-wi="' + i + '" value="' + esc(w.source || '') + '" placeholder="Prep Girls Hoops"></div>' +
+        '</div>' +
+        '<div class="form-grid">' +
+          '<div class="form-field"><label>Date</label><input type="date" data-wk="date" data-wi="' + i + '" value="' + esc(w.date || '') + '"></div>' +
+          '<div class="form-field"><label>Link <span style="font-weight:400;text-transform:none;letter-spacing:0;">(leave blank if it is only a screenshot)</span></label><input data-wk="url" data-wi="' + i + '" value="' + esc(w.url || '') + '" placeholder="https://"></div>' +
+        '</div>' +
+        '<div class="form-field"><label>Excerpt <span style="font-weight:400;text-transform:none;letter-spacing:0;">(a line or two shown on the card)</span></label><input data-wk="excerpt" data-wi="' + i + '" value="' + esc(w.excerpt || '') + '"></div>' +
+        '<div class="form-field"><label>Full Text <span style="font-weight:400;text-transform:none;letter-spacing:0;">(type up the screenshot here, blank line between paragraphs, only needed if there is no link)</span></label><textarea data-wk="body" data-wi="' + i + '" rows="3">' + esc(w.body || '') + '</textarea></div>' +
+        '<div class="form-field" style="justify-content:flex-end;"><button type="button" class="btn small danger" data-wremove="' + i + '">Remove Writeup</button></div>' +
+      '</div>';
+    }).join('');
+    container.querySelectorAll('[data-wk]').forEach(function(el){
+      el.addEventListener('input', function(){
+        var i = parseInt(el.getAttribute('data-wi'), 10);
+        writeups[i][el.getAttribute('data-wk')] = el.value;
+      });
+    });
+    container.querySelectorAll('[data-wremove]').forEach(function(el){
+      el.addEventListener('click', function(){
+        writeups.splice(parseInt(el.getAttribute('data-wremove'), 10), 1);
+        renderWriteupRows();
+      });
+    });
+  }
+  document.getElementById('btnAddWriteup').addEventListener('click', function(){
+    writeups.push({ kind: '', title: '', source: '', date: '', url: '', excerpt: '', body: '' });
+    renderWriteupRows();
+  });
+
+  function slugify(name){
+    return String(name || '').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  }
+
+  function setPhotoPreview(url){
+    var img = document.getElementById('photoPreview');
+    if(url){ img.src = url; img.style.display = 'block'; }
+    else { img.src = ''; img.style.display = 'none'; }
+  }
+
+  function setVideoPreview(url){
+    var video = document.getElementById('videoPreview');
+    if(url){ video.src = url; video.style.display = 'block'; }
+    else { video.src = ''; video.style.display = 'none'; }
+  }
+
+  function openModal(player){
+    document.getElementById('modalTitle').textContent = player ? 'Edit Player' : 'Add Player';
+    fields.forEach(function(f){
+      var el = document.getElementById('f_' + f);
+      if(!el) return;
+      if(player && player[f]){
+        el.value = player[f];
+      } else if(el.tagName === 'SELECT'){
+        var def = el.querySelector('option[selected]');
+        el.value = def ? def.value : el.options[0].value;
+      } else {
+        el.value = el.defaultValue || '';
+      }
+    });
+    var slugUrlField = document.getElementById('slugUrlField');
+    if(player && player.slug){
+      slugUrlField.style.display = '';
+      var urlPrefix = player.tier === 'elite' ? '/elite/' : '/players/';
+      document.getElementById('slugUrlDisplay').textContent = urlPrefix + player.slug;
+    } else {
+      slugUrlField.style.display = 'none';
+    }
+    var upgradeField = document.getElementById('upgradeToEliteField');
+    upgradeField.style.display = (player && player.slug && player.tier !== 'elite' && player.tier !== 'illumination') ? '' : 'none';
+    document.getElementById('f_playerPhotoFile').value = '';
+    document.getElementById('photoStatus').textContent = '';
+    setPhotoPreview(player && player.playerPhoto);
+    document.getElementById('f_highlightVideoFile').value = '';
+    document.getElementById('videoStatus').textContent = '';
+    document.getElementById('videoProgressWrap').style.display = 'none';
+    setVideoPreview(player && player.highlightVideo);
+    scheduleGames = (player && Array.isArray(player.scheduleGames)) ? player.scheduleGames.slice() : [];
+    writeups = (player && Array.isArray(player.writeups)) ? player.writeups.slice() : [];
+    renderScheduleRows();
+    renderWriteupRows();
+    modalBackdrop.classList.add('open');
+  }
+
+  // Photo and video uploads save themselves the moment they finish, rather
+  // than waiting on the separate Save Player button: the upload is the
+  // expensive, easy to lose part, so it should not depend on a second click
+  // to actually stick on her record.
+  function autosavePlayerField(slug, field, value){
+    var body = { slug: slug };
+    body[field] = value;
+    return api('/admin-players', { method: 'POST', body: JSON.stringify(body) });
+  }
+
+  document.getElementById('f_playerPhotoFile').addEventListener('change', function(e){
+    var file = e.target.files && e.target.files[0];
+    if(!file) return;
+    var photoStatus = document.getElementById('photoStatus');
+    var nameEl = document.getElementById('f_playerName');
+    var slugEl = document.getElementById('f_slug');
+    if(!nameEl.value.trim()){
+      photoStatus.textContent = "Enter the player's name first, then upload her photo.";
+      e.target.value = '';
+      return;
+    }
+    if(!slugEl.value.trim()) slugEl.value = slugify(nameEl.value);
+    var photoKey = slugEl.value.trim() + '-' + Date.now();
+
+    photoStatus.textContent = 'Uploading...';
+    var reader = new FileReader();
+    reader.onload = function(){
+      var dataUrl = reader.result;
+      var base64 = dataUrl.split(',')[1];
+      api('/admin-photo-upload', {
+        method: 'POST',
+        body: JSON.stringify({ slug: photoKey, contentType: file.type, dataBase64: base64 })
+      }).then(function(res){
+        document.getElementById('f_playerPhoto').value = res.url;
+        setPhotoPreview(dataUrl);
+        photoStatus.textContent = 'Photo uploaded, saving...';
+        return autosavePlayerField(slugEl.value.trim(), 'playerPhoto', res.url).then(function(){
+          photoStatus.textContent = 'Photo uploaded and saved.';
+        }, function(err){
+          photoStatus.textContent = 'Photo uploaded, but saving it failed: ' + err.message + '. Click Save Player to try again.';
+        });
+      }).catch(function(err){
+        photoStatus.textContent = 'Error uploading photo: ' + err.message;
+        e.target.value = '';
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('f_highlightVideoFile').addEventListener('change', function(e){
+    var file = e.target.files && e.target.files[0];
+    if(!file) return;
+    var videoStatus = document.getElementById('videoStatus');
+    var nameEl = document.getElementById('f_playerName');
+    var slugEl = document.getElementById('f_slug');
+    if(!nameEl.value.trim()){
+      videoStatus.textContent = "Enter the player's name first, then upload her video.";
+      e.target.value = '';
+      return;
+    }
+    if(!slugEl.value.trim()) slugEl.value = slugify(nameEl.value);
+    var slug = slugEl.value.trim();
+
+    var progressWrap = document.getElementById('videoProgressWrap');
+    var progressBar = document.getElementById('videoProgressBar');
+    progressWrap.style.display = 'block';
+    progressBar.style.width = '0%';
+    videoStatus.textContent = 'Starting upload...';
+
+    function readChunkAsBase64(blob){
+      return new Promise(function(resolve, reject){
+        var reader = new FileReader();
+        reader.onload = function(){ resolve(reader.result.split(',')[1]); };
+        reader.onerror = function(){ reject(new Error('Could not read file')); };
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    api('/player-video-upload?action=start', {
+      method: 'POST',
+      body: JSON.stringify({ slug: slug, contentType: file.type, size: file.size, name: file.name })
+    }).then(function(started){
+      var chunkSize = started.chunkSize, chunks = started.chunks, id = started.id;
+      var n = 0;
+      function nextChunk(){
+        if (n >= chunks) {
+          return api('/player-video-upload?action=finish', { method: 'POST', body: JSON.stringify({ slug: slug, id: id }) });
+        }
+        var start = n * chunkSize;
+        var blob = file.slice(start, start + chunkSize);
+        return readChunkAsBase64(blob).then(function(dataBase64){
+          return api('/player-video-upload?action=chunk', { method: 'POST', body: JSON.stringify({ slug: slug, id: id, n: n, dataBase64: dataBase64 }) });
+        }).then(function(){
+          n += 1;
+          progressBar.style.width = Math.round((n / chunks) * 100) + '%';
+          videoStatus.textContent = 'Uploading... ' + Math.round((n / chunks) * 100) + '%';
+          return nextChunk();
+        });
+      }
+      return nextChunk();
+    }).then(function(result){
+      document.getElementById('f_highlightVideo').value = result.url;
+      setVideoPreview(result.url);
+      videoStatus.textContent = 'Video uploaded, saving...';
+      return autosavePlayerField(slug, 'highlightVideo', result.url).then(function(){
+        videoStatus.textContent = 'Video uploaded and saved.';
+      }, function(err){
+        videoStatus.textContent = 'Video uploaded, but saving it failed: ' + err.message + '. Click Save Player to try again.';
+      });
+    }).catch(function(err){
+      videoStatus.textContent = 'Error uploading video: ' + err.message;
+      e.target.value = '';
+    });
+  });
+
+  // Moves a player to a corrected slug instead of the usual create-or-update
+  // save, since the slug is her record's storage key, not just a cosmetic
+  // field. Her photo and highlight clip keep working without any change -
+  // only the player record itself moves - but add a netlify.toml redirect
+  // from the old URL to the new one afterward so any link already handed
+  // out still works, and resend her a fresh player-login link, since the
+  // slug in that link changes too.
+  document.getElementById('btnRenameSlug').addEventListener('click', function(){
+    var slugEl = document.getElementById('f_slug');
+    var oldSlug = slugEl.value.trim();
+    if(!oldSlug) return;
+    var nameEl = document.getElementById('f_playerName');
+    var suggested = nameEl.value.trim() ? slugify(nameEl.value) : oldSlug;
+    var input = window.prompt('New URL slug for /players/...', suggested);
+    if(!input) return;
+    var newSlug = slugify(input);
+    if(!newSlug || newSlug === oldSlug) return;
+    if(!confirm('Move this player from /players/' + oldSlug + ' to /players/' + newSlug + '?\n\nAdd a redirect from the old URL to netlify.toml afterward so existing links keep working, and resend her a fresh player-login link.')) return;
+    api('/admin-players', { method: 'POST', body: JSON.stringify({ action: 'rename', slug: oldSlug, newSlug: newSlug }) }).then(function(res){
+      slugEl.value = res.player.slug;
+      var newPrefix = res.player.tier === 'elite' ? '/elite/' : '/players/';
+      document.getElementById('slugUrlDisplay').textContent = newPrefix + res.player.slug;
+      toast('Moved to ' + newPrefix + res.player.slug + '. Add a redirect from the old URL and resend her login link.');
+      loadPlayers();
+    }).catch(function(err){
+      alert('Could not rename: ' + err.message);
+    });
+  });
+
+  // Flips her Package Tier to Elite and carries her highlight clip over to
+  // Elite's differently named video field so her new page isn't empty.
+  // Her old /players/<slug> link keeps working on its own afterward -
+  // player.js now forwards an elite tier record to /elite/<slug> instead
+  // of 404ing - so nothing else needs to change here.
+  document.getElementById('btnUpgradeToElite').addEventListener('click', function(){
+    var slug = document.getElementById('f_slug').value.trim();
+    if(!slug) return;
+    if(!confirm('Upgrade this player to Elite?\n\nHer Package Tier changes to Elite, her highlight clip carries over to the Elite video field, and her page moves to /elite/' + slug + '. Her old link will redirect there automatically.')) return;
+    api('/admin-players', { method: 'POST', body: JSON.stringify({ action: 'upgradeToElite', slug: slug }) }).then(function(res){
+      document.getElementById('f_tier').value = res.player.tier;
+      document.getElementById('slugUrlDisplay').textContent = '/elite/' + res.player.slug;
+      document.getElementById('upgradeToEliteField').style.display = 'none';
+      toast('Upgraded to Elite. Her page is now at /elite/' + res.player.slug + '.');
+      loadPlayers();
+    }).catch(function(err){
+      alert('Could not upgrade: ' + err.message);
+    });
+  });
+
+  function closeModal(){ modalBackdrop.classList.remove('open'); }
+
+  document.getElementById('btnAddPlayer').addEventListener('click', function(){ openModal(null); });
+  document.getElementById('btnCancelModal').addEventListener('click', closeModal);
+
+  window.__editPlayer = function(slug){
+    var p = playersCache.find(function(x){ return x.slug === slug; });
+    openModal(p);
+  };
+  window.__deletePlayer = function(slug){
+    if(!confirm("Delete this player's page? This cannot be undone.")) return;
+    api('/admin-players?slug=' + encodeURIComponent(slug), { method:'DELETE' }).then(function(){
+      toast('Deleted');
+      loadPlayers();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  };
+  window.__copyEditLink = function(slug){
+    var p = playersCache.find(function(x){ return x.slug === slug; });
+    var buildLink = function(player){
+      var url = window.location.origin + '/edit-player?slug=' + encodeURIComponent(player.slug) + '&token=' + encodeURIComponent(player.editToken);
+      navigator.clipboard.writeText(url).then(function(){
+        toast('Edit link copied. Send it to ' + (player.playerName || 'her') + '.');
+      }).catch(function(){
+        prompt('Copy this link:', url);
+      });
+    };
+    if(p && p.editToken){
+      buildLink(p);
+      return;
+    }
+    // no token yet (older record); saving generates one
+    api('/admin-players', { method:'POST', body: JSON.stringify({ slug: slug }) }).then(function(res){
+      buildLink(res.player);
+      loadPlayers();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  };
+
+  document.getElementById('playerForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = collectPlayerFormData();
+    api('/admin-players', { method:'POST', body: JSON.stringify(data) }).then(function(){
+      toast('Saved. Her page is live now.');
+      closeModal();
+      loadPlayers();
+      if(data.slug === 'test-player-preview'){
+        document.getElementById('testStatus').textContent = 'Created. Opening her live page...';
+        window.open('/players/test-player-preview', '_blank');
+      }
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  });
+
+  /* test player */
+  document.getElementById('btnCreateTest').addEventListener('click', function(){
+    openModal({
+      slug: 'test-player-preview',
+      playerName: 'Test Player Preview',
+      highSchool: 'Middleburg High School',
+      position: 'Guard',
+      gradYear: '2028',
+      height: "5'7\"",
+      status: 'published'
+    });
+    document.getElementById('testStatus').textContent = 'Edit the fields below, then Save Player to create and open her live page.';
+  });
+  document.getElementById('btnDeleteTest').addEventListener('click', function(){
+    api('/admin-players?slug=test-player-preview', { method:'DELETE' }).then(function(){
+      document.getElementById('testStatus').textContent = 'Test player removed.';
+      loadPlayers();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  });
+
+  /* CSV export */
+  function exportCsv(){
+    var rows = [['form','submitted','name','email','phone']];
+    submissionsCache.forEach(function(s){
+      var d = s.data || {};
+      rows.push([s.formName, s.createdAt || '', d.playerName || d.name || '', d.playerEmail || d.email || d.guardianEmail || '', d.playerPhone || d.phone || d.guardianPhone || '']);
+    });
+    var csv = rows.map(function(r){ return r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(','); }).join('\n');
+    var blob = new Blob([csv], {type:'text/csv'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'elevate-her-leads.csv';
+    a.click();
+  }
+  document.getElementById('btnExportCsv').addEventListener('click', exportCsv);
+  document.getElementById('btnExportCsv2').addEventListener('click', exportCsv);
+  document.getElementById('btnRefreshSubs').addEventListener('click', loadSubmissions);
+
+  /* ---------- Trading Cards ---------- */
+  var CARD_W = 1080, CARD_H = 1920; // Instagram Story size
+  var cardsLoaded = false;
+  var publishedCards = {};
+
+  function schoolInitials(name){
+    var words = String(name || '').split(/\s+/).filter(function(w){
+      return w && !/^(of|for|and|the|a|an|high|school|junior|senior)$/i.test(w);
+    });
+    if (!words.length) return 'HS';
+    return words.map(function(w){ return w[0].toUpperCase(); }).join('').slice(0, 4);
+  }
+
+  function playerInitials(name){
+    var words = String(name || '').trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return '?';
+    return (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase();
+  }
+
+  var EH_LOGO_URL = '/assets/eh-logo.jpg';
+
+  // Logos on file, same schools as the public site's school-colors lookup.
+  // Keep this in sync with netlify/functions/_lib/school-colors.js when a
+  // new school logo is added there.
+  var SCHOOL_LOGOS = {
+    'middleburg': '/assets/logos/middleburg.png',
+    'fleming island': '/assets/logos/fleming-island.png',
+    'orange park': '/assets/logos/orange-park.png',
+    'ridgeview': '/assets/logos/ridgeview.png'
+  };
+  function schoolLogoUrl(highSchool){
+    var n = String(highSchool || '').toLowerCase();
+    for (var key in SCHOOL_LOGOS) {
+      if (n.indexOf(key) !== -1) return SCHOOL_LOGOS[key];
+    }
+    return null;
+  }
+
+  function drawCornerLogo(ctx, img, x, y, size){
+    var scale = Math.min(size / img.width, size / img.height);
+    var w = img.width * scale, h = img.height * scale;
+    ctx.drawImage(img, x + (size - w) / 2, y + (size - h) / 2, w, h);
+  }
+
+  // Same rule as the View button on the Players tab, so the card points at
+  // exactly the page that button opens for her.
+  function playerSiteUrl(p){
+    if (p.liveUrl) return p.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    if (p.tier === 'elite') return 'elevateherhoopsreport.com/elite/' + p.slug;
+    if (p.tier === 'illumination') return 'elevateherhoopsreport.com/' + p.slug;
+    return 'elevateherhoopsreport.com/players/' + p.slug;
+  }
+
+  // Up to the 2 most advanced seasons with any stats on file, most recent
+  // first, same per season data her Illumination page uses.
+  function pickCardSeasons(p, max){
+    var seasons = ['Freshman', 'Sophomore', 'Junior', 'Senior'];
+    var found = [];
+    seasons.forEach(function(s){
+      if (p['stat' + s + 'PPG']) {
+        found.push({
+          label: s,
+          ppg: p['stat' + s + 'PPG'],
+          rebounds: p['stat' + s + 'Rebounds'] || '',
+          assists: p['stat' + s + 'Assists'] || '',
+          steals: p['stat' + s + 'Steals'] || '',
+          blocks: p['stat' + s + 'Blocks'] || ''
+        });
+      }
+    });
+    found.reverse();
+    return found.slice(0, max || 2);
+  }
+
+  function loadCardImage(url){
+    return new Promise(function(resolve){
+      if (!url) { resolve(null); return; }
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = function(){ resolve(img); };
+      img.onerror = function(){ resolve(null); };
+      img.src = url;
+    });
+  }
+
+  function roundRectPath(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  // The Visual-Dashboard's own public media feed, same one her Illumination page reads from.
+  function fetchPortraitUrl(slug){
+    return fetch('/api/sites/' + encodeURIComponent(slug)).then(function(res){
+      return res.ok ? res.json() : null;
+    }).then(function(data){
+      return (data && data.portrait) || null;
+    }).catch(function(){ return null; });
+  }
+
+  async function drawTradingCard(canvas, player, portraitUrl){
+    canvas.width = CARD_W;
+    canvas.height = CARD_H;
+    var ctx = canvas.getContext('2d');
+    var PINK = '#ff2e9a', CYAN = '#38e0ff', NAME_COLOR = '#d7e3ff', LABEL_COLOR = '#9aa3b8';
+    var pad = 48, cx = CARD_W / 2;
+
+    try {
+      await Promise.all([
+        document.fonts.load('700 72px Anton'),
+        document.fonts.load("700 48px 'Barlow Condensed'"),
+        document.fonts.load("600 28px 'Barlow Condensed'")
+      ]);
+    } catch (e) { /* falls back to a default font if the webfont didn't load in time */ }
+
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, CARD_W, CARD_H);
+
+    ctx.save();
+    ctx.strokeStyle = PINK;
+    ctx.lineWidth = 6;
+    ctx.shadowColor = PINK;
+    ctx.shadowBlur = 28;
+    roundRectPath(ctx, pad, pad, CARD_W - pad * 2, CARD_H - pad * 2, 28);
+    ctx.stroke();
+    ctx.stroke();
+    ctx.restore();
+
+    var cornerSize = 84, cornerInset = pad + 26;
+    var schoolLogoImg = await loadCardImage(schoolLogoUrl(player.highSchool));
+    if (schoolLogoImg) {
+      drawCornerLogo(ctx, schoolLogoImg, cornerInset, cornerInset, cornerSize);
+    } else {
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.font = "700 30px 'Barlow Condensed', sans-serif";
+      ctx.fillText(schoolInitials(player.highSchool), pad + 44, pad + 46);
+    }
+
+    var ehLogoSize = 190;
+    var ehLogoImg = await loadCardImage(EH_LOGO_URL);
+    if (ehLogoImg) {
+      drawCornerLogo(ctx, ehLogoImg, CARD_W - pad - 26 - ehLogoSize, cornerInset, ehLogoSize);
+    }
+
+    var cy = 620, cr = 300;
+    ctx.save();
+    ctx.strokeStyle = CYAN;
+    ctx.lineWidth = 5;
+    ctx.shadowColor = CYAN;
+    ctx.shadowBlur = 40;
+    ctx.beginPath();
+    ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    var img = await loadCardImage(portraitUrl);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, cr - 18, 0, Math.PI * 2);
+    ctx.clip();
+    if (img) {
+      var size = (cr - 18) * 2;
+      var scale = Math.max(size / img.width, size / img.height);
+      var iw = img.width * scale, ih = img.height * scale;
+      ctx.drawImage(img, cx - iw / 2, cy - ih / 2, iw, ih);
+    } else {
+      ctx.fillStyle = '#140a24';
+      ctx.fillRect(cx - cr, cy - cr, cr * 2, cr * 2);
+      ctx.fillStyle = PINK;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '700 160px Anton, sans-serif';
+      ctx.fillText(playerInitials(player.playerName), cx, cy + 10);
+    }
+    ctx.restore();
+
+    ctx.fillStyle = NAME_COLOR;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = "700 64px 'Barlow Condensed', sans-serif";
+    ctx.fillText((player.playerName || '').toUpperCase(), cx, 1030);
+
+    var subtitle = [player.position, player.highSchool, player.gradYear ? 'Class of ' + player.gradYear : '']
+      .filter(Boolean).join(' | ');
+    ctx.fillStyle = LABEL_COLOR;
+    ctx.font = "600 32px 'Barlow Condensed', sans-serif";
+    ctx.fillText(subtitle.toUpperCase(), cx, 1086);
+
+    var seasons = pickCardSeasons(player, 2);
+    var innerW = CARD_W - pad * 2 - 80, colW = innerW / 5, startX = pad + 40 + colW / 2;
+    var rowY = 1190, rowGap = 180;
+    seasons.forEach(function(season, row){
+      var y = rowY + row * rowGap;
+      ctx.fillStyle = PINK;
+      ctx.font = "700 24px 'Barlow Condensed', sans-serif";
+      ctx.textAlign = 'center';
+      ctx.fillText(season.label.toUpperCase() + ' SEASON', cx, y);
+      var cols = [
+        { l: 'PPG', v: season.ppg }, { l: 'RPG', v: season.rebounds }, { l: 'APG', v: season.assists },
+        { l: 'SPG', v: season.steals }, { l: 'BPG', v: season.blocks }
+      ];
+      cols.forEach(function(c, i){
+        var x = startX + i * colW;
+        ctx.fillStyle = LABEL_COLOR;
+        ctx.font = "700 22px 'Barlow Condensed', sans-serif";
+        ctx.textAlign = 'center';
+        ctx.fillText(c.l, x, y + 50);
+        ctx.fillStyle = '#fff';
+        ctx.font = "700 48px 'Barlow Condensed', sans-serif";
+        ctx.fillText(c.v || '-', x, y + 106);
+      });
+    });
+
+    var footerText = playerSiteUrl(player).toUpperCase();
+    var footerMaxWidth = CARD_W - pad * 2 - 24;
+    var footerSize = 68;
+    ctx.font = "700 " + footerSize + "px 'Barlow Condensed', sans-serif";
+    while (ctx.measureText(footerText).width > footerMaxWidth && footerSize > 14) {
+      footerSize -= 1;
+      ctx.font = "700 " + footerSize + "px 'Barlow Condensed', sans-serif";
+    }
+    ctx.save();
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = CYAN;
+    ctx.shadowBlur = 16;
+    ctx.textAlign = 'center';
+    ctx.fillText(footerText, cx, CARD_H - pad - 50);
+    ctx.restore();
+  }
+
+  function canvasToBase64(canvas){
+    return canvas.toDataURL('image/png').split(',')[1];
+  }
+
+  function downloadCanvas(canvas, filename){
+    canvas.toBlob(function(blob){
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+    }, 'image/png');
+  }
+
+  function renderCardTile(p){
+    var tile = document.createElement('div');
+    tile.className = 'card-tile';
+    var published = publishedCards[p.slug];
+    var currentPortraitUrl = null; // the photo currently drawn: Visual-Dashboard's portrait or her header photo
+    tile.innerHTML = '<canvas></canvas>' +
+      '<h4>' + esc(p.playerName || p.slug) + '</h4>' +
+      '<span class="card-status">' + (published ? 'Published ' + new Date(published).toLocaleDateString() : 'Not published yet') + '</span>' +
+      '<div class="card-actions">' +
+        '<button class="btn small" data-act="download">Download PNG</button>' +
+        '<button class="btn small" data-act="publish">' + (published ? 'Re-publish' : 'Publish') + '</button>' +
+      '</div>';
+    var canvas = tile.querySelector('canvas');
+    fetchPortraitUrl(p.slug).then(function(portraitUrl){
+      // Falls back to the single header photo uploaded on her own player
+      // record (used by Essential/Elite players, who aren't in the Visual-Dashboard at all).
+      currentPortraitUrl = portraitUrl || p.playerPhoto || null;
+      return drawTradingCard(canvas, p, currentPortraitUrl);
+    }).catch(function(){ /* leaves whatever drew before the failure, still usable */ });
+    tile.querySelector('[data-act="download"]').addEventListener('click', function(){
+      downloadCanvas(canvas, p.slug + '-trading-card.png');
+    });
+    tile.querySelector('[data-act="publish"]').addEventListener('click', function(){
+      var btn = tile.querySelector('[data-act="publish"]');
+      btn.disabled = true;
+      btn.textContent = 'Publishing...';
+      api('/admin-trading-card-upload', {
+        method: 'POST',
+        body: JSON.stringify({ slug: p.slug, contentType: 'image/png', dataBase64: canvasToBase64(canvas) })
+      }).then(function(res){
+        publishedCards[p.slug] = res.publishedAt;
+        tile.querySelector('.card-status').textContent = 'Published ' + new Date(res.publishedAt).toLocaleDateString();
+        btn.textContent = 'Re-publish';
+        btn.disabled = false;
+        toast('Card published for ' + (p.playerName || p.slug));
+      }).catch(function(e){
+        btn.textContent = 'Publish';
+        btn.disabled = false;
+        toast('Error: ' + e.message);
+      });
+    });
+    return tile;
+  }
+
+  function loadTradingCards(){
+    var grid = document.getElementById('cardsGrid');
+    grid.innerHTML = '<p class="empty-note">Loading cards...</p>';
+    api('/admin-trading-card-upload').then(function(res){
+      publishedCards = {};
+      (res.cards || []).forEach(function(c){ publishedCards[c.slug] = c.publishedAt; });
+    }).catch(function(){ publishedCards = {}; }).then(function(){
+      if (playersCache.length === 0) {
+        grid.innerHTML = '<p class="empty-note">No players yet.</p>';
+        return;
+      }
+      grid.innerHTML = '';
+      playersCache.forEach(function(p){ grid.appendChild(renderCardTile(p)); });
+    });
+  }
+
+  document.querySelector('.tab-btn[data-tab="cards"]').addEventListener('click', function(){
+    if (!cardsLoaded) { cardsLoaded = true; loadTradingCards(); }
+  });
+
+  loadPlayers();
+  loadSubmissions();
+  loadArticles();
+})();
+</script>
+
+</body>
+</html>

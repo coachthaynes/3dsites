@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Essential Scout Sample Profile, Elevate Her Hoops Report</title>
+<meta name="description" content="A sample Essential Scout profile on Elevate Her, one photo, linked game film, stats, and accolades, free to start.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Elevate Her Hoops Report">
+<meta property="og:title" content="Essential Scout Sample Profile | Elevate Her Hoops Report">
+<meta property="og:description" content="A sample Essential Scout profile on Elevate Her: one photo, linked game film, stats and accolades, free to start.">
+<meta property="og:url" content="https://elevateherhoopsreport.netlify.app/essential-mockup.html">
+<meta property="og:image" content="https://elevateherhoopsreport.netlify.app/assets/elevate-her-og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Essential Scout Sample Profile | Elevate Her Hoops Report">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Essential Scout Sample Profile | Elevate Her Hoops Report">
+<meta name="twitter:description" content="A sample Essential Scout profile on Elevate Her: one photo, linked game film, stats and accolades, free to start.">
+<meta name="twitter:image" content="https://elevateherhoopsreport.netlify.app/assets/elevate-her-og.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏀</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --violet:#1E1035;
+    --violet-deep:#150a28;
+    --panel:#241640;
+    --panel-2:#2c1a4d;
+    --line:rgba(255,255,255,0.12);
+    --white:#FFFFFF;
+    --dim:rgba(255,255,255,0.68);
+    --magenta:#FF2E93;
+    --magenta-deep:#c81f70;
+    --teal:#00F5D4;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--violet);color:var(--white);font-family:'Poppins',sans-serif;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+    padding-left:max(20px, env(safe-area-inset-left,0px));
+    padding-right:max(20px, env(safe-area-inset-right,0px));
+  }
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;}
+  .display{font-family:'Fredoka',sans-serif;font-weight:600;line-height:1.05;text-wrap:balance;}
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;}
+  .wrap{max-width:1120px;margin:0 auto;}
+  .rule{height:1px;background:var(--line);width:100%;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;color:var(--teal);font-weight:600;font-size:12.5px;letter-spacing:0.14em;text-transform:uppercase;}
+  :root{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion:reduce){ :root{scroll-behavior:auto;} }
+  .logo-icon{display:block;width:100%;height:100%;}
+
+  /* mockup banner */
+  .mockup-banner{
+    background:var(--magenta);color:var(--white);text-align:center;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.04em;
+    padding:10px 16px;margin:0 -20px;
+  }
+
+  nav{
+    position:sticky;top:0;z-index:60;margin:0 -20px;padding:0 20px;
+    background:rgba(21,10,40,0.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:62px;gap:18px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .logo-icon-wrap{width:30px;height:30px;flex-shrink:0;}
+  .brand-text{display:flex;flex-direction:column;line-height:1.1;}
+  .brand-name{font-family:'Fredoka',sans-serif;font-weight:700;font-size:15px;color:var(--white);}
+  .brand-sub{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal);}
+  .btn{display:inline-block;padding:11px 20px;font-weight:700;font-size:12.5px;border-radius:999px;border:2px solid transparent;transition:all .2s;white-space:nowrap;}
+  .btn.primary{background:var(--magenta);color:var(--white);}
+  .btn.primary:hover{background:var(--magenta-deep);}
+
+  /* HERO */
+  .hero{position:relative;padding:56px 0 0;}
+  .hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:40px;align-items:center;}
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr;}
+    .photo-frame{width:100%;max-width:380px;margin:0 auto;}
+  }
+  .hero-eyebrow{margin-bottom:10px;}
+  .hero h1{font-size:clamp(38px,5.2vw,58px);margin:0;color:var(--white);}
+  .hero-sub{color:var(--dim);font-size:15.5px;margin-top:14px;line-height:1.65;max-width:46ch;}
+  .hero-tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px;}
+  .tag{border:1.5px solid var(--teal);color:var(--teal);border-radius:999px;padding:6px 13px;font-size:11px;font-weight:700;font-family:'IBM Plex Mono',monospace;}
+  .hero-cta{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap;}
+
+  .photo-frame{
+    position:relative;border-radius:24px;overflow:hidden;aspect-ratio:4/5;
+    box-shadow:0 30px 70px rgba(0,0,0,0.45);
+  }
+  .tag-label{
+    position:absolute;top:14px;left:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;
+    letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.6);
+    border:1px solid rgba(255,255,255,0.22);padding:4px 10px;border-radius:999px;z-index:2;
+  }
+  .placeholder-note{
+    position:absolute;bottom:14px;left:14px;right:14px;
+    font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.04em;
+    color:rgba(255,255,255,0.85);background:rgba(0,0,0,0.35);
+    padding:8px 12px;border-radius:10px;backdrop-filter:blur(4px);z-index:2;
+  }
+
+  /* STAT STRIP */
+  .statstrip{margin-top:50px;background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .statstrip .grid{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;}
+  .stat-item{padding:26px 8px;border-left:1px solid var(--line);}
+  .stat-item:first-child{border-left:none;}
+  .stat-num{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:clamp(24px,3.2vw,34px);color:var(--white);}
+  .stat-label{font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--dim);margin-top:6px;}
+
+  section{padding:64px 0;}
+  .section-head{margin-bottom:34px;max-width:64ch;}
+  .section-head .display{font-size:clamp(24px,3.4vw,34px);color:var(--white);}
+  .section-head p{color:var(--dim);margin-top:10px;font-size:14.5px;}
+
+  /* FILM LINKS */
+  .film-links{display:flex;gap:14px;flex-wrap:wrap;}
+  .film-link{
+    display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--panel);
+    border-radius:14px;padding:16px 22px;font-weight:700;font-size:14px;transition:border-color .2s, transform .2s;
+  }
+  .film-link:hover{border-color:var(--teal);color:var(--teal);transform:translateY(-3px);}
+  .film-link .dot{width:8px;height:8px;border-radius:50%;background:var(--magenta);flex-shrink:0;}
+
+  /* CARD */
+  .card{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:26px;}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:700px){ .info-grid{grid-template-columns:1fr;} }
+  .info-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .info-row:last-child{border-bottom:none;}
+  .info-row span:first-child{color:var(--dim);}
+  .info-row span:last-child{font-weight:700;color:var(--white);font-family:'IBM Plex Mono',monospace;}
+
+  /* ACCOLADES */
+  .accolade-list{list-style:none;margin:0;padding:0;}
+  .accolade-list li{
+    display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14.5px;
+  }
+  .accolade-list li:last-child{border-bottom:none;}
+  .accolade-list .star{
+    width:30px;height:30px;border-radius:50%;flex-shrink:0;background:rgba(0,245,212,0.12);
+    display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:14px;
+  }
+
+  footer{padding:50px 0 40px;border-top:1px solid var(--line);text-align:center;color:var(--dim);font-size:13px;}
+  footer a{color:var(--teal);}
+  :focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ehLogo" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="88" fill="none" stroke="#00F5D4" stroke-width="9"/>
+    <path d="M16 66 Q100 18 184 66" fill="none" stroke="#00F5D4" stroke-width="9" stroke-linecap="round"/>
+    <path d="M20 138 Q100 188 180 132" fill="none" stroke="#00F5D4" stroke-width="9" stroke-linecap="round"/>
+    <g fill="none" stroke="#FF2E93" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M64 58 L64 142"/><path d="M64 58 L98 58"/><path d="M64 100 L92 100"/><path d="M64 142 L98 142"/>
+      <path d="M120 58 L120 142"/><path d="M148 58 L148 142"/><path d="M120 100 L148 100"/>
+    </g>
+  </symbol>
+
+</svg>
+
+<div class="mockup-banner">SAMPLE OF THE FREE ESSENTIAL SCOUT PACKAGE. Photo shown is AI generated, not a real player.</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="logo-icon-wrap"><svg class="logo-icon" viewBox="0 0 200 200"><use href="#ehLogo"></use></svg></span>
+      <span class="brand-text">
+        <span class="brand-name">Elevate Her</span>
+        <span class="brand-sub">Hoops Report</span>
+      </span>
+    </a>
+    <a class="btn primary" href="index.html#pricing">Choose Her Package</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow hero-eyebrow">Sample Player Profile</div>
+        <h1 class="display">Jordan Mackenzie</h1>
+        <p class="hero-sub">Guard, Skyhawks High School, Class of 2027. A sample recruiting profile on Elevate Her, one photo, her film linked from wherever she already posts it, and the stats and accolades a coach needs at a glance.</p>
+        <div class="hero-tags">
+          <span class="tag">Recruiting Website</span>
+          <span class="tag">Film Linked</span>
+          <span class="tag">Accolades Listed</span>
+        </div>
+        <div class="hero-cta">
+          <a class="btn primary" href="#film">Watch Her Film</a>
+        </div>
+      </div>
+      <div class="photo-frame" style="background:linear-gradient(155deg, var(--panel-2), var(--violet-deep));">
+        <span class="tag-label">AI Generated Sample</span>
+        <img src="assets/sample-profile-photo.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <div class="placeholder-note">AI generated sample photo, not a real player</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="statstrip">
+  <div class="grid">
+    <div class="stat-item"><div class="stat-num mono">18.4</div><div class="stat-label">PPG</div></div>
+    <div class="stat-item"><div class="stat-num mono">6.1</div><div class="stat-label">Rebounds</div></div>
+    <div class="stat-item"><div class="stat-num mono">4.8</div><div class="stat-label">Assists</div></div>
+  </div>
+</div>
+
+<section id="film">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Game Film</div>
+      <div class="display">Watch Her Play</div>
+      <p>Film links straight to wherever she already posts it, no separate upload needed.</p>
+    </div>
+    <div class="film-links">
+      <a class="film-link" href="#"><span class="dot"></span>Watch On YouTube &#8599;</a>
+      <a class="film-link" href="#"><span class="dot"></span>Watch On Instagram &#8599;</a>
+      <a class="film-link" href="#"><span class="dot"></span>Watch On X, Twitter &#8599;</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Accolades</div>
+      <div class="display">Rankings And Recognition</div>
+      <p>The honors and rankings that give a coach quick context before they even watch the film.</p>
+    </div>
+    <div class="card">
+      <ul class="accolade-list">
+        <li><span class="star">&#9733;</span>All-Conference Honorable Mention, Junior Season</li>
+        <li><span class="star">&#9733;</span>Team Captain, Junior And Senior Seasons</li>
+        <li><span class="star">&#9733;</span>Ranked In Class Of 2027 Rising 20</li>
+        <li><span class="star">&#9733;</span>All-Tournament Team, Holiday Classic</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Recruiting Info</div>
+      <div class="display">Everything A Coach Needs In One Place</div>
+    </div>
+    <div class="info-grid">
+      <div class="card">
+        <div class="info-row"><span>Height</span><span>5' 9"</span></div>
+        <div class="info-row"><span>Position</span><span>Guard</span></div>
+        <div class="info-row"><span>Graduation Year</span><span>2027</span></div>
+      </div>
+      <div class="card">
+        <div class="info-row"><span>School</span><span>Skyhawks High School</span></div>
+        <div class="info-row"><span>Club Team</span><span>Sample Elite AAU</span></div>
+        <div class="info-row"><span>Contact</span><span>Via Elevate Her</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    This is a sample mockup built by Elevate Her Hoops Report to show what a player profile site looks like. <a href="index.html#pricing">See real package pricing &rarr;</a>
+  </div>
+</footer>
+
+</body>
+</html>

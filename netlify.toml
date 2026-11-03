@@ -1,2 +1,230 @@
 [build]
   publish = "."
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "https://aiyanahaynes.elevateherhoopsreport.com/media/*"
+  to = "/media/players/aiyana-haynes/:splat"
+  status = 200
+  force = true
+
+# Aiyana was converted from a hand built static page to a dynamic player
+# record (see data/conversions/aiyana-haynes.json), so her old subdomain now
+# points at the same live, up to date page as her new bare root URL below,
+# instead of the now retired static file.
+[[redirects]]
+  from = "https://aiyanahaynes.elevateherhoopsreport.com/*"
+  to = "/.netlify/functions/illumination?slug=aiyana-haynes"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://kennedyjeffress.elevateherhoopsreport.com/media/*"
+  to = "/media/players/kennedy-jeffress/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/kennedy-jeffress/media/*"
+  to = "/media/players/kennedy-jeffress/:splat"
+  status = 200
+  force = true
+
+# Kennedy's static page drifted out of sync with the shared Illumination
+# template (missing structural changes made since it was hand built), so
+# her old subdomain now points at the same live, dynamically rendered page
+# as her bare root URL below, instead of the frozen static file.
+[[redirects]]
+  from = "https://kennedyjeffress.elevateherhoopsreport.com/*"
+  to = "/.netlify/functions/illumination?slug=kennedy-jeffress"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/players-directory.html"
+  to = "/.netlify/functions/directory"
+  status = 200
+  force = true
+
+# Elite got its own separate questionnaire file merged into the Illumination
+# one (now a single form with a package choice at the top), so anyone who
+# already has this link lands on the same place with Elite preselected.
+[[redirects]]
+  from = "/elite-questionnaire.html"
+  to = "/illumination-questionnaire.html?tier=elite"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/nyla-parsons.html"
+  to = "/.netlify/functions/player?slug=nyla-parsons"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/maliya-lassiter.html"
+  to = "/.netlify/functions/player?slug=maliya-lassiter"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/janiyla-owens.html"
+  to = "/.netlify/functions/player?slug=janiyla-owens"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/sophia-butler.html"
+  to = "/.netlify/functions/player?slug=sophia-butler"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/catherine-bodway.html"
+  to = "/.netlify/functions/player?slug=catherine-bodway"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/aliyna-mccobb.html"
+  to = "/.netlify/functions/player?slug=aliyna-mccobb"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/savanna-padgett.html"
+  to = "/.netlify/functions/player?slug=savanna-padgett"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/illumination/*"
+  to = "/.netlify/functions/illumination?slug=:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/elite/*"
+  to = "/.netlify/functions/elite?slug=:splat"
+  status = 200
+  force = true
+
+# Andrea Brady's slug was originally misspelled "andra-brady"; her record
+# has moved to the correct slug, keep the old link working for anyone who
+# already has it.
+[[redirects]]
+  from = "/players/andra-brady"
+  to = "/players/andrea-brady"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/players/*"
+  to = "/.netlify/functions/player?slug=:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/player-photos/*"
+  to = "/.netlify/functions/photo?slug=:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/trading-card/*"
+  to = "/.netlify/functions/trading-card?slug=:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/player-graphics/*"
+  to = "/.netlify/functions/graphics?key=:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/edit-player"
+  to = "/.netlify/functions/player-edit"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/save-player"
+  to = "/.netlify/functions/player-self-save"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/player-login"
+  to = "/.netlify/functions/player-login"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/my-dashboard"
+  to = "/.netlify/functions/player-edit"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/player-logout"
+  to = "/.netlify/functions/player-logout"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/set-player-password"
+  to = "/.netlify/functions/player-set-password"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/player-articles"
+  to = "/.netlify/functions/player-articles"
+  status = 200
+  force = true
+
+# Aiyana was converted to a dynamic player record (see
+# data/conversions/aiyana-haynes.json). A real directory still sits at
+# aiyana-haynes/ in this repo, which would otherwise win over the unforced
+# catch-all below and keep serving her old, frozen static page, so these two
+# are forced to send her bare root URL to the live, dynamically rendered page
+# instead. Her media files moved to media/players/aiyana-haynes/.
+[[redirects]]
+  from = "/aiyana-haynes"
+  to = "/.netlify/functions/illumination?slug=aiyana-haynes"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/aiyana-haynes/"
+  to = "/.netlify/functions/illumination?slug=aiyana-haynes"
+  status = 200
+  force = true
+
+# Same situation as Aiyana above: a real kennedy-jeffress/ directory sits in
+# this repo and would otherwise win over the unforced catch-all below,
+# keeping her stuck on the frozen, out of sync static page.
+[[redirects]]
+  from = "/kennedy-jeffress"
+  to = "/.netlify/functions/illumination?slug=kennedy-jeffress"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/kennedy-jeffress/"
+  to = "/.netlify/functions/illumination?slug=kennedy-jeffress"
+  status = 200
+  force = true
+
+# Illumination players' bare root URL (elevateherhoopsreport.com/<slug>), kept
+# last so every more specific rule above still matches first. No `force`: a
+# real static file or directory at the request path must always win over this
+# redirect (CSS, JS, images, every other page's own assets), or this catch-all
+# would swallow the whole site's static assets, not just player slugs.
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/illumination?slug=:splat"
+  status = 200
