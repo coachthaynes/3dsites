@@ -155,6 +155,23 @@ async function getPlayerPublic(slug) {
   return seed.players.find((p) => p.slug === slug) || null;
 }
 
+// One-time recovery: the old Madi Visual-Dashboard kept a second, separate
+// player record (in a "madi-catalog" store, key "player/<slug>") that was
+// the only place filmYoutubeUrl/highlightYoutubeUrl1-4 ever lived, before
+// those became real fields on this store's own player record. That old
+// record was never deleted when Madi was folded into the main dashboard,
+// so this reads it back (read-only, no store is written here) for a
+// caller to merge into the real record once. Returns null once there's
+// nothing useful left to recover (no old record, or it never had these).
+async function getLegacyIlluminationYoutubeLinks(slug) {
+  const store = makeStore("madi-catalog");
+  const legacy = await store.get(`player/${slug}`, { type: "json" });
+  if (!legacy) return null;
+  const highlightYoutubeUrls = Array.isArray(legacy.highlightYoutubeUrls) ? legacy.highlightYoutubeUrls.filter(Boolean) : [];
+  if (!legacy.filmYoutubeUrl && highlightYoutubeUrls.length === 0) return null;
+  return { filmYoutubeUrl: legacy.filmYoutubeUrl || "", highlightYoutubeUrls };
+}
+
 async function savePlayer(player) {
   if (!player.slug) throw new Error("player.slug is required");
   const store = playersStore();
@@ -191,6 +208,7 @@ module.exports = {
   listPlayers,
   getPlayer,
   getPlayerPublic,
+  getLegacyIlluminationYoutubeLinks,
   savePlayer,
   deletePlayer,
 };

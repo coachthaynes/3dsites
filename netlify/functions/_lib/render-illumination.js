@@ -181,8 +181,13 @@ function buildSiteConfig(player) {
     academicsNote: "College coaches can request transcripts and academic details through the contact request below.",
     film: {
       // Full game film embeds straight from a YouTube link when there's no
-      // uploaded clip yet, same link already listed below in Film & Social.
-      youtubeUrl: player.youtube || "",
+      // uploaded clip yet. filmYoutubeUrl is a specific video link set for
+      // this purpose; player.youtube is often just her general channel link
+      // (fine to list below in Film & Social, but youtubeEmbedUrl() can't
+      // extract a video id from a channel URL, so it's only a fallback here
+      // for the rarer case where youtube happens to already be a direct
+      // video link).
+      youtubeUrl: player.filmYoutubeUrl || player.youtube || "",
       links: [
         { name: "Hudl", desc: "Full game film and highlights", url: player.hudl || "" },
         { name: "Field Level", desc: "Recruiting profile", url: player.fieldlevel || "" },

@@ -52,11 +52,14 @@ export default async (req: Request, context: Context) => {
     hero: sources("hero"),
     highlights,
     film: sources("film"),
-    // Full game film's YouTube fallback is the same field her Illumination
-    // page already bakes in server side (render-illumination.js's
-    // site.film.youtubeUrl) - one source of truth instead of a second,
-    // separate YouTube field that only ever lived in the old Madi catalog.
-    filmYoutubeUrl: player.youtube || "",
+    // Same fields render-illumination.js's site.film.youtubeUrl already
+    // uses server side - filmYoutubeUrl is a specific video link, youtube
+    // is often just her general channel link and only works here if it
+    // happens to already point at one video.
+    filmYoutubeUrl: player.filmYoutubeUrl || player.youtube || "",
+    highlightYoutubeUrls: [1, 2, 3, 4]
+      .map(n => player[`highlightYoutubeUrl${n}`])
+      .filter((u): u is string => Boolean(u)),
     poster: poster ? file(poster) : null,
     portrait: portrait ? file(portrait) : null,
     photos: live.filter(a => a.role === "nil" || a.role === "editorial" || a.role === "photo").map(a => ({

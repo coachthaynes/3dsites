@@ -1,4 +1,4 @@
-const { listPlayers, savePlayer, deletePlayer, getPlayer, getViews } = require("./_lib/blobs");
+const { listPlayers, savePlayer, deletePlayer, getPlayer, getViews, getLegacyIlluminationYoutubeLinks } = require("./_lib/blobs");
 const { checkAdminSecret } = require("./_lib/auth");
 const { sanitizeSlug } = require("./_lib/reserved-slugs");
 
@@ -26,7 +26,22 @@ exports.handler = async (event) => {
   if (event.httpMethod === "GET") {
     const players = await listPlayers();
     const withViews = await Promise.all(
-      players.map(async (p) => Object.assign({}, p, { views: await getViews(p.slug) }))
+      players.map(async (p) => {
+        // One-time recovery for Illumination players whose full game film /
+        // highlight clip YouTube links only ever lived in the old separate
+        // Madi Visual-Dashboard player record (since folded into this one).
+        // Runs at most once per player: after the first save below her real
+        // record has its own filmYoutubeUrl, so this check no longer fires.
+        if (p.tier === "illumination" && !p.filmYoutubeUrl && !p.highlightYoutubeUrl1) {
+          const legacy = await getLegacyIlluminationYoutubeLinks(p.slug);
+          if (legacy) {
+            const recovered = Object.assign({}, p, { filmYoutubeUrl: legacy.filmYoutubeUrl });
+            legacy.highlightYoutubeUrls.forEach((url, i) => { recovered[`highlightYoutubeUrl${i + 1}`] = url; });
+            p = await savePlayer(recovered);
+          }
+        }
+        return Object.assign({}, p, { views: await getViews(p.slug) });
+      })
     );
     return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ players: withViews }) };
   }
