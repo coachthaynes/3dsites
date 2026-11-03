@@ -98,16 +98,54 @@
 
   .empty-note{color:var(--dim);font-size:13.5px;padding:20px;text-align:center;}
 
-  .graphics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:14px;}
-  .graphic-tile{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--violet-deep);position:relative;}
-  .graphic-tile img{display:block;width:100%;height:96px;object-fit:cover;background:var(--panel-2);}
-  .graphic-tile .pdf-tile{display:flex;align-items:center;justify-content:center;height:96px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);}
-  .graphic-tile .graphic-name{font-size:10.5px;color:var(--dim);padding:6px 8px;word-break:break-all;}
-  .graphic-tile .graphic-remove{
-    position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:none;
-    background:rgba(10,4,24,0.72);color:var(--white);cursor:pointer;font-size:12px;line-height:1;
+  /* ILLUMINATION MEDIA */
+  .illum-layout{display:grid;grid-template-columns:240px 1fr;gap:20px;align-items:start;}
+  @media (max-width:860px){ .illum-layout{grid-template-columns:1fr;} }
+  .illum-sidebar{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:16px;}
+  .illum-sidebar h4{margin:0 0 10px;font-family:'Fredoka',sans-serif;font-size:14px;}
+  .illum-player-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;}
+  .illum-player-list button{
+    width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:10px;
+    padding:9px 10px;color:var(--white);cursor:pointer;font-family:'Poppins',sans-serif;
   }
-  .graphic-tile .graphic-remove:hover{background:var(--magenta);}
+  .illum-player-list button:hover{border-color:var(--line);}
+  .illum-player-list button[aria-current="true"]{background:var(--violet-deep);border-color:var(--teal);}
+  .illum-player-list button b{display:block;font-size:13.5px;}
+  .illum-player-list button span{display:block;font-size:11px;color:var(--dim);margin-top:2px;}
+  .illum-checklist{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:4px;}
+  .illum-checklist > div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--dim);}
+  .illum-checklist > div.ok{border-color:var(--teal);color:var(--white);}
+  .illum-checklist i{color:var(--teal);font-style:normal;margin-right:4px;}
+  .illum-checklist small{display:block;color:var(--dim);font-size:10.5px;margin-top:2px;}
+  .illum-upload{display:grid;grid-template-columns:1fr 240px;gap:18px;margin-top:10px;}
+  @media (max-width:760px){ .illum-upload{grid-template-columns:1fr;} }
+  .illum-drop{
+    border:2px dashed var(--line);border-radius:14px;padding:26px 18px;text-align:center;cursor:pointer;
+  }
+  .illum-drop b{display:block;font-family:'Fredoka',sans-serif;margin-bottom:4px;}
+  .illum-drop span{display:block;font-size:12px;color:var(--dim);}
+  .illum-drop.over{border-color:var(--teal);}
+  .illum-queue{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .illum-queue li{display:flex;align-items:center;gap:10px;font-size:12px;}
+  .illum-queue li .illum-bar{flex:1;height:5px;border-radius:999px;background:var(--violet-deep);overflow:hidden;}
+  .illum-queue li .illum-bar i{display:block;height:100%;background:var(--teal);width:0%;}
+  .illum-queue li.done .illum-bar i{background:var(--teal);width:100% !important;}
+  .illum-upload-opts{display:flex;flex-direction:column;gap:10px;font-size:13px;}
+  .illum-upload-opts select{background:var(--violet-deep);color:var(--white);border:1px solid var(--line);border-radius:8px;padding:6px 8px;}
+  .illum-group{margin-top:22px;}
+  .illum-group h4{font-family:'Fredoka',sans-serif;margin:0 0 2px;font-size:14px;}
+  .illum-group p{margin:0 0 10px;color:var(--dim);font-size:12px;}
+  .illum-asset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;}
+  .illum-asset{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--violet-deep);}
+  .illum-asset.live{border-color:var(--teal);}
+  .illum-asset .illum-thumb{position:relative;height:110px;background:var(--panel-2);}
+  .illum-asset .illum-thumb img, .illum-asset .illum-thumb video{width:100%;height:100%;object-fit:cover;display:block;}
+  .illum-asset .illum-thumb .illum-doc{display:flex;align-items:center;justify-content:center;height:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);}
+  .illum-asset .illum-status{position:absolute;top:6px;left:6px;background:rgba(10,4,24,0.72);color:var(--white);font-size:10px;padding:2px 8px;border-radius:999px;font-family:'IBM Plex Mono',monospace;}
+  .illum-asset .illum-body{padding:10px;display:flex;flex-direction:column;gap:6px;}
+  .illum-asset input, .illum-asset select{background:var(--panel);color:var(--white);border:1px solid var(--line);border-radius:7px;padding:5px 7px;font-size:11.5px;width:100%;}
+  .illum-asset .illum-row{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+  .illum-asset .illum-meta{font-size:10px;color:var(--dim);word-break:break-all;}
   .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:18px;}
   .card-tile{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:16px;}
   .card-tile canvas{width:100%;height:auto;border-radius:10px;display:block;background:#000;}
@@ -237,20 +275,58 @@
 
   <section class="panel" id="panel-illumination">
     <div class="card">
-      <h3>Illumination packages</h3>
-      <p>Graphics and flyers for each Elite player, ready to hand off to a scheduler once that's connected. Uploads here don't post anywhere on their own yet.</p>
+      <h3>Illumination Media</h3>
+      <p>Upload her opening video, highlight clips, full game film, photos and marketing kit here, mark what's live, then publish her site when it's ready. Same login as the rest of this dashboard.</p>
     </div>
-    <div class="tool-card" style="margin-bottom:20px;">
-      <span class="tool-status">Built In</span>
-      <h4>Visual-Dashboard</h4>
-      <p>The media dashboard now lives on this same site at the link below. The designer signs in with the dashboard password, uploads photos and video for each player, and marks what's live. Player Illumination sites pull directly from it. When a design is ready for you to review, it drops into the queue underneath to approve or dismiss. Approving is what actually builds and publishes her Illumination site, nothing goes live before that.</p>
-      <a class="btn" href="/madi-dashboard/" target="_blank" rel="noopener" style="margin-top:12px;">Open Visual-Dashboard</a>
+    <div class="illum-layout">
+      <div class="illum-sidebar">
+        <h4>Illumination Players</h4>
+        <ul class="illum-player-list" id="illumPlayerList"></ul>
+      </div>
+      <div>
+        <div class="empty-note" id="illumEmpty">Pick a player on the left to manage her media.</div>
+        <div id="illumPlayerView" style="display:none;">
+          <div class="card">
+            <div class="row-actions" style="justify-content:space-between;align-items:center;">
+              <div>
+                <h3 id="illumPlayerName" style="margin:0;"></h3>
+                <p id="illumPlayerMeta" style="margin:4px 0 0;color:var(--dim);font-size:12.5px;"></p>
+              </div>
+              <div class="row-actions">
+                <button class="btn small" id="illumEditProfile" type="button">Edit Profile</button>
+                <a class="btn small" id="illumViewSite" href="#" target="_blank" rel="noopener">View Live Site &#8599;</a>
+                <button class="btn primary" id="illumPublishToggle" type="button"></button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Site Readiness</h3>
+            <div class="illum-checklist" id="illumChecklist"></div>
+          </div>
+          <div class="card">
+            <h3>Upload</h3>
+            <div class="illum-upload">
+              <div>
+                <div class="illum-drop" id="illumDrop" tabindex="0" role="button" aria-label="Choose files to upload">
+                  <b>Drop files here</b>
+                  <span>or click to choose. JPG, PNG, WEBP, MP4, MOV, WEBM and PDF. Large videos are fine.</span>
+                </div>
+                <input type="file" id="illumFileInput" multiple accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm,video/quicktime,application/pdf" style="display:none;">
+                <ul class="illum-queue" id="illumQueue"></ul>
+              </div>
+              <div class="illum-upload-opts">
+                <label>Upload as
+                  <select id="illumUpRole"></select>
+                </label>
+                <label class="row-actions" style="align-items:center;gap:8px;"><input type="checkbox" id="illumUpLive" checked> Make live right away</label>
+                <p style="margin:0;color:var(--dim);font-size:12px;line-height:1.6;">Decide for me puts videos in Highlight reel, PDFs in Marketing kit and photos in Photo Gallery. You can move anything after it uploads.</p>
+              </div>
+            </div>
+          </div>
+          <div id="illumGroups"></div>
+        </div>
+      </div>
     </div>
-    <div class="card" id="illuminationQueueCard" style="display:none;">
-      <h3>Pending From Visual-Dashboard</h3>
-      <div id="illuminationQueueList"></div>
-    </div>
-    <div id="illuminationList"></div>
   </section>
 
   <section class="panel" id="panel-forms">
@@ -854,154 +930,278 @@
     }).catch(function(e){ toast('Error: ' + e.message); });
   }
 
-  var graphicsCache = {};
+  /* ---------- Illumination media ---------- */
+  var ILLUM_ROLES = [
+    { id: "hero", label: "Opening video", help: "Plays inside the circle reveal at the top of the site. Muted loop, landscape, 10 to 30 seconds." },
+    { id: "highlight", label: "Highlight clip", help: "A single short highlight clip, with sound. Upload up to 4, each its own separate clip." },
+    { id: "film", label: "Full game film", help: "One complete game, for coaches who want to watch more than the highlights." },
+    { id: "poster", label: "Poster still", help: "Shows while the video loads and as the preview image when the link is shared." },
+    { id: "portrait", label: "Portrait", help: "Profile section photo. Vertical, 4 by 5 works best." },
+    { id: "photo", label: "Photo Gallery", help: "Photos of her for her own social media, shown together in one gallery on her site." },
+    { id: "kit", label: "Marketing kit", help: "Flyers, social graphics and PDFs. Available in the media feed, not shown on the site." }
+  ];
+  // Older assets may still be tagged "nil" or "editorial" from before the
+  // site's Photo Gallery was unified; they group and display exactly like
+  // "photo" everywhere below so nothing already uploaded needs to change.
+  var ILLUM_PHOTO_ROLES = ["photo", "nil", "editorial"];
+  var illumRoleSelect = document.getElementById('illumUpRole');
+  if(illumRoleSelect){
+    illumRoleSelect.innerHTML = '<option value="">Decide for me</option>' +
+      ILLUM_ROLES.map(function(r){ return '<option value="' + r.id + '">' + esc(r.label) + '</option>'; }).join('');
+  }
+
+  var illumCurrent = null, illumAssets = [];
+
+  // Same admin key as everything else on this dashboard, just sent to the
+  // Illumination media functions' own paths (/api/...) instead of
+  // /.netlify/functions/admin-*.
+  function illumApi(path, opts){
+    opts = opts || {};
+    opts.headers = Object.assign({"X-Admin-Secret": ADMIN_SECRET}, opts.headers || {});
+    return fetch(path, opts).then(function(r){
+      if(r.status === 401){ throw new Error('401 Unauthorized on ' + path + ' — access key was rejected.'); }
+      if(r.status === 204) return {};
+      return r.json().then(function(data){
+        if(!r.ok) throw new Error(data.error || (r.status + ' ' + r.statusText + ' on ' + path));
+        return data;
+      });
+    });
+  }
+  var illumSend = function(path, method, body){
+    return illumApi(path, { method: method, headers: {"Content-Type":"application/json"}, body: JSON.stringify(body) });
+  };
 
   function renderIllumination(){
-    var container = document.getElementById('illuminationList');
-    if(!container) return;
+    var list = document.getElementById('illumPlayerList');
+    if(!list) return;
     var illumination = playersCache.filter(function(p){ return p.tier === 'illumination'; });
     if(illumination.length === 0){
-      container.innerHTML = '<div class="card"><p>No Illumination players yet. Set a player\'s Package Tier to Illumination in her edit form to manage her graphics and flyers here.</p></div>';
-      return;
+      list.innerHTML = '<li class="tagline" style="padding:6px;color:var(--dim);font-size:12.5px;">No Illumination players yet. Set a player\'s Package Tier to Illumination in her edit form.</li>';
+    } else {
+      list.innerHTML = illumination.map(function(p){
+        var meta = [p.highSchool, p.gradYear ? 'Class of ' + p.gradYear : ''].filter(Boolean).join(' · ') || p.slug;
+        return '<li><button type="button" data-illum-slug="' + esc(p.slug) + '" aria-current="' + (illumCurrent && illumCurrent.slug === p.slug) + '">' +
+          '<b>' + esc(p.playerName || p.slug) + '</b><span>' + esc(meta) + '</span>' +
+        '</button></li>';
+      }).join('');
+      list.querySelectorAll('[data-illum-slug]').forEach(function(btn){
+        btn.addEventListener('click', function(){ openIllumPlayer(btn.getAttribute('data-illum-slug')); });
+      });
     }
-    container.innerHTML = illumination.map(function(p){
-      var liveNote = p.illuminationApproved
-        ? '<p style="margin-top:6px;"><span class="tool-status" style="display:inline;">Live</span> <a href="/' + esc(p.slug) + '" target="_blank" rel="noopener">elevateherhoopsreport.com/' + esc(p.slug) + ' &#8599;</a></p>'
-        : '<p style="margin-top:6px;color:var(--dim);font-size:12.5px;">Not approved yet, approve her design above once the Visual-Dashboard sends one.</p>';
-      var profileNote = p.aboutParagraph1
-        ? ''
-        : '<p style="margin-top:6px;color:var(--magenta);font-size:12.5px;">No bio or stats entered yet, her page is showing placeholder text.</p>';
-      return '<div class="card">' +
-        '<h3>' + esc(p.playerName || p.slug) + '</h3>' +
-        liveNote +
-        profileNote +
-        '<div class="row-actions" style="margin-top:10px;">' +
-          '<button class="btn small" onclick="window.__editPlayer(\'' + esc(p.slug) + '\')">Edit Profile</button>' +
-          '<label class="btn" style="cursor:pointer;">Add Graphic Or Flyer' +
-            '<input type="file" accept="image/*,application/pdf" data-graphic-slug="' + esc(p.slug) + '" style="display:none;">' +
-          '</label>' +
-        '</div>' +
-        '<div class="graphics-grid" id="graphics-' + esc(p.slug) + '"><span class="empty-note">Loading...</span></div>' +
-      '</div>';
-    }).join('');
+    // Keep the open player's header (name, publish state) in sync whenever
+    // the player list reloads, e.g. right after a profile edit is saved.
+    if(illumCurrent){
+      var fresh = playersCache.find(function(p){ return p.slug === illumCurrent.slug; });
+      if(fresh){ illumCurrent = fresh; renderIllumHeader(); }
+    }
+  }
 
-    container.querySelectorAll('input[type="file"][data-graphic-slug]').forEach(function(input){
-      input.addEventListener('change', function(e){
-        var slug = input.getAttribute('data-graphic-slug');
-        var file = e.target.files && e.target.files[0];
-        if(!file) return;
-        var reader = new FileReader();
-        reader.onload = function(){
-          var base64 = reader.result.split(',')[1];
-          api('/admin-graphics', {
-            method: 'POST',
-            body: JSON.stringify({ slug: slug, filename: file.name, contentType: file.type, dataBase64: base64 })
-          }).then(function(){
-            toast('Uploaded');
-            input.value = '';
-            loadGraphics(slug);
+  function renderIllumHeader(){
+    document.getElementById('illumPlayerName').textContent = illumCurrent.playerName || illumCurrent.slug;
+    document.getElementById('illumPlayerMeta').textContent = [illumCurrent.highSchool, illumCurrent.gradYear ? 'Class of ' + illumCurrent.gradYear : '', 'slug: ' + illumCurrent.slug].filter(Boolean).join(' · ');
+    document.getElementById('illumViewSite').href = '/' + illumCurrent.slug;
+    var btn = document.getElementById('illumPublishToggle');
+    btn.textContent = illumCurrent.illuminationApproved ? 'Unpublish Her Site' : 'Publish Her Site';
+    btn.className = illumCurrent.illuminationApproved ? 'btn' : 'btn primary';
+  }
+
+  function openIllumPlayer(slug){
+    illumCurrent = playersCache.find(function(p){ return p.slug === slug; });
+    if(!illumCurrent) return;
+    document.querySelectorAll('#illumPlayerList [data-illum-slug]').forEach(function(b){
+      b.setAttribute('aria-current', String(b.getAttribute('data-illum-slug') === slug));
+    });
+    document.getElementById('illumEmpty').style.display = 'none';
+    document.getElementById('illumPlayerView').style.display = '';
+    renderIllumHeader();
+    loadIllumAssets();
+  }
+
+  document.getElementById('illumEditProfile').addEventListener('click', function(){
+    if(illumCurrent) window.__editPlayer(illumCurrent.slug);
+  });
+
+  document.getElementById('illumPublishToggle').addEventListener('click', function(){
+    if(!illumCurrent) return;
+    var nowApproved = !illumCurrent.illuminationApproved;
+    if(nowApproved && !window.confirm('Publish her Illumination site? It becomes visible at /' + illumCurrent.slug + ' right away.')) return;
+    if(!nowApproved && !window.confirm('Unpublish her Illumination site? /' + illumCurrent.slug + ' will 404 until you publish again.')) return;
+    api('/admin-players', { method: 'POST', body: JSON.stringify({
+      slug: illumCurrent.slug,
+      illuminationApproved: nowApproved,
+      illuminationApprovedAt: new Date().toISOString()
+    }) }).then(function(){
+      toast(nowApproved ? 'Published. Her site is live.' : 'Unpublished.');
+      loadPlayers();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  });
+
+  function loadIllumAssets(){
+    illumApi('/api/assets?slug=' + encodeURIComponent(illumCurrent.slug)).then(function(res){
+      illumAssets = res.assets || [];
+      renderIllumAssets();
+    }).catch(function(e){ toast('Error loading media: ' + e.message); });
+  }
+
+  var illumFileUrl = function(a){ return '/madi-media/' + a.id; };
+  var illumThumbUrl = function(a){ return '/.netlify/images?url=' + encodeURIComponent(illumFileUrl(a)) + '&w=480&q=70'; };
+  var illumSizeText = function(n){ return n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; };
+
+  function renderIllumChecklist(){
+    var live = illumAssets.filter(function(a){ return a.live && a.status === 'ready'; });
+    var count = function(r){ return live.filter(function(a){ return a.role === r; }).length; };
+    var gallery = count('photo') + count('nil') + count('editorial');
+    var items = [
+      ['Opening video', count('hero') > 0, 'Top of the site'],
+      ['Highlight clips', count('highlight') > 0, count('highlight') + ' live (up to 4 shown)'],
+      ['Full game film', count('film') > 0, 'Full game film section'],
+      ['Poster still', count('poster') > 0, 'Loading and share image'],
+      ['Portrait', count('portrait') > 0, 'Profile section'],
+      ['Photo Gallery', gallery >= 6, gallery + ' live (aim for at least 6)'],
+      ['Marketing kit', count('kit') > 0, count('kit') + ' files']
+    ];
+    document.getElementById('illumChecklist').innerHTML = items.map(function(it){
+      return '<div class="' + (it[1] ? 'ok' : '') + '"><i>' + (it[1] ? '✓' : '') + '</i>' + esc(it[0]) + '<small>' + esc(it[2]) + '</small></div>';
+    }).join('');
+  }
+
+  function illumPreview(a){
+    if(a.status !== 'ready') return '<div class="illum-doc">Incomplete</div>';
+    if(a.type.indexOf('image/') === 0) return '<img src="' + esc(illumThumbUrl(a)) + '" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'' + esc(illumFileUrl(a)) + '\';">';
+    if(a.type.indexOf('video/') === 0) return '<video src="' + esc(illumFileUrl(a)) + '#t=0.5" preload="metadata" muted playsinline></video>';
+    return '<div class="illum-doc">PDF</div>';
+  }
+
+  function illumCard(a){
+    var photo = ILLUM_PHOTO_ROLES.indexOf(a.role) !== -1;
+    return '<article class="illum-asset' + (a.live && a.status === 'ready' ? ' live' : '') + '" data-id="' + esc(a.id) + '">' +
+      '<div class="illum-thumb">' + illumPreview(a) + '<span class="illum-status">' + (a.status !== 'ready' ? 'Upload failed' : a.live ? 'Live' : 'Draft') + '</span></div>' +
+      '<div class="illum-body">' +
+        '<input data-f="title" value="' + esc(a.title) + '" aria-label="Title">' +
+        '<select data-f="role" aria-label="Where it goes">' + ILLUM_ROLES.map(function(r){
+          return '<option value="' + r.id + '"' + (r.id === a.role || (r.id === 'photo' && photo) ? ' selected' : '') + '>' + esc(r.label) + '</option>';
+        }).join('') + '</select>' +
+        (photo ? '<select data-f="layout" aria-label="Grid size"><option value=""' + (a.layout === '' ? ' selected' : '') + '>Standard tile</option><option value="tall"' + (a.layout === 'tall' ? ' selected' : '') + '>Tall tile</option><option value="wide"' + (a.layout === 'wide' ? ' selected' : '') + '>Wide tile</option></select>' : '') +
+        '<div class="illum-row">' +
+          '<label style="display:flex;align-items:center;gap:6px;font-size:11.5px;"><input type="checkbox" data-f="live"' + (a.live ? ' checked' : '') + (a.status !== 'ready' ? ' disabled' : '') + '> Live</label>' +
+          '<div class="row-actions">' +
+            (a.status === 'ready' ? '<a class="btn small" href="' + esc(illumFileUrl(a)) + '?download=1">Download</a>' : '') +
+            '<button class="btn small" type="button" data-illum-act="delete">Delete</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="illum-meta">' + esc(a.name) + ' &middot; ' + illumSizeText(a.size) + '</div>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function renderIllumAssets(){
+    renderIllumChecklist();
+    var groups = document.getElementById('illumGroups');
+    groups.innerHTML = ILLUM_ROLES.map(function(r){
+      var list = illumAssets.filter(function(a){ return r.id === 'photo' ? ILLUM_PHOTO_ROLES.indexOf(a.role) !== -1 : a.role === r.id; });
+      return '<section class="illum-group"><h4>' + esc(r.label) + ' (' + list.length + ')</h4><p>' + esc(r.help) + '</p>' +
+        (list.length ? '<div class="illum-asset-grid">' + list.map(illumCard).join('') + '</div>' : '<p class="empty-note">Nothing here yet</p>') +
+      '</section>';
+    }).join('');
+  }
+
+  function illumPatchAsset(id, fields){
+    var body = Object.assign({ slug: illumCurrent.slug, id: id }, fields);
+    illumSend('/api/assets', 'PATCH', body).then(function(res){
+      illumAssets = illumAssets.map(function(a){ return a.id === id ? res.asset : a; });
+      renderIllumAssets();
+    }).catch(function(e){ toast('Error: ' + e.message); loadIllumAssets(); });
+  }
+
+  document.getElementById('illumGroups').addEventListener('change', function(e){
+    var el = e.target.closest('[data-f]');
+    var card = e.target.closest('.illum-asset');
+    if(!el || !card) return;
+    var f = el.getAttribute('data-f');
+    var fields = {};
+    fields[f] = f === 'live' ? el.checked : el.value;
+    illumPatchAsset(card.getAttribute('data-id'), fields);
+  });
+  document.getElementById('illumGroups').addEventListener('click', function(e){
+    var b = e.target.closest('[data-illum-act="delete"]');
+    if(!b) return;
+    var id = b.closest('.illum-asset').getAttribute('data-id');
+    var a = illumAssets.find(function(x){ return x.id === id; });
+    if(!window.confirm('Delete ' + (a ? a.title : 'this file') + '? It will disappear from the live site.')) return;
+    illumApi('/api/assets?slug=' + encodeURIComponent(illumCurrent.slug) + '&id=' + encodeURIComponent(id), { method: 'DELETE' }).then(function(){
+      illumAssets = illumAssets.filter(function(x){ return x.id !== id; });
+      renderIllumAssets();
+    }).catch(function(e){ toast('Error: ' + e.message); });
+  });
+
+  /* Upload */
+  var illumDrop = document.getElementById('illumDrop');
+  var illumFileInput = document.getElementById('illumFileInput');
+  if(illumDrop){
+    illumDrop.addEventListener('click', function(){ illumFileInput.click(); });
+    illumDrop.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); illumFileInput.click(); } });
+    illumDrop.addEventListener('dragover', function(e){ e.preventDefault(); illumDrop.classList.add('over'); });
+    illumDrop.addEventListener('dragleave', function(){ illumDrop.classList.remove('over'); });
+    illumDrop.addEventListener('drop', function(e){ e.preventDefault(); illumDrop.classList.remove('over'); illumUploadAll(Array.prototype.slice.call(e.dataTransfer.files)); });
+    illumFileInput.addEventListener('change', function(){ illumUploadAll(Array.prototype.slice.call(illumFileInput.files)); illumFileInput.value = ''; });
+  }
+
+  function illumUploadAll(files){
+    if(!illumCurrent || !files.length) return;
+    var slug = illumCurrent.slug;
+    var role = document.getElementById('illumUpRole').value;
+    var live = document.getElementById('illumUpLive').checked;
+    var chain = Promise.resolve();
+    files.forEach(function(f){ chain = chain.then(function(){ return illumUploadOne(f, slug, role, live); }); });
+    chain.then(function(){ if(illumCurrent && illumCurrent.slug === slug) loadIllumAssets(); });
+  }
+
+  function illumUploadOne(file, slug, role, live){
+    var li = document.createElement('li');
+    li.innerHTML = '<span>' + esc(file.name) + '</span><span class="illum-pct">0%</span><div class="illum-bar"><i></i></div>';
+    var queue = document.getElementById('illumQueue');
+    queue.insertBefore(li, queue.firstChild);
+    var setPct = function(p){ li.querySelector('.illum-pct').textContent = p + '%'; li.querySelector('.illum-bar i').style.width = p + '%'; };
+    var type = file.type || (/\.mov$/i.test(file.name) ? 'video/quicktime' : '');
+    var assetId = null;
+    return illumSend('/api/upload/start', 'POST', { slug: slug, name: file.name, type: type, size: file.size, role: role || undefined })
+      .then(function(start){
+        var chunkSize = start.chunkSize, chunks = start.chunks;
+        assetId = start.id;
+        var next = 0, done = 0;
+        function uploadChunk(n, attempt){
+          var part = file.slice(n * chunkSize, Math.min(file.size, (n + 1) * chunkSize));
+          return illumApi('/api/upload/chunk?slug=' + encodeURIComponent(slug) + '&id=' + assetId + '&n=' + n, {
+            method: 'PUT', headers: {'Content-Type':'application/octet-stream'}, body: part
           }).catch(function(err){
-            toast('Error uploading: ' + err.message);
-            input.value = '';
+            if(attempt >= 3) throw err;
+            return new Promise(function(r){ setTimeout(r, 1000 * attempt); }).then(function(){ return uploadChunk(n, attempt + 1); });
           });
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-
-    elite.forEach(function(p){ loadGraphics(p.slug); });
-  }
-
-  function loadGraphics(slug){
-    api('/admin-graphics?slug=' + encodeURIComponent(slug)).then(function(res){
-      graphicsCache[slug] = res.files || [];
-      renderGraphicsGrid(slug);
-    }).catch(function(e){ toast('Error loading graphics: ' + e.message); });
-  }
-
-  function renderGraphicsGrid(slug){
-    var grid = document.getElementById('graphics-' + slug);
-    if(!grid) return;
-    var files = graphicsCache[slug] || [];
-    if(files.length === 0){
-      grid.innerHTML = '<span class="empty-note">No graphics uploaded yet.</span>';
-      return;
-    }
-    grid.innerHTML = files.map(function(f){
-      var url = '/player-graphics/' + f.key;
-      var preview = /^image\//.test(f.contentType || '')
-        ? '<img src="' + esc(url) + '" alt="">'
-        : '<div class="pdf-tile">PDF</div>';
-      return '<div class="graphic-tile">' +
-        '<a href="' + esc(url) + '" target="_blank" rel="noopener">' + preview + '</a>' +
-        '<div class="graphic-name">' + esc(f.filename) + '</div>' +
-        '<button class="graphic-remove" data-graphic-key="' + esc(f.key) + '" data-graphic-slug="' + esc(slug) + '" title="Remove">&times;</button>' +
-      '</div>';
-    }).join('');
-    grid.querySelectorAll('.graphic-remove').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        if(!window.confirm('Remove this file?')) return;
-        var key = btn.getAttribute('data-graphic-key');
-        var slugForKey = btn.getAttribute('data-graphic-slug');
-        api('/admin-graphics?key=' + encodeURIComponent(key), { method: 'DELETE' }).then(function(){
-          toast('Removed');
-          loadGraphics(slugForKey);
-        }).catch(function(e){ toast('Error removing: ' + e.message); });
-      });
-    });
-  }
-
-  function loadIlluminationQueue(){
-    api('/admin-illumination-queue').then(function(res){
-      renderIlluminationQueue((res.items || []).filter(function(i){ return i.status === 'pending'; }));
-    }).catch(function(e){ toast('Error loading Visual-Dashboard queue: ' + e.message); });
-  }
-
-  function renderIlluminationQueue(pending){
-    var card = document.getElementById('illuminationQueueCard');
-    var list = document.getElementById('illuminationQueueList');
-    if(!card || !list) return;
-    if(pending.length === 0){
-      card.style.display = 'none';
-      list.innerHTML = '';
-      return;
-    }
-    card.style.display = 'block';
-    list.innerHTML = pending.map(function(item){
-      // Built from the slug here rather than trusting the previewUrl saved on
-      // the queue item back when it was submitted, since that was computed
-      // once and can go stale (an older item from before this pipeline moved
-      // into this site, for example), while /illumination/<slug> is always
-      // the current, correct route.
-      var previewHref = '/illumination/' + encodeURIComponent(item.slug || '');
-      return '<div class="row-actions" style="justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:12px 0;">' +
-        '<div><strong>' + esc(item.playerName || item.slug) + '</strong><br>' +
-          '<a href="' + esc(previewHref) + '" target="_blank" rel="noopener" style="font-size:12.5px;">View Visual-Dashboard design &#8599;</a></div>' +
-        '<div class="row-actions">' +
-          '<button class="btn small" data-madi-slug="' + esc(item.slug) + '" data-madi-name="' + esc(item.playerName || '') + '" data-madi-action="edit-profile">Edit Profile</button>' +
-          '<button class="btn" data-madi-slug="' + esc(item.slug) + '" data-madi-action="approve">Approve</button>' +
-          '<button class="btn" data-madi-slug="' + esc(item.slug) + '" data-madi-action="dismiss">Dismiss</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-    list.querySelectorAll('[data-madi-action]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var slug = btn.getAttribute('data-madi-slug');
-        var action = btn.getAttribute('data-madi-action');
-        if(action === 'edit-profile'){
-          window.__editOrSeedPlayer(slug, btn.getAttribute('data-madi-name'));
-          return;
         }
-        if(action === 'approve' && !window.confirm('Approve this design? It will be marked ready to build into her live Illumination site.')) return;
-        api('/admin-illumination-queue', { method:'POST', body: JSON.stringify({ slug: slug, action: action }) }).then(function(){
-          toast(action === 'approve' ? 'Approved, her Illumination site is live. Add her profile info now so the page is complete.' : 'Dismissed');
-          loadIlluminationQueue();
-          if(action === 'approve'){
-            loadPlayers().then(function(){ window.__editPlayer(slug); });
-          }
-        }).catch(function(e){ toast('Error: ' + e.message); });
+        function worker(){
+          if(next >= chunks) return Promise.resolve();
+          var n = next++;
+          return uploadChunk(n, 1).then(function(){
+            done++;
+            setPct(Math.round(done / chunks * 100));
+            return worker();
+          });
+        }
+        var workers = [];
+        for(var w = 0; w < Math.min(3, chunks); w++) workers.push(worker());
+        return Promise.all(workers).then(function(){ return illumSend('/api/upload/finish', 'POST', { slug: slug, id: assetId }); });
+      })
+      .then(function(){
+        return live ? illumSend('/api/assets', 'PATCH', { slug: slug, id: assetId, live: true }) : Promise.resolve();
+      })
+      .then(function(){
+        li.classList.add('done');
+        li.querySelector('.illum-pct').textContent = live ? 'Live' : 'Uploaded';
+      })
+      .catch(function(err){
+        li.querySelector('.illum-pct').textContent = 'Failed';
+        toast(file.name + ': ' + err.message);
       });
-    });
   }
 
   function renderOverview(){
@@ -1612,10 +1812,6 @@
     var p = playersCache.find(function(x){ return x.slug === slug; });
     openModal(p);
   };
-  window.__editOrSeedPlayer = function(slug, name){
-    var p = playersCache.find(function(x){ return x.slug === slug; });
-    openModal(p || { slug: slug, playerName: name, tier: 'illumination' });
-  };
   window.__deletePlayer = function(slug){
     if(!confirm("Delete this player's page? This cannot be undone.")) return;
     api('/admin-players?slug=' + encodeURIComponent(slug), { method:'DELETE' }).then(function(){
@@ -2012,7 +2208,6 @@
   loadPlayers();
   loadSubmissions();
   loadArticles();
-  loadIlluminationQueue();
 })();
 </script>
 

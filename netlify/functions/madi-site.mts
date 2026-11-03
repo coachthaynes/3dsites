@@ -1,5 +1,6 @@
 import type { Context } from "@netlify/functions";
-import { listAssetsFast as listAssets, getPlayerFast as getPlayer, SLUG, type Asset } from "./_lib/madi-core.mts";
+import { listAssetsFast as listAssets, SLUG, type Asset } from "./_lib/madi-core.mts";
+import { getPlayerPublic as getPlayer } from "./_lib/blobs.js";
 
 // GET /api/sites/:slug  public media feed read by the player's Illumination site.
 // Only assets switched to Live in the Visual-Dashboard are included. Player sites live on other
@@ -46,13 +47,16 @@ export default async (req: Request, context: Context) => {
   }));
 
   const feed = {
-    player: { slug: player.slug, name: player.name },
+    player: { slug: player.slug, name: player.playerName || player.slug },
     updated: new Date().toISOString(),
     hero: sources("hero"),
     highlights,
-    highlightYoutubeUrls: (player.highlightYoutubeUrls || []).filter(Boolean).slice(0, 4),
     film: sources("film"),
-    filmYoutubeUrl: player.filmYoutubeUrl || "",
+    // Full game film's YouTube fallback is the same field her Illumination
+    // page already bakes in server side (render-illumination.js's
+    // site.film.youtubeUrl) - one source of truth instead of a second,
+    // separate YouTube field that only ever lived in the old Madi catalog.
+    filmYoutubeUrl: player.youtube || "",
     poster: poster ? file(poster) : null,
     portrait: portrait ? file(portrait) : null,
     photos: live.filter(a => a.role === "nil" || a.role === "editorial" || a.role === "photo").map(a => ({

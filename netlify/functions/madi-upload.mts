@@ -1,8 +1,9 @@
 import type { Context } from "@netlify/functions";
 import {
-  authed, json, fail, media, getAsset, saveAsset, getPlayer, indexMedia, newId,
+  adminAuthed, json, fail, media, getAsset, saveAsset, indexMedia, newId,
   CHUNK_SIZE, MAX_FILE, ROLES, SLUG, type Asset, type Role
 } from "./_lib/madi-core.mts";
+import { getPlayer } from "./_lib/blobs.js";
 
 const ALLOWED = /^(image\/(jpeg|png|webp|gif|avif)|video\/(mp4|webm|quicktime)|application\/pdf)$/;
 
@@ -11,7 +12,7 @@ const ALLOWED = /^(image\/(jpeg|png|webp|gif|avif)|video\/(mp4|webm|quicktime)|a
 // PUT  /api/upload/chunk?slug=&id=&n=   raw bytes for piece n
 // POST /api/upload/finish { slug, id }
 export default async (req: Request, context: Context) => {
-  if (!authed(req)) return fail("Sign in required", 401);
+  if (!adminAuthed(req)) return fail("Sign in required", 401);
   const action = context.params.action;
 
   if (action === "start" && req.method === "POST") {

@@ -7,7 +7,9 @@ edits and new form submissions take effect immediately with no rebuild.
 ## Required environment variables
 
 - `ADMIN_API_SECRET` — shared secret the dashboard sends as the
-  `X-Admin-Secret` header on every admin API call.
+  `X-Admin-Secret` header on every admin API call, including the
+  Illumination media endpoints (`madi-upload.mts`, `madi-assets.mts`) now
+  that they no longer have their own separate login.
 - `BLOBS_SITE_ID` / `BLOBS_TOKEN` — this site's deploys don't go through
   Netlify's own build pipeline, so `@netlify/blobs`'s zero-config
   auto-detection never finds a deploy context and throws
@@ -87,3 +89,19 @@ reach the backend at all.**
   Fulfillment tab in the dashboard and keeps Premium/Elite records out
   of the public directory and the Essential page template, since they
   have their own dedicated static sites.
+- `illumination.js` / `elite.js` — render an Illumination/Elite player's
+  page from her Blobs record, same as `player.js` does for Essential.
+  Illumination additionally pulls her uploaded media client side from
+  `madi-site.mts`'s `/api/sites/:slug` feed.
+- `madi-upload.mts` / `madi-assets.mts` / `madi-site.mts` /
+  `madi-media.mts` / `_lib/madi-core.mts` — Illumination tier's media
+  library: chunked upload (handles files up to 1.5 GB), per-asset role
+  (hero/highlight/film/poster/portrait/photo/kit) and live/draft state,
+  and the public feed + byte-range file server her Illumination page
+  reads from. Managed from the main dashboard's Illumination tab, not a
+  separate app — `madi-upload.mts`/`madi-assets.mts` require
+  `X-Admin-Secret` like every other admin function; `madi-site.mts` and
+  `madi-media.mts` are public reads with no auth, same as a player's page
+  itself. Publishing her Illumination site (the `illuminationApproved`
+  flag `illumination.js` checks) is a direct toggle in that same tab,
+  not a separate approval step.

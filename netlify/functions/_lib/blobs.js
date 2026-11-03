@@ -62,25 +62,6 @@ function tradingCardsStore() {
   return makeStore("trading-cards");
 }
 
-function illuminationQueueStore() {
-  return makeStore("illumination-queue");
-}
-
-async function listIlluminationQueue() {
-  const store = illuminationQueueStore();
-  const { blobs } = await store.list();
-  const items = await Promise.all(blobs.map((b) => store.get(b.key, { type: "json" })));
-  return items.filter(Boolean).sort((a, b) => new Date(b.receivedAt) - new Date(a.receivedAt));
-}
-
-async function saveIlluminationQueueItem(item) {
-  const store = illuminationQueueStore();
-  const existing = await store.get(item.slug, { type: "json" });
-  const merged = Object.assign({}, existing || {}, item);
-  await store.setJSON(merged.slug, merged);
-  return merged;
-}
-
 function viewsStore() {
   return makeStore("views");
 }
@@ -199,9 +180,6 @@ module.exports = {
   highlightVideoAssetsStore,
   highlightVideoChunksStore,
   tradingCardsStore,
-  illuminationQueueStore,
-  listIlluminationQueue,
-  saveIlluminationQueueItem,
   viewsStore,
   incrementViews,
   getViews,

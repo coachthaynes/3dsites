@@ -1,8 +1,10 @@
-// Shared helpers for the Visual-Dashboard functions, ported into the
-// main Elevate Her Hoops Report site so the dashboard and the Illumination
-// sites it feeds live in one deploy.
+// Shared helpers for the Illumination media functions (hero video, highlight
+// clips, photos, etc. for Illumination tier players), ported into the main
+// Elevate Her Hoops Report site so they live in one deploy with everything
+// else. Player records themselves live in _lib/blobs.js, same as every
+// other tier - these helpers are asset storage only.
 import { getStore } from "@netlify/blobs";
-import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
+import { randomBytes } from "node:crypto";
 
 // Netlify functions cap a request at 6 MB, and binary bodies are base64
 // encoded in transit (about 30% bigger), so the real ceiling for raw bytes
@@ -18,23 +20,6 @@ export const MAX_FILE = 1536 * 1024 * 1024; // 1.5 GB
 // distinction at all.
 export const ROLES = ["hero", "highlight", "film", "poster", "portrait", "nil", "editorial", "photo", "kit"] as const;
 export type Role = (typeof ROLES)[number];
-
-export interface Player {
-  slug: string;
-  name: string;
-  siteUrl?: string;
-  school?: string;
-  classYear?: string;
-  // Embeds in place of "coming soon" for full game film until a real clip
-  // is uploaded; an uploaded clip always takes priority over this link.
-  filmYoutubeUrl?: string;
-  // Up to 4 individual YouTube links, one per highlight clip slot. Unlike
-  // film, a link here takes priority over an uploaded highlight clip -
-  // self-hosted highlight video is fragile enough across mobile browsers
-  // that YouTube is the preferred path once a player has links set.
-  highlightYoutubeUrls?: string[];
-  created: string;
-}
 
 export interface Asset {
   id: string;
@@ -89,51 +74,16 @@ export const fail = (message: string, status = 400) => json({ error: message }, 
 export const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export const newId = () => Date.now().toString(36) + randomBytes(6).toString("hex");
 
-/* ---------- Auth: one shared dashboard password, signed session tokens ---------- */
-function secret() {
-  const s = process.env.DASHBOARD_SECRET || process.env.DASHBOARD_PASSWORD;
-  if (!s) throw new Error("DASHBOARD_PASSWORD is not set");
-  return s;
-}
-const sign = (payload: string) => createHmac("sha256", secret()).update(payload).digest("base64url");
-
-export function checkPassword(given: string) {
-  const real = process.env.DASHBOARD_PASSWORD || "";
-  const a = Buffer.from(given || ""), b = Buffer.from(real);
-  return real.length > 0 && a.length === b.length && timingSafeEqual(a, b);
-}
-
-export function issueToken(days = 14) {
-  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + days * 864e5 })).toString("base64url");
-  return `${payload}.${sign(payload)}`;
-}
-
-export function authed(req: Request) {
-  const token = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
-  const [payload, sig] = token.split(".");
-  if (!payload || !sig) return false;
-  const expected = sign(payload);
-  if (sig.length !== expected.length || !timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) return false;
-  try { return JSON.parse(Buffer.from(payload, "base64url").toString()).exp > Date.now(); } catch { return false; }
+// Same admin login as the rest of the dashboard (X-Admin-Secret against
+// ADMIN_API_SECRET) - these media endpoints used to have their own separate
+// password, now they just check the one everything else already checks.
+export function adminAuthed(req: Request) {
+  const provided = req.headers.get("x-admin-secret") || "";
+  const expected = process.env.ADMIN_API_SECRET || "";
+  return Boolean(expected) && provided === expected;
 }
 
 /* ---------- Catalog access ---------- */
-export async function listPlayers(): Promise<Player[]> {
-  const cat = catalog();
-  const { blobs } = await cat.list({ prefix: "player/" });
-  const players = await Promise.all(blobs.map(b => cat.get(b.key, { type: "json" })));
-  return (players.filter(Boolean) as Player[]).sort((a, b) => a.name.localeCompare(b.name));
-}
-
-export async function getPlayer(slug: string): Promise<Player | null> {
-  return catalog().get(`player/${slug}`, { type: "json" });
-}
-// Public read path (madi-site.mts's GET /api/sites/:slug): eventual
-// consistency, same reasoning as storeFast above.
-export async function getPlayerFast(slug: string): Promise<Player | null> {
-  return catalogFast().get(`player/${slug}`, { type: "json" });
-}
-
 export async function listAssets(slug: string): Promise<Asset[]> {
   const cat = catalog();
   const { blobs } = await cat.list({ prefix: `asset/${slug}/` });

@@ -1,10 +1,10 @@
-import { authed, json, fail, listAssets, getAsset, saveAsset, deleteAssetData, unindexMedia, ROLES, SLUG, type Role } from "./_lib/madi-core.mts";
+import { adminAuthed, json, fail, listAssets, getAsset, saveAsset, deleteAssetData, unindexMedia, ROLES, SLUG, type Role } from "./_lib/madi-core.mts";
 
 // GET    /api/assets?slug=...                         list a player's media
 // PATCH  /api/assets { slug, id, title?, role?, layout?, live?, order? }
 // DELETE /api/assets?slug=...&id=...
 export default async (req: Request) => {
-  if (!authed(req)) return fail("Sign in required", 401);
+  if (!adminAuthed(req)) return fail("Sign in required", 401);
   const url = new URL(req.url);
 
   if (req.method === "GET") {

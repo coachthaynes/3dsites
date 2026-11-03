@@ -6,12 +6,6 @@ function checkAdminSecret(event) {
   return Boolean(expected) && provided === expected;
 }
 
-function checkMadiSecret(event) {
-  const provided = event.headers["x-madi-secret"] || event.headers["X-Madi-Secret"];
-  const expected = process.env.MADI_WEBHOOK_SECRET;
-  return Boolean(expected) && provided === expected;
-}
-
 function checkPlayerToken(player, token) {
   return Boolean(player) && Boolean(player.editToken) && Boolean(token) && player.editToken === token;
 }
@@ -72,7 +66,6 @@ function verifySessionCookie(cookieHeader) {
 
 module.exports = {
   checkAdminSecret,
-  checkMadiSecret,
   checkPlayerToken,
   hashPassword,
   verifyPassword,
