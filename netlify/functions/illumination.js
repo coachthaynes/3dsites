@@ -1,4 +1,4 @@
-const { getPlayer } = require("./_lib/blobs");
+const { getPlayerPublic } = require("./_lib/blobs");
 const { renderIlluminationSite } = require("./_lib/render-illumination");
 
 function slugFromPath(path) {
@@ -17,7 +17,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: { "Content-Type": "text/plain" }, body: "Missing slug" };
   }
 
-  const player = await getPlayer(slug);
+  const player = await getPlayerPublic(slug);
   if (!player || player.tier !== "illumination" || !player.illuminationApproved) {
     return {
       statusCode: 404,

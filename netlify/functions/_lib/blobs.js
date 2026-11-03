@@ -18,6 +18,18 @@ function makeStore(name) {
   return getStore({ name, consistency: "strong" });
 }
 
+// Same store, but eventual consistency: skips the extra hop to origin that
+// "strong" forces and reads from Netlify's edge cache instead. Only safe for
+// reads that don't immediately follow their own write (a public page render
+// doesn't care that an admin edit from 10 seconds ago hasn't propagated yet,
+// especially once the response itself is already cached for 60s).
+function makeStoreFast(name) {
+  if (SITE_ID && TOKEN) {
+    return getStore({ name, siteID: SITE_ID, token: TOKEN });
+  }
+  return getStore({ name });
+}
+
 function playersStore() {
   return makeStore("players");
 }
@@ -149,6 +161,19 @@ async function getPlayer(slug) {
   return player;
 }
 
+// Read-only variant for public page renders (illumination.js, elite.js,
+// player.js): eventual consistency instead of strong, so it doesn't pay the
+// strong-consistency origin round trip on every visitor. Never writes the
+// seed fallback back either, since a public read has no business performing
+// a first-time write; an unseeded store surfaces as the page's own 404 path
+// the same way a missing player normally does.
+async function getPlayerPublic(slug) {
+  const store = makeStoreFast("players");
+  const player = await store.get(slug, { type: "json" });
+  if (player) return player;
+  return seed.players.find((p) => p.slug === slug) || null;
+}
+
 async function savePlayer(player) {
   if (!player.slug) throw new Error("player.slug is required");
   const store = playersStore();
@@ -187,6 +212,7 @@ module.exports = {
   deleteArticle,
   listPlayers,
   getPlayer,
+  getPlayerPublic,
   savePlayer,
   deletePlayer,
 };

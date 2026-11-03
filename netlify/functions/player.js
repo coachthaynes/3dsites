@@ -1,4 +1,4 @@
-const { getPlayer, incrementViews, listArticles } = require("./_lib/blobs");
+const { getPlayerPublic, incrementViews, listArticles } = require("./_lib/blobs");
 const { renderEssentialPlayerV2 } = require("./_lib/render-essential-v2");
 
 function slugFromPath(path) {
@@ -13,7 +13,7 @@ exports.handler = async (event) => {
   if (!slug) {
     return { statusCode: 400, body: "Missing slug" };
   }
-  const player = await getPlayer(slug);
+  const player = await getPlayerPublic(slug);
   if (!player) {
     return { statusCode: 404, body: "Player not found" };
   }

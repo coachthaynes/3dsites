@@ -65,6 +65,20 @@ function store(name: string) {
 export const catalog = () => store("madi-catalog");
 export const media = () => store("madi-media");
 
+// Same stores, eventual consistency: skips the extra hop to origin that
+// "strong" forces on every single read. Once an asset's chunks are written
+// and its status flips to "ready" nothing writes to that id again, so a
+// public read (the Illumination site's media feed and the actual video/
+// photo bytes behind it) never needs the freshly-written guarantee "strong"
+// exists for - it was only ever needed on the dashboard's own read-after-
+// write admin flows, which keep using catalog()/media() above unchanged.
+function storeFast(name: string) {
+  if (SITE_ID && TOKEN) return getStore({ name, siteID: SITE_ID, token: TOKEN });
+  return getStore({ name });
+}
+export const catalogFast = () => storeFast("madi-catalog");
+export const mediaFast = () => storeFast("madi-media");
+
 export const json = (data: unknown, status = 200, headers: Record<string, string> = {}) =>
   new Response(JSON.stringify(data), {
     status,
@@ -114,9 +128,20 @@ export async function listPlayers(): Promise<Player[]> {
 export async function getPlayer(slug: string): Promise<Player | null> {
   return catalog().get(`player/${slug}`, { type: "json" });
 }
+// Public read path (madi-site.mts's GET /api/sites/:slug): eventual
+// consistency, same reasoning as storeFast above.
+export async function getPlayerFast(slug: string): Promise<Player | null> {
+  return catalogFast().get(`player/${slug}`, { type: "json" });
+}
 
 export async function listAssets(slug: string): Promise<Asset[]> {
   const cat = catalog();
+  const { blobs } = await cat.list({ prefix: `asset/${slug}/` });
+  const assets = await Promise.all(blobs.map(b => cat.get(b.key, { type: "json" })));
+  return (assets.filter(Boolean) as Asset[]).sort((a, b) => a.order - b.order || a.created.localeCompare(b.created));
+}
+export async function listAssetsFast(slug: string): Promise<Asset[]> {
+  const cat = catalogFast();
   const { blobs } = await cat.list({ prefix: `asset/${slug}/` });
   const assets = await Promise.all(blobs.map(b => cat.get(b.key, { type: "json" })));
   return (assets.filter(Boolean) as Asset[]).sort((a, b) => a.order - b.order || a.created.localeCompare(b.created));
@@ -125,6 +150,9 @@ export async function listAssets(slug: string): Promise<Asset[]> {
 export const assetKey = (slug: string, id: string) => `asset/${slug}/${id}`;
 export async function getAsset(slug: string, id: string): Promise<Asset | null> {
   return catalog().get(assetKey(slug, id), { type: "json" });
+}
+export async function getAssetFast(slug: string, id: string): Promise<Asset | null> {
+  return catalogFast().get(assetKey(slug, id), { type: "json" });
 }
 export async function saveAsset(a: Asset) {
   await catalog().setJSON(assetKey(a.slug, a.id), a);
@@ -143,6 +171,13 @@ export async function indexMedia(id: string, slug: string) {
 export async function lookupMedia(id: string): Promise<Asset | null> {
   const ref = await catalog().get(`media/${id}`, { type: "json" }) as { slug: string } | null;
   return ref ? getAsset(ref.slug, id) : null;
+}
+// Public read path (madi-media.mts): eventual consistency. Called once per
+// byte-range request a video player makes, so this is the hottest of these
+// reads by far.
+export async function lookupMediaFast(id: string): Promise<Asset | null> {
+  const ref = await catalogFast().get(`media/${id}`, { type: "json" }) as { slug: string } | null;
+  return ref ? getAssetFast(ref.slug, id) : null;
 }
 export async function unindexMedia(id: string) {
   await catalog().delete(`media/${id}`);

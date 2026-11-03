@@ -1,5 +1,5 @@
 import type { Context } from "@netlify/functions";
-import { listAssets, getPlayer, SLUG, type Asset } from "./_lib/madi-core.mts";
+import { listAssetsFast as listAssets, getPlayerFast as getPlayer, SLUG, type Asset } from "./_lib/madi-core.mts";
 
 // GET /api/sites/:slug  public media feed read by the player's Illumination site.
 // Only assets switched to Live in the Visual-Dashboard are included. Player sites live on other

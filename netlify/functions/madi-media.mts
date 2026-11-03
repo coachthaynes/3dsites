@@ -1,5 +1,5 @@
 import type { Context } from "@netlify/functions";
-import { media, lookupMedia } from "./_lib/madi-core.mts";
+import { mediaFast as media, lookupMediaFast as lookupMedia } from "./_lib/madi-core.mts";
 
 // GET /madi-media/:id  public file delivery with byte range support so video can stream and seek.
 // Add ?download=1 to save the file instead of viewing it.

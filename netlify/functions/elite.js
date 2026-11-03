@@ -1,4 +1,4 @@
-const { getPlayer } = require("./_lib/blobs");
+const { getPlayerPublic } = require("./_lib/blobs");
 const { renderEliteSite } = require("./_lib/render-elite");
 
 function slugFromPath(path) {
@@ -32,7 +32,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: { "Content-Type": "text/plain" }, body: "Missing slug" };
   }
 
-  const player = await getPlayer(slug);
+  const player = await getPlayerPublic(slug);
   if (!player || player.tier !== "elite") {
     return {
       statusCode: 404,
